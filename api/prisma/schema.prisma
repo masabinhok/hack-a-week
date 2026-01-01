@@ -229,20 +229,20 @@ model StepDocument {
 
 // ---------------  FEE (per step)  ---------------
 model StepFee {
-   id                   Int @id @default(autoincrement())
+  id                  Int      @id @default(autoincrement())
   serviceStepId       String
   feeId               String
   feeTitle            String
-  feeTitleNepali      String
+  feeTitleNepali      String?
   feeAmount           Float
-  currency            Currency        @default(NPR)
+  currency            Currency @default(NPR)
   feeType             FeeType
-  isRefundable        Boolean         @default(false)
+  isRefundable        Boolean  @default(false)
   applicableCondition String?
   notes               String?
-  step                ServiceStep     @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
+  step                ServiceStep @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
 
-   @@unique([serviceStepId, feeId])  // Prevent duplicate fees per step
+  @@unique([serviceStepId, feeId])  // Prevent duplicate fees per step
 }
 
 // ---------------  TIME (per step)  ---------------
@@ -264,7 +264,7 @@ model StepAuthority {
   responsibleStepId String?
   complaintStepId String?
   position         String
-  positionNepali   String
+  positionNepali   String?
   department       String
   contactNumber    String
   email            String?
@@ -290,7 +290,7 @@ model DetailedProc {
   id              String     @id @default(cuid())
   subServiceId    String     @unique
   overview        String
-  overviewNepali  String
+    overviewNepali  String?
   stepByStepGuide String[]
   importantNotes  String[]
   legalReferences Json[] // {lawName, section, url}
@@ -312,10 +312,10 @@ model Office {
   officeId         String     @unique
   categoryId       String
   name             String
-  nameNepali       String
+    nameNepali       String?
   type             OfficeType
   address          String
-  addressNepali    String
+    addressNepali    String?
   contact          String?
   alternateContact String?
   email            String?

@@ -1,0 +1,26 @@
+[
+  {
+    "subServiceSlug": "new-citizenship-certificate",
+    "step": 1,
+    "stepTitle": "Get Recommendation from Ward Office",
+    "stepDescription": "Visit your local ward office to obtain a recommendation letter for citizenship application",
+    "officeType": "WARD_OFFICE",
+    "requiresAppointment": false
+  },
+  {
+    "subServiceSlug": "new-citizenship-certificate",
+    "step": 2,
+    "stepTitle": "Apply at District Administration Office",
+    "stepDescription": "Submit your application with all required documents at the District Administration Office",
+    "officeType": "DISTRICT_ADMINISTRATION_OFFICE",
+    "requiresAppointment": false
+  },
+  {
+    "subServiceSlug": "new-citizenship-certificate",
+    "step": 3,
+    "stepTitle": "Collect Citizenship Certificate",
+    "stepDescription": "Return to DAO after processing period to collect your citizenship certificate",
+    "officeType": "DISTRICT_ADMINISTRATION_OFFICE",
+    "requiresAppointment": false
+  }
+]

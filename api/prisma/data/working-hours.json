@@ -1,0 +1,74 @@
+[
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 3:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 3:00 PM"
+  }
+]

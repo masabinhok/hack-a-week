@@ -1,0 +1,17 @@
+[
+  {
+    "serviceId": "SRV-001",
+    "name": "Citizenship Services",
+    "slug": "citizenship-services",
+    "category": "Civil Registration",
+    "description": "Services related to obtaining and managing Nepali citizenship certificates",
+    "eligibility": "Nepali nationals by descent or naturalization",
+    "validityPeriod": "Lifetime",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Department of National ID and Civil Registration",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-01T00:00:00.000Z"
+    }
+  }
+]

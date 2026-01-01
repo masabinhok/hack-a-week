@@ -1,0 +1,28 @@
+[
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "feeId": "FEE-CIT-001",
+    "feeTitle": "Ward Recommendation Fee",
+    "feeTitleNepali": "वडा सिफारिस शुल्क",
+    "feeAmount": 100,
+    "currency": "NPR",
+    "feeType": "SERVICE",
+    "isRefundable": false,
+    "applicableCondition": "Standard fee for all applicants",
+    "notes": "Cash payment only"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "feeId": "FEE-CIT-002",
+    "feeTitle": "Citizenship Certificate Fee",
+    "feeTitleNepali": "नागरिकता प्रमाणपत्र शुल्क",
+    "feeAmount": 500,
+    "currency": "NPR",
+    "feeType": "GOVERNMENT",
+    "isRefundable": false,
+    "applicableCondition": "All applicants",
+    "notes": "Can pay via bank voucher or cash"
+  }
+]

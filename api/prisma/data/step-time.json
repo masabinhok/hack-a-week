@@ -1,0 +1,32 @@
+[
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "minimumTime": "30 minutes",
+    "maximumTime": "2 hours",
+    "averageTime": "1 hour",
+    "remarks": "Depends on queue at ward office",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "minimumTime": "7 days",
+    "maximumTime": "15 days",
+    "averageTime": "10 days",
+    "remarks": "Processing time after document submission",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 3,
+    "subServiceSlug": "new-citizenship-certificate",
+    "minimumTime": "15 minutes",
+    "maximumTime": "1 hour",
+    "averageTime": "30 minutes",
+    "remarks": "Quick collection process",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "docId": "DOC-CIT-001",
+    "name": "Birth Certificate",
+    "nameNepali": "जन्म दर्ता प्रमाणपत्र",
+    "type": "ORIGINAL",
+    "quantity": 1,
+    "format": "Official government issued document",
+    "isMandatory": true,
+    "notes": "Must be registered within 35 days of birth, or late registration certificate required",
+    "relatedService": null,
+    "alternativeDocuments": []
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "docId": "DOC-CIT-002",
+    "name": "Parents' Citizenship Certificate",
+    "nameNepali": "बाबु आमाको नागरिकता प्रमाणपत्र",
+    "type": "PHOTOCOPY",
+    "quantity": 2,
+    "format": "Both parents' citizenship photocopies",
+    "isMandatory": true,
+    "notes": "Both parents must be Nepali citizens",
+    "relatedService": null,
+    "alternativeDocuments": []
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "docId": "DOC-CIT-003",
+    "name": "Ward Recommendation Letter",
+    "nameNepali": "वडा सिफारिस पत्र",
+    "type": "ORIGINAL",
+    "quantity": 1,
+    "format": "Official letter from ward office",
+    "isMandatory": true,
+    "notes": "Obtained from Step 1",
+    "relatedService": null,
+    "alternativeDocuments": []
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "docId": "DOC-CIT-004",
+    "name": "Passport Size Photos",
+    "nameNepali": "पासपोर्ट साइज फोटो",
+    "type": "PHOTOGRAPH",
+    "quantity": 4,
+    "format": "Recent passport-size color photos with red background",
+    "isMandatory": true,
+    "notes": "Taken within last 6 months",
+    "relatedService": null,
+    "alternativeDocuments": []
+  }
+]

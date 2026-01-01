@@ -1,0 +1,35 @@
+[
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "isResponsible": true,
+    "position": "Ward Secretary",
+    "positionNepali": "वडा सचिव",
+    "department": "Ward Administration",
+    "contactNumber": "Contact your local ward office",
+    "email": null,
+    "complaintProcess": null
+  },
+  {
+    "stepNumber": 1,
+    "subServiceSlug": "new-citizenship-certificate",
+    "isResponsible": false,
+    "position": "Ward Chairperson",
+    "positionNepali": "वडा अध्यक्ष",
+    "department": "Ward Administration",
+    "contactNumber": "Contact your local ward office",
+    "email": null,
+    "complaintProcess": "Contact ward chairperson for complaints regarding service delays"
+  },
+  {
+    "stepNumber": 2,
+    "subServiceSlug": "new-citizenship-certificate",
+    "isResponsible": true,
+    "position": "Chief District Officer",
+    "positionNepali": "प्रमुख जिल्ला अधिकारी",
+    "department": "District Administration Office",
+    "contactNumber": "Contact your district DAO",
+    "email": null,
+    "complaintProcess": null
+  }
+]

@@ -1,0 +1,71 @@
+[
+  {
+    "subServiceSlug": "new-citizenship-certificate",
+    "overview": "Obtaining a citizenship certificate is a multi-step process that requires visiting your local ward office and district administration office. The entire process typically takes 10-15 days.",
+    "overviewNepali": "नागरिकता प्रमाणपत्र प्राप्त गर्न तपाईंले आफ्नो स्थानीय वडा कार्यालय र जिल्ला प्रशासन कार्यालयमा जानु पर्छ। सम्पूर्ण प्रक्रिया सामान्यतया १०-१५ दिन लाग्छ।",
+    "stepByStepGuide": [
+      "Collect your birth certificate and parents' citizenship photocopies",
+      "Visit your local ward office during working hours",
+      "Fill out the recommendation form at the ward office",
+      "Pay NPR 100 fee and obtain recommendation letter",
+      "Take 4 passport-size photos (red background)",
+      "Visit the District Administration Office with all documents",
+      "Fill out the citizenship application form (Form 1)",
+      "Submit documents and pay NPR 500 fee",
+      "Receive acknowledgment receipt with collection date",
+      "Return to DAO on specified date to collect certificate"
+    ],
+    "importantNotes": [
+      "Applicant must be at least 16 years old",
+      "Both parents must be Nepali citizens for citizenship by descent",
+      "Late registration of birth may require additional documentation",
+      "Bring original documents for verification, photocopies will be submitted",
+      "Friday office hours are shorter (closes at 3 PM)",
+      "Public holidays and Saturdays are closed"
+    ],
+    "legalReferences": [
+      {
+        "lawName": "Nepal Citizenship Act, 2063 (2006)",
+        "section": "Section 3",
+        "url": "https://www.lawcommission.gov.np"
+      },
+      {
+        "lawName": "Citizenship Regulations, 2063",
+        "section": "Chapter 2",
+        "url": "https://www.mohp.gov.np"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "What if my birth registration was delayed?",
+        "answer": "You need to obtain a late birth registration certificate from the ward office first, with supporting documents like school certificates or immunization cards."
+      },
+      {
+        "question": "Can I apply if one parent is not a Nepali citizen?",
+        "answer": "If born before 2006, you can get citizenship if either parent is Nepali. If born after 2006, both parents must be Nepali for citizenship by descent."
+      },
+      {
+        "question": "How long is the citizenship certificate valid?",
+        "answer": "The citizenship certificate is valid for lifetime and does not require renewal."
+      },
+      {
+        "question": "What if I lose my citizenship certificate?",
+        "answer": "You can apply for a duplicate citizenship certificate at the same DAO with a police complaint report and newspaper publication."
+      }
+    ],
+    "commonIssues": [
+      {
+        "issue": "Ward office refuses to provide recommendation",
+        "solution": "Ensure all documents are complete. If still refused, you can file a complaint with the ward chairperson or municipality office."
+      },
+      {
+        "issue": "Processing takes longer than 15 days",
+        "solution": "Visit the DAO with your acknowledgment receipt and politely inquire about the status. You can escalate to the Chief District Officer if necessary."
+      },
+      {
+        "issue": "Parents' citizenship numbers don't match records",
+        "solution": "Bring parents to the DAO with their original citizenship certificates for verification and record correction."
+      }
+    ]
+  }
+]

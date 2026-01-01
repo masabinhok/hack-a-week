@@ -1,0 +1,11 @@
+[
+  {
+    "serviceId": "SRV-001",
+    "name": "New Citizenship Certificate",
+    "slug": "new-citizenship-certificate",
+    "description": "Apply for a new citizenship certificate for the first time (for citizens by descent)",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "onlinePortalUrl": null
+  }
+]
