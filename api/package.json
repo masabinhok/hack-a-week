@@ -17,7 +17,13 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:seed": "tsx prisma/seed.ts",
+    "prisma:seed:locations": "tsx prisma/seeders/01-locations.seed.ts",
+    "prisma:seed:office-categories": "tsx prisma/seeders/02-office-categories.seed.ts",
+    "prisma:seed:offices": "tsx prisma/seeders/03-offices.seed.ts",
+    "prisma:seed:services": "tsx prisma/seeders/04-services.seed.ts",
+    "prisma:seed:service-details": "tsx prisma/seeders/05-service-details.seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
@@ -39,7 +45,7 @@
     "@nestjs/testing": "^11.0.1",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
-    "@types/node": "^22.10.7",
+    "@types/node": "^22.19.3",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
@@ -54,7 +60,8 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.7.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
