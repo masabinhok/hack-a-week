@@ -222,12 +222,20 @@ export class ServicesService {
       validityPeriod: service.validityPeriod,
       breadcrumb,
       steps: service.serviceSteps.map((step) => ({
+        id: step.id,
+        stepId: step.id,
+        serviceId: step.serviceId,
         step: step.step,
         stepTitle: step.stepTitle,
+        stepTitleNepali: null,
         stepDescription: step.stepDescription,
+        stepDescriptionNepali: null,
         officeType: step.officeType,
         requiresAppointment: step.requiresAppointment,
-        documents: step.documentsRequired.map((doc) => ({
+        isActive: true,
+        documentsRequired: step.documentsRequired.map((doc) => ({
+          id: doc.id,
+          docId: doc.docId,
           name: doc.name,
           nameNepali: doc.nameNepali,
           type: doc.type,
@@ -235,17 +243,19 @@ export class ServicesService {
           format: doc.format,
           isMandatory: doc.isMandatory,
           notes: doc.notes,
-          alternativeDocuments: doc.alternativeDocuments,
+          notesNepali: null,
         })),
-        fees: step.totalFees.map((fee) => ({
+        totalFees: step.totalFees.map((fee) => ({
+          id: fee.id,
+          feeId: fee.feeId,
           feeTitle: fee.feeTitle,
           feeTitleNepali: fee.feeTitleNepali,
           feeAmount: fee.feeAmount,
           currency: fee.currency,
           feeType: fee.feeType,
           isRefundable: fee.isRefundable,
-          applicableCondition: fee.applicableCondition,
           notes: fee.notes,
+          notesNepali: null,
         })),
         timeRequired: step.timeRequired
           ? {
@@ -260,25 +270,14 @@ export class ServicesService {
           day: wh.day,
           openClose: wh.openClose,
         })),
-        responsibleAuthority: step.responsibleAuthorities[0]
-          ? {
-              position: step.responsibleAuthorities[0].position,
-              positionNepali: step.responsibleAuthorities[0].positionNepali,
-              department: step.responsibleAuthorities[0].department,
-              contactNumber: step.responsibleAuthorities[0].contactNumber,
-              email: step.responsibleAuthorities[0].email,
-            }
-          : null,
-        complaintAuthority: step.complaintAuthorities[0]
-          ? {
-              position: step.complaintAuthorities[0].position,
-              positionNepali: step.complaintAuthorities[0].positionNepali,
-              department: step.complaintAuthorities[0].department,
-              contactNumber: step.complaintAuthorities[0].contactNumber,
-              email: step.complaintAuthorities[0].email,
-              complaintProcess: step.complaintAuthorities[0].complaintProcess,
-            }
-          : null,
+        responsibleAuthorities: step.responsibleAuthorities.map((auth) => ({
+          position: auth.position,
+          positionNepali: auth.positionNepali,
+          department: auth.department,
+          departmentNepali: null,
+          contactNumber: auth.contactNumber,
+          email: auth.email,
+        })),
       })),
       detailedProcedure: service.detailedProc
         ? {

@@ -171,7 +171,7 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                     <div className="border-t border-border p-6 bg-surface">
                       {/* Description */}
                       {step.stepDescription && (
-                        <div key="description" className="mb-6">
+                        <div className="mb-6">
                           <p className="text-foreground-secondary leading-relaxed">
                             {step.stepDescription}
                           </p>
@@ -183,41 +183,28 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                         </div>
                       )}
 
-                      <div key="grid" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Required Documents */}
-                        {step.documentsRequired && step.documentsRequired.length > 0 && (
-                          <DocumentsList key="documents" documents={step.documentsRequired} />
-                        )}
+                      {/* Grid for Documents and Fees - only show if at least one exists */}
+                      {((step.documentsRequired && step.documentsRequired.length > 0) ||
+                        (step.totalFees && step.totalFees.length > 0)) && (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                          {/* Required Documents */}
+                          {step.documentsRequired && step.documentsRequired.length > 0 && (
+                            <DocumentsList documents={step.documentsRequired} />
+                          )}
 
-                        {/* Fees */}
-                        {step.totalFees && step.totalFees.length > 0 && (
-                          <FeesList key="fees" fees={step.totalFees} />
-                        )}
-                      </div>
+                          {/* Fees */}
+                          {step.totalFees && step.totalFees.length > 0 && (
+                            <FeesList fees={step.totalFees} />
+                          )}
+                        </div>
+                      )}
 
                       {/* Time Estimate */}
-                      {step.timeRequired && <TimeInfo key="time-info" time={step.timeRequired} />}
+                      {step.timeRequired && <TimeInfo time={step.timeRequired} />}
 
                       {/* Authority */}
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
-                        <AuthorityInfo key="authority-info" authority={step.responsibleAuthorities[0]} />
-                      )}
-
-                      {/* Notes */}
-                      {step.timeRequired?.remarks && (
-                        <div key="notes" className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
-                          <div className="flex items-start gap-2">
-                            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                            <div>
-                              <p className="font-medium text-amber-800 mb-1">
-                                Important Note
-                              </p>
-                              <p className="text-sm text-amber-700">
-                                {step.timeRequired.remarks}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
+                        <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
                     </div>
                   )}
@@ -333,7 +320,7 @@ function FeesList({ fees }: { fees: StepFee[] }) {
         ))}
 
         {fees.length > 1 && (
-          <div className="flex items-center justify-between p-3 rounded-lg bg-primary-blue text-white">
+          <div key="total" className="flex items-center justify-between p-3 rounded-lg bg-primary-blue text-white">
             <span className="font-medium">Total</span>
             <span className="font-bold">{formatNPR(totalFee)}</span>
           </div>
