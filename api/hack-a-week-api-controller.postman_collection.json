@@ -1,0 +1,150 @@
+{
+  "info": {
+    "_postman_id": "hack-a-week-api-collection-2026",
+    "name": "Hack-a-Week API (Controller Endpoints)",
+    "description": "Postman collection for all endpoints found in controller files.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Root",
+      "item": [
+        {
+          "name": "Hello World",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Services",
+      "item": [
+        {
+          "name": "Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/services",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "services"]
+            }
+          }
+        },
+        {
+          "name": "Get Service by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/services/:slug",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "services", ":slug"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sub-Services",
+      "item": [
+        {
+          "name": "Get Sub-Service by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/sub-services/:slug",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "sub-services", ":slug"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Locations",
+      "item": [
+        {
+          "name": "Get All Provinces",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/locations/provinces",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "locations", "provinces"]
+            }
+          }
+        },
+        {
+          "name": "Get Districts by Province",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/locations/provinces/:provinceId/districts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "locations", "provinces", ":provinceId", "districts"]
+            }
+          }
+        },
+        {
+          "name": "Get Municipalities by District",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/locations/districts/:districtId/municipalities",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "locations", "districts", ":districtId", "municipalities"]
+            }
+          }
+        },
+        {
+          "name": "Get Wards by Municipality",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/locations/municipalities/:municipalityId/wards",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "locations", "municipalities", ":municipalityId", "wards"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Offices",
+      "item": [
+        {
+          "name": "Get Specific Offices Nearby",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/nearby/:officeType",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "nearby", ":officeType"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ]
+}
