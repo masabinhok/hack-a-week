@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { OfficesService } from './offices.service.new';
+import { OfficesService } from './offices.service';
 import {
   FindOfficesByLocationDto,
   FindOfficesByTypeDto,
