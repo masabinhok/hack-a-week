@@ -5,22 +5,19 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getOffices, getProvinces } from "@/lib/api";
+import { getOffices, getProvinces, OfficeType } from "@/lib/api";
 import { BreadcrumbTrail, LocationSelector, OfficeTypeBadge } from "@/components/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import {
   Search,
   MapPin,
   Phone,
   Mail,
-  Clock,
   Building2,
   Filter,
   ChevronRight,
-  ExternalLink,
 } from "lucide-react";
 import { OFFICE_TYPES } from "@/lib/constants";
 
@@ -48,15 +45,14 @@ export default async function OfficesPage() {
     { label: "Find Offices", href: "/offices" },
   ];
 
-  // Group offices by type
-  const officesByType = offices.reduce((acc, office) => {
-    const type = office.category?.slug || "other";
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(office);
-    return acc;
-  }, {} as Record<string, typeof offices>);
+//   const officesByType = offices.reduce((acc, office) => {
+//     const type = office.category?.slug || "other";
+//     if (!acc[type]) {
+//       acc[type] = [];
+//     }
+//     acc[type].push(office);
+//     return acc;
+//   }, {} as Record<string, typeof offices>);
 
   return (
     <main className="flex-1 py-8 md:py-12">
@@ -92,7 +88,7 @@ export default async function OfficesPage() {
                 <label className="text-sm font-medium text-foreground mb-2 block">
                   Select Location
                 </label>
-                <LocationSelector provinces={provinces} />
+                {/* <LocationSelector provinces={provinces} /> */}
               </div>
 
               {/* Search */}
@@ -162,7 +158,7 @@ export default async function OfficesPage() {
                     {/* Office Type Badge */}
                     <div className="mb-3">
                       {office.category && (
-                        <OfficeTypeBadge type={office.category.slug} />
+                        <OfficeTypeBadge type={office.category.slug as OfficeType} />
                       )}
                     </div>
 
@@ -177,7 +173,7 @@ export default async function OfficesPage() {
                     )}
 
                     {/* Location */}
-                    {office.location && (
+                    {/* {office.location && (
                       <p className="text-sm text-foreground-secondary flex items-start gap-2 mb-3">
                         <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
                         <span>
@@ -186,14 +182,14 @@ export default async function OfficesPage() {
                           {office.location.ward && ` - Ward ${office.location.ward.number}`}
                         </span>
                       </p>
-                    )}
+                    )} */}
 
                     {/* Contact Info */}
                     <div className="space-y-2 mt-4 pt-4 border-t border-border">
-                      {office.phone && (
+                      {office.contact && (
                         <p className="text-xs text-foreground-secondary flex items-center gap-2">
                           <Phone className="w-3 h-3" />
-                          {office.phone}
+                          {office.contact}
                         </p>
                       )}
                       {office.email && (

@@ -14,3 +14,8 @@
 ✅ GET /api/v1/locations/provinces/:provinceId/districts
 ✅ GET /api/v1/locations/districts/:districtId/municipalities
 ✅ GET /api/v1/locations/municipalities/:municipalityId/wards
+
+
+# QUICK NOTES
+1. service ma estimated time rakhne ki?
+2. office ma location data rakhne ki 4 otai???

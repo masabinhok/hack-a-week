@@ -16,7 +16,6 @@ import {
   Code,
   Github,
   Mail,
-  ArrowRight,
   CheckCircle,
 } from "lucide-react";
 

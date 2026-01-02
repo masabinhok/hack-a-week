@@ -152,7 +152,7 @@ export default async function ServicesPage() {
                         {service.priority && (
                           <PriorityBadge priority={service.priority} size="sm" />
                         )}
-                        {service.isOnlineAvailable && (
+                        {service.isOnlineEnabled && (
                           <Badge
                             variant="secondary"
                             className="text-xs bg-green-100 text-green-700"

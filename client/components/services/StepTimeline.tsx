@@ -15,13 +15,11 @@ import {
   ChevronDown,
   ChevronUp,
   AlertCircle,
-  ExternalLink,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import type { ServiceStep, StepDocument, StepFee, StepTime } from "@/lib/types";
+import type { ServiceStep, StepDocument, StepFee, StepTime, StepAuthority } from "@/lib/types";
 import { formatNPR } from "@/lib/utils";
 
 interface StepTimelineProps {
@@ -30,11 +28,11 @@ interface StepTimelineProps {
 }
 
 export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
-  const [expandedSteps, setExpandedSteps] = useState<number[]>(
+  const [expandedSteps, setExpandedSteps] = useState<string[]>(
     steps.length > 0 ? [steps[0].id] : []
   );
 
-  const toggleStep = (stepId: number) => {
+  const toggleStep = (stepId: string) => {
     setExpandedSteps((prev) =>
       prev.includes(stepId)
         ? prev.filter((id) => id !== stepId)
@@ -84,7 +82,6 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
         <div className="space-y-6">
           {steps.map((step, index) => {
             const isExpanded = expandedSteps.includes(step.id);
-            const isLast = index === steps.length - 1;
 
             return (
               <div
@@ -120,49 +117,49 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-foreground mb-1">
-                          {step.title}
+                          {step.stepTitle}
                         </h3>
-                        {step.titleNepali && (
+                        {step.stepTitleNepali && (
                           <p className="text-sm text-foreground-muted nepali-text mb-2">
-                            {step.titleNepali}
+                            {step.stepTitleNepali}
                           </p>
                         )}
-                        {!isExpanded && step.description && (
+                        {!isExpanded && step.stepDescription && (
                           <p className="text-sm text-foreground-secondary line-clamp-2">
-                            {step.description}
+                            {step.stepDescription}
                           </p>
                         )}
 
                         {/* Quick badges */}
                         <div className="flex flex-wrap gap-2 mt-3">
-                          {step.documents && step.documents.length > 0 && (
+                          {step.documentsRequired && step.documentsRequired.length > 0 && (
                             <Badge variant="secondary" className="text-xs">
                               <FileText className="w-3 h-3 mr-1" />
-                              {step.documents.length} documents
+                              {step.documentsRequired.length} documents
                             </Badge>
                           )}
-                          {step.fees && step.fees.length > 0 && (
+                          {step.totalFees && step.totalFees.length > 0 && (
                             <Badge variant="secondary" className="text-xs">
                               <DollarSign className="w-3 h-3 mr-1" />
-                              {step.fees.length} fees
+                              {step.totalFees.length} fees
                             </Badge>
                           )}
-                          {step.time && (
+                          {step.timeRequired && (
                             <Badge variant="secondary" className="text-xs">
                               <Clock className="w-3 h-3 mr-1" />
-                              {step.time.estimatedDuration}
+                              {step.timeRequired.averageTime}
                             </Badge>
                           )}
-                          {step.authority && (
+                          {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                             <Badge variant="secondary" className="text-xs">
                               <Building2 className="w-3 h-3 mr-1" />
-                              {step.authority.name}
+                              {step.responsibleAuthorities[0].position}
                             </Badge>
                           )}
                         </div>
                       </div>
                       <ChevronDown
-                        className={`w-5 h-5 text-foreground-muted flex-shrink-0 transition-transform ${
+                        className={`w-5 h-5 text-foreground-muted shrink-0 transition-transform ${
                           isExpanded ? "rotate-180" : ""
                         }`}
                       />
@@ -173,14 +170,14 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                   {isExpanded && (
                     <div className="border-t border-border p-6 bg-surface">
                       {/* Description */}
-                      {step.description && (
+                      {step.stepDescription && (
                         <div className="mb-6">
                           <p className="text-foreground-secondary leading-relaxed">
-                            {step.description}
+                            {step.stepDescription}
                           </p>
-                          {step.descriptionNepali && (
+                          {step.stepDescriptionNepali && (
                             <p className="text-sm text-foreground-muted nepali-text mt-2">
-                              {step.descriptionNepali}
+                              {step.stepDescriptionNepali}
                             </p>
                           )}
                         </div>
@@ -188,35 +185,35 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
 
                       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Required Documents */}
-                        {step.documents && step.documents.length > 0 && (
-                          <DocumentsList documents={step.documents} />
+                        {step.documentsRequired && step.documentsRequired.length > 0 && (
+                          <DocumentsList documents={step.documentsRequired} />
                         )}
 
                         {/* Fees */}
-                        {step.fees && step.fees.length > 0 && (
-                          <FeesList fees={step.fees} />
+                        {step.totalFees && step.totalFees.length > 0 && (
+                          <FeesList fees={step.totalFees} />
                         )}
                       </div>
 
                       {/* Time Estimate */}
-                      {step.time && <TimeInfo time={step.time} />}
+                      {step.timeRequired && <TimeInfo time={step.timeRequired} />}
 
                       {/* Authority */}
-                      {step.authority && (
-                        <AuthorityInfo authority={step.authority} />
+                      {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
+                        <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
 
                       {/* Notes */}
-                      {step.notes && (
+                      {step.timeRequired?.remarks && (
                         <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
                           <div className="flex items-start gap-2">
-                            <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                             <div>
                               <p className="font-medium text-amber-800 mb-1">
                                 Important Note
                               </p>
                               <p className="text-sm text-amber-700">
-                                {step.notes}
+                                {step.timeRequired.remarks}
                               </p>
                             </div>
                           </div>
@@ -264,7 +261,7 @@ function DocumentsList({ documents }: { documents: StepDocument[] }) {
             key={doc.id}
             className="flex items-start gap-2 p-3 rounded-lg bg-background"
           >
-            <Check className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" />
+            <Check className="w-4 h-4 text-green-500 shrink-0 mt-0.5" />
             <div className="flex-1">
               <p className="text-sm font-medium text-foreground">
                 {doc.name}
@@ -274,23 +271,23 @@ function DocumentsList({ documents }: { documents: StepDocument[] }) {
                   {doc.nameNepali}
                 </p>
               )}
-              {doc.description && (
+              {doc.notes && (
                 <p className="text-xs text-foreground-secondary mt-1">
-                  {doc.description}
+                  {doc.notes}
                 </p>
               )}
               <div className="flex flex-wrap gap-2 mt-2">
-                {doc.isOriginalRequired && (
+                {doc.type === 'ORIGINAL' && (
                   <Badge variant="outline" className="text-xs">
                     Original Required
                   </Badge>
                 )}
-                {doc.copiesRequired && doc.copiesRequired > 0 && (
+                {doc.quantity > 1 && (
                   <Badge variant="outline" className="text-xs">
-                    {doc.copiesRequired} copies
+                    {doc.quantity} copies
                   </Badge>
                 )}
-                {doc.isOptional && (
+                {!doc.isMandatory && (
                   <Badge variant="secondary" className="text-xs">
                     Optional
                   </Badge>
@@ -305,7 +302,7 @@ function DocumentsList({ documents }: { documents: StepDocument[] }) {
 }
 
 function FeesList({ fees }: { fees: StepFee[] }) {
-  const totalFee = fees.reduce((sum, fee) => sum + (fee.amount || 0), 0);
+  const totalFee = fees.reduce((sum, fee) => sum + (fee.feeAmount || 0), 0);
 
   return (
     <div>
@@ -321,16 +318,16 @@ function FeesList({ fees }: { fees: StepFee[] }) {
           >
             <div>
               <p className="text-sm font-medium text-foreground">
-                {fee.title || fee.description}
+                {fee.feeTitle}
               </p>
-              {fee.titleNepali && (
+              {fee.feeTitleNepali && (
                 <p className="text-xs text-foreground-muted nepali-text">
-                  {fee.titleNepali}
+                  {fee.feeTitleNepali}
                 </p>
               )}
             </div>
             <span className="text-sm font-semibold text-foreground">
-              {formatNPR(fee.amount)}
+              {formatNPR(fee.feeAmount)}
             </span>
           </div>
         ))}
@@ -354,34 +351,34 @@ function TimeInfo({ time }: { time: StepTime }) {
         Time Estimate
       </h4>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {time.estimatedDuration && (
+        {time.averageTime && (
           <div>
-            <p className="text-xs text-blue-600">Duration</p>
+            <p className="text-xs text-blue-600">Average Duration</p>
             <p className="text-sm font-medium text-blue-900">
-              {time.estimatedDuration}
+              {time.averageTime}
             </p>
           </div>
         )}
-        {time.minDays && (
+        {time.minimumTime && (
           <div>
             <p className="text-xs text-blue-600">Minimum</p>
             <p className="text-sm font-medium text-blue-900">
-              {time.minDays} days
+              {time.minimumTime}
             </p>
           </div>
         )}
-        {time.maxDays && (
+        {time.maximumTime && (
           <div>
             <p className="text-xs text-blue-600">Maximum</p>
             <p className="text-sm font-medium text-blue-900">
-              {time.maxDays} days
+              {time.maximumTime}
             </p>
           </div>
         )}
-        {time.notes && (
+        {time.remarks && (
           <div className="col-span-2 md:col-span-4">
             <p className="text-xs text-blue-600">Note</p>
-            <p className="text-sm text-blue-800">{time.notes}</p>
+            <p className="text-sm text-blue-800">{time.remarks}</p>
           </div>
         )}
       </div>
@@ -392,7 +389,7 @@ function TimeInfo({ time }: { time: StepTime }) {
 function AuthorityInfo({
   authority,
 }: {
-  authority: { name: string; nameNepali?: string; designation?: string };
+  authority: StepAuthority;
 }) {
   return (
     <div className="mt-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
@@ -400,14 +397,17 @@ function AuthorityInfo({
         <Building2 className="w-4 h-4" />
         Responsible Authority
       </h4>
-      <p className="text-sm font-medium text-purple-900">{authority.name}</p>
-      {authority.nameNepali && (
+      <p className="text-sm font-medium text-purple-900">{authority.position}</p>
+      {authority.positionNepali && (
         <p className="text-xs text-purple-700 nepali-text">
-          {authority.nameNepali}
+          {authority.positionNepali}
         </p>
       )}
-      {authority.designation && (
-        <p className="text-xs text-purple-600 mt-1">{authority.designation}</p>
+      <p className="text-xs text-purple-600 mt-1">{authority.department}</p>
+      {authority.departmentNepali && (
+        <p className="text-xs text-purple-700 nepali-text">
+          {authority.departmentNepali}
+        </p>
       )}
     </div>
   );

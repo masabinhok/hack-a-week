@@ -112,7 +112,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                 {service.priority && (
                   <PriorityBadge priority={service.priority} />
                 )}
-                {service.isOnlineAvailable && (
+                {service.isOnlineEnabled && (
                   <Badge className="bg-green-100 text-green-700 border-green-200">
                     <Globe className="w-3 h-3 mr-1" />
                     Online Available
@@ -154,12 +154,12 @@ export default async function ServiceDetailPage({ params }: PageProps) {
               <FileText className="w-4 h-4 text-primary-blue" />
               <span>{service.steps?.length || 0} steps</span>
             </div>
-            {service.estimatedTime && (
+            {/* {service.estimatedTime && (
               <div className="flex items-center gap-2 text-sm text-foreground-secondary">
                 <Clock className="w-4 h-4 text-purple-500" />
                 <span>{service.estimatedTime}</span>
               </div>
-            )}
+            )} */}
             {offices.length > 0 && (
               <div className="flex items-center gap-2 text-sm text-foreground-secondary">
                 <Building2 className="w-4 h-4 text-amber-500" />
@@ -183,7 +183,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           <div className="lg:col-span-1">
             <ServiceSidebar
               service={service}
-              offices={offices}
+            //   offices={offices}
               className="sticky top-24"
             />
           </div>

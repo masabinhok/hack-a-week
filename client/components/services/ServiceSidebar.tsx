@@ -34,13 +34,13 @@ export function ServiceSidebar({
   // Calculate totals from steps if available
   const totalSteps = service._count?.steps || service.steps?.length || 0;
   const totalDocuments = service.steps?.reduce(
-    (sum, step) => sum + (step.documents?.length || 0),
+    (sum, step) => sum + (step.documentsRequired?.length || 0),
     0
   ) || 0;
   const totalFees = service.steps?.reduce(
     (sum, step) =>
       sum +
-      (step.fees?.reduce((feeSum, fee) => feeSum + (fee.amount || 0), 0) || 0),
+      (step.totalFees?.reduce((feeSum, fee) => feeSum + (fee.feeAmount || 0), 0) || 0),
     0
   ) || 0;
 
@@ -56,7 +56,7 @@ export function ServiceSidebar({
           <div className="flex items-center gap-3 p-3 rounded-lg bg-surface">
             <Globe
               className={`w-5 h-5 ${
-                service.isOnlineAvailable
+                service.isOnlineEnabled
                   ? "text-green-500"
                   : "text-foreground-muted"
               }`}
@@ -66,12 +66,12 @@ export function ServiceSidebar({
                 Online Application
               </p>
               <p className="text-xs text-foreground-secondary">
-                {service.isOnlineAvailable
+                {service.isOnlineEnabled
                   ? "Available online"
                   : "In-person only"}
               </p>
             </div>
-            {service.isOnlineAvailable && (
+            {service.isOnlineEnabled && (
               <Badge className="ml-auto bg-green-100 text-green-700">
                 Available
               </Badge>
@@ -122,7 +122,7 @@ export function ServiceSidebar({
           )}
 
           {/* Estimated Time */}
-          {service.estimatedTime && (
+          {/* {service.estimatedTime && (
             <div className="flex items-center gap-3 p-3 rounded-lg bg-surface">
               <Clock className="w-5 h-5 text-purple-500" />
               <div>
@@ -134,7 +134,7 @@ export function ServiceSidebar({
                 </p>
               </div>
             </div>
-          )}
+          )} */}
         </CardContent>
       </Card>
 
@@ -162,13 +162,13 @@ export function ServiceSidebar({
                     {office.nameNepali}
                   </p>
                 )}
-                {office.location && (
+                {/* {office.location && (
                   <p className="text-xs text-foreground-secondary flex items-center gap-1 mt-1">
                     <MapPin className="w-3 h-3" />
                     {office.location.municipality?.name},{" "}
                     {office.location.district?.name}
                   </p>
-                )}
+                )} */}
               </Link>
             ))}
 

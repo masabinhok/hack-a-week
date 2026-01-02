@@ -6,10 +6,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getOfficeById } from "@/lib/api";
+import { getOfficeById, OfficeType } from "@/lib/api";
 import { BreadcrumbTrail, OfficeTypeBadge } from "@/components/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   MapPin,
@@ -72,16 +71,14 @@ export default async function OfficeDetailPage({ params }: PageProps) {
     { label: office.name, href: `/offices/${id}` },
   ];
 
-  const locationParts = [
-    office.location?.ward && `Ward ${office.location.ward.number}`,
-    office.location?.municipality?.name,
-    office.location?.district?.name,
-    office.location?.province?.name,
-  ].filter(Boolean);
+//   const locationParts = [
+//     office.location?.ward && `Ward ${office.location.ward.number}`,
+//     office.location?.municipality?.name,
+//     office.location?.district?.name,
+//     office.location?.province?.name,
+//   ].filter(Boolean);
 
-  const fullAddress = office.address
-    ? `${office.address}, ${locationParts.join(", ")}`
-    : locationParts.join(", ");
+  const fullAddress = office.address;
 
   return (
     <main className="flex-1 py-8 md:py-12">
@@ -119,7 +116,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                           </p>
                         )}
                         {office.category && (
-                          <OfficeTypeBadge type={office.category.slug} />
+                          <OfficeTypeBadge type={office.category.slug as OfficeType} />
                         )}
                       </div>
                     </div>
@@ -148,7 +145,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                 </div>
 
                 {/* Location Breakdown */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {office.location?.province && (
                     <div className="p-3 bg-surface rounded-lg">
                       <p className="text-xs text-foreground-muted">
@@ -189,14 +186,14 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                       </p>
                     </div>
                   )}
-                </div>
+                </div> */}
 
                 {/* Map Actions */}
                 <div className="flex gap-3">
                   {(office.latitude && office.longitude) && (
                     <Button asChild>
                       <a
-                        href={getGoogleMapsUrl(office.latitude, office.longitude)}
+                        href={getGoogleMapsUrl(office.latitude.toString(), office.longitude)}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -223,7 +220,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {office.phone && (
+                  {office.contact && (
                     <div className="flex items-center gap-3 p-4 bg-surface rounded-lg">
                       <Phone className="w-5 h-5 text-foreground-muted" />
                       <div>
@@ -231,10 +228,10 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                           Phone
                         </p>
                         <a
-                          href={`tel:${office.phone}`}
+                          href={`tel:${office.contact}`}
                           className="text-foreground hover:text-primary-crimson"
                         >
-                          {office.phone}
+                          {office.contact}
                         </a>
                       </div>
                     </div>
@@ -276,7 +273,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                   )}
                 </div>
 
-                {!office.phone && !office.email && !office.website && (
+                {!office.contact && !office.email && !office.website && (
                   <p className="text-foreground-secondary text-center py-4">
                     No contact information available.
                   </p>
@@ -304,7 +301,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                           {hours.day}
                         </span>
                         <span className="text-foreground-secondary">
-                          {hours.isClosed
+                          {hours.isHoliday
                             ? "Closed"
                             : `${hours.openTime} - ${hours.closeTime}`}
                         </span>
@@ -319,7 +316,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Services Available */}
-            {office.services && office.services.length > 0 && (
+            {/* {office.services && office.services.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
@@ -346,7 +343,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                   )}
                 </CardContent>
               </Card>
-            )}
+            )} */}
 
             {/* Quick Actions */}
             <Card className="bg-gradient-to-br from-nepal-crimson-50 to-nepal-crimson-100 border-nepal-crimson-200">

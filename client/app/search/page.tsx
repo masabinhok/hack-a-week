@@ -129,7 +129,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-surface flex items-center justify-center text-primary-blue">
                             <CategoryIcon
                               categorySlug={
-                                service.categories?.[0]?.category?.slug || "other"
+                                service.categories?.[0]?.slug || "other"
                               }
                               className="w-6 h-6"
                             />
@@ -158,9 +158,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
                             )}
 
                             <div className="flex flex-wrap gap-2">
-                              {service.categories?.[0]?.category && (
+                              {service.categories?.[0]?.name && (
                                 <Badge variant="outline" className="text-xs">
-                                  {service.categories[0].category.name}
+                                  {service.categories[0].name}
                                 </Badge>
                               )}
                               {service.priority && (
@@ -169,7 +169,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                                   size="sm"
                                 />
                               )}
-                              {service.isOnlineAvailable && (
+                              {service.isOnlineEnabled && (
                                 <Badge
                                   variant="secondary"
                                   className="text-xs bg-green-100 text-green-700"

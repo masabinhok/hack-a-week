@@ -219,7 +219,7 @@ Returns service with all steps, documents, fees, authorities, and time estimates
     "slug": "citizenship-by-descent",
     "description": "...",
     "priority": "essential",
-    "isOnlineAvailable": false,
+    "isOnlineEnabled": false,
     "steps": [
       {
         "id": 1,
@@ -410,7 +410,7 @@ interface Service {
   slug: string;
   description?: string;
   priority?: "essential" | "common" | "specialized";
-  isOnlineAvailable?: boolean;
+  isOnlineEnabled?: boolean;
   estimatedTime?: string;
   parentId?: number;
   steps?: ServiceStep[];
