@@ -133,25 +133,25 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                         {/* Quick badges */}
                         <div className="flex flex-wrap gap-2 mt-3">
                           {step.documentsRequired && step.documentsRequired.length > 0 && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge key="docs" variant="secondary" className="text-xs">
                               <FileText className="w-3 h-3 mr-1" />
                               {step.documentsRequired.length} documents
                             </Badge>
                           )}
                           {step.totalFees && step.totalFees.length > 0 && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge key="fees" variant="secondary" className="text-xs">
                               <DollarSign className="w-3 h-3 mr-1" />
                               {step.totalFees.length} fees
                             </Badge>
                           )}
                           {step.timeRequired && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge key="time" variant="secondary" className="text-xs">
                               <Clock className="w-3 h-3 mr-1" />
                               {step.timeRequired.averageTime}
                             </Badge>
                           )}
                           {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
-                            <Badge variant="secondary" className="text-xs">
+                            <Badge key="authority" variant="secondary" className="text-xs">
                               <Building2 className="w-3 h-3 mr-1" />
                               {step.responsibleAuthorities[0].position}
                             </Badge>
@@ -171,7 +171,7 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                     <div className="border-t border-border p-6 bg-surface">
                       {/* Description */}
                       {step.stepDescription && (
-                        <div className="mb-6">
+                        <div key="description" className="mb-6">
                           <p className="text-foreground-secondary leading-relaxed">
                             {step.stepDescription}
                           </p>
@@ -183,29 +183,29 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                         </div>
                       )}
 
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div key="grid" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Required Documents */}
                         {step.documentsRequired && step.documentsRequired.length > 0 && (
-                          <DocumentsList documents={step.documentsRequired} />
+                          <DocumentsList key="documents" documents={step.documentsRequired} />
                         )}
 
                         {/* Fees */}
                         {step.totalFees && step.totalFees.length > 0 && (
-                          <FeesList fees={step.totalFees} />
+                          <FeesList key="fees" fees={step.totalFees} />
                         )}
                       </div>
 
                       {/* Time Estimate */}
-                      {step.timeRequired && <TimeInfo time={step.timeRequired} />}
+                      {step.timeRequired && <TimeInfo key="time-info" time={step.timeRequired} />}
 
                       {/* Authority */}
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
-                        <AuthorityInfo authority={step.responsibleAuthorities[0]} />
+                        <AuthorityInfo key="authority-info" authority={step.responsibleAuthorities[0]} />
                       )}
 
                       {/* Notes */}
                       {step.timeRequired?.remarks && (
-                        <div className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+                        <div key="notes" className="mt-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
                           <div className="flex items-start gap-2">
                             <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                             <div>
@@ -278,17 +278,17 @@ function DocumentsList({ documents }: { documents: StepDocument[] }) {
               )}
               <div className="flex flex-wrap gap-2 mt-2">
                 {doc.type === 'ORIGINAL' && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge key="type" variant="outline" className="text-xs">
                     Original Required
                   </Badge>
                 )}
                 {doc.quantity > 1 && (
-                  <Badge variant="outline" className="text-xs">
+                  <Badge key="quantity" variant="outline" className="text-xs">
                     {doc.quantity} copies
                   </Badge>
                 )}
                 {!doc.isMandatory && (
-                  <Badge variant="secondary" className="text-xs">
+                  <Badge key="optional" variant="secondary" className="text-xs">
                     Optional
                   </Badge>
                 )}
@@ -352,7 +352,7 @@ function TimeInfo({ time }: { time: StepTime }) {
       </h4>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {time.averageTime && (
-          <div>
+          <div key="average">
             <p className="text-xs text-blue-600">Average Duration</p>
             <p className="text-sm font-medium text-blue-900">
               {time.averageTime}
@@ -360,7 +360,7 @@ function TimeInfo({ time }: { time: StepTime }) {
           </div>
         )}
         {time.minimumTime && (
-          <div>
+          <div key="minimum">
             <p className="text-xs text-blue-600">Minimum</p>
             <p className="text-sm font-medium text-blue-900">
               {time.minimumTime}
@@ -368,7 +368,7 @@ function TimeInfo({ time }: { time: StepTime }) {
           </div>
         )}
         {time.maximumTime && (
-          <div>
+          <div key="maximum">
             <p className="text-xs text-blue-600">Maximum</p>
             <p className="text-sm font-medium text-blue-900">
               {time.maximumTime}
@@ -376,7 +376,7 @@ function TimeInfo({ time }: { time: StepTime }) {
           </div>
         )}
         {time.remarks && (
-          <div className="col-span-2 md:col-span-4">
+          <div key="remarks" className="col-span-2 md:col-span-4">
             <p className="text-xs text-blue-600">Note</p>
             <p className="text-sm text-blue-800">{time.remarks}</p>
           </div>

@@ -6,7 +6,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getServiceGuide, getOfficesForService } from "@/lib/api";
+import { getServiceBySlug, getServiceGuide } from "@/lib/api";
+import type { Service } from "@/lib/types";
 import { BreadcrumbTrail, PriorityBadge } from "@/components/shared";
 import { StepTimeline, ServiceSidebar } from "@/components/services";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +20,6 @@ import {
   ArrowLeft,
   FileText,
   Clock,
-  Building2,
 } from "lucide-react";
 
 interface PageProps {
@@ -31,7 +31,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   
   let service = null;
   try {
-    service = await getServiceGuide(slug);
+    // Use getServiceBySlug for metadata as it works for both parent and leaf services
+    service = await getServiceBySlug(slug);
   } catch {
     // Service not found
   }
@@ -42,16 +43,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const hasChildren = service.children && service.children.length > 0;
+  const descriptionSuffix = hasChildren 
+    ? `Browse available ${service.name.toLowerCase()} services in Nepal.`
+    : `Complete guide for ${service.name} in Nepal. Find required documents, fees, process steps, and office locations.`;
+
   return {
     title: service.name,
-    description:
-      service.description ||
-      `Complete guide for ${service.name} in Nepal. Find required documents, fees, process steps, and office locations.`,
+    description: service.description || descriptionSuffix,
     openGraph: {
-      title: `${service.name} - Step by Step Guide`,
+      title: `${service.name} - ${hasChildren ? 'Services' : 'Step by Step Guide'}`,
       description:
         service.description ||
-        `Learn how to apply for ${service.name} in Nepal with our comprehensive guide.`,
+        (hasChildren 
+          ? `Explore all ${service.name.toLowerCase()} services available in Nepal.`
+          : `Learn how to apply for ${service.name} in Nepal with our comprehensive guide.`),
     },
   };
 }
@@ -59,21 +65,34 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServiceDetailPage({ params }: PageProps) {
   const { slug } = await params;
 
-  // Fetch service guide and offices in parallel
-  let service = null;
-  let offices: Awaited<ReturnType<typeof getOfficesForService>> = [];
-
+  // First fetch basic service info to check if it's a leaf or parent service
+  let serviceBasic = null;
   try {
-    [service, offices] = await Promise.all([
-      getServiceGuide(slug),
-      getOfficesForService(slug),
-    ]);
+    serviceBasic = await getServiceBySlug(slug);
   } catch {
-    // Handle errors
+    notFound();
   }
 
-  if (!service) {
+  if (!serviceBasic) {
     notFound();
+  }
+
+  // Check if this is a leaf service (no children) or parent service
+  const isLeafService = !serviceBasic.children || serviceBasic.children.length === 0;
+
+  // Only fetch guide for leaf services
+  let service = null;
+
+  if (isLeafService) {
+    try {
+      service = await getServiceGuide(slug);
+    } catch {
+      // Handle errors - fallback to basic service info
+      service = serviceBasic as any;
+    }
+  } else {
+    // For parent services, use the basic info
+    service = serviceBasic as any;
   }
 
   const category = service.categories?.[0];
@@ -160,43 +179,70 @@ export default async function ServiceDetailPage({ params }: PageProps) {
                 <span>{service.estimatedTime}</span>
               </div>
             )} */}
-            {offices.length > 0 && (
-              <div className="flex items-center gap-2 text-sm text-foreground-secondary">
-                <Building2 className="w-4 h-4 text-amber-500" />
-                <span>{offices.length} offices</span>
-              </div>
-            )}
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Step Timeline */}
-          <div className="lg:col-span-2">
+        {isLeafService ? (
+          // Leaf service: Show step-by-step guide
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Step Timeline */}
+            <div className="lg:col-span-2">
+              <h2 className="text-xl font-bold text-foreground mb-6">
+                Step-by-Step Process
+              </h2>
+              <StepTimeline steps={service.steps || []} />
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <ServiceSidebar
+                service={service}
+              //   offices={offices}
+                className="sticky top-24"
+              />
+            </div>
+          </div>
+        ) : (
+          // Parent service: Show children services prominently
+          <section className="mb-12">
             <h2 className="text-xl font-bold text-foreground mb-6">
-              Step-by-Step Process
+              Available Services
             </h2>
-            <StepTimeline steps={service.steps || []} />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {service.children && service.children.map((child: Service) => (
+                <Link
+                  key={child.id}
+                  href={`/services/${child.slug}`}
+                  className="p-6 rounded-lg border border-border hover:border-primary-crimson hover:shadow-md transition-all"
+                >
+                  <p className="font-medium text-foreground mb-2">
+                    {child.name}
+                  </p>
+                  {child.nameNepali && (
+                    <p className="text-sm text-foreground-muted nepali-text">
+                      {child.nameNepali}
+                    </p>
+                  )}
+                  {child.description && (
+                    <p className="text-sm text-foreground-secondary mt-2">
+                      {child.description}
+                    </p>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <ServiceSidebar
-              service={service}
-            //   offices={offices}
-              className="sticky top-24"
-            />
-          </div>
-        </div>
-
-        {/* Related Services */}
-        {service.children && service.children.length > 0 && (
+        {/* Related Services (only for leaf services with children) */}
+        {isLeafService && service.children && service.children.length > 0 && (
           <section className="mt-16 pt-8 border-t border-border">
             <h2 className="text-xl font-bold text-foreground mb-6">
               Related Services
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {service.children.map((child) => (
+              {service.children.map((child: Service) => (
                 <Link
                   key={child.id}
                   href={`/services/${child.slug}`}
