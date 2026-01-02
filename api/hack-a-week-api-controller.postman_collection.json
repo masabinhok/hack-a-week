@@ -1,8 +1,8 @@
 {
   "info": {
     "_postman_id": "hack-a-week-api-collection-2026",
-    "name": "Hack-a-Week API (Controller Endpoints)",
-    "description": "Postman collection for all endpoints found in controller files.",
+    "name": "Setu API - Nepal Government Services",
+    "description": "Complete API for Nepal government services information including services, categories, offices, and locations.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -10,7 +10,7 @@
       "name": "Root",
       "item": [
         {
-          "name": "Hello World",
+          "name": "Health Check",
           "request": {
             "method": "GET",
             "header": [],
@@ -24,10 +24,54 @@
       ]
     },
     {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "categories"]
+            },
+            "description": "Get all service categories with service counts"
+          }
+        },
+        {
+          "name": "Get Category by Slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/categories/identity-documents",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "categories", "identity-documents"]
+            },
+            "description": "Get a single category by slug. Example: identity-documents"
+          }
+        },
+        {
+          "name": "Get Services by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/categories/identity-documents/services",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "categories", "identity-documents", "services"]
+            },
+            "description": "Get all services in a specific category"
+          }
+        }
+      ]
+    },
+    {
       "name": "Services",
       "item": [
         {
-          "name": "Get All Services",
+          "name": "Get All Root Services",
           "request": {
             "method": "GET",
             "header": [],
@@ -35,7 +79,28 @@
               "raw": "{{base_url}}/api/v1/services",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "services"]
-            }
+            },
+            "description": "Get all root (parent level) services"
+          }
+        },
+        {
+          "name": "Search Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/services/search?q=citizenship",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "services", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "citizenship",
+                  "description": "Search keyword (min 2 characters)"
+                }
+              ]
+            },
+            "description": "Search services by keyword"
           }
         },
         {
@@ -44,27 +109,37 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/services/:slug",
+              "raw": "{{base_url}}/api/v1/services/citizenship-certificate",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "services", ":slug"]
-            }
+              "path": ["api", "v1", "services", "citizenship-certificate"]
+            },
+            "description": "Get service details with children. Example: citizenship-certificate"
           }
-        }
-      ]
-    },
-    {
-      "name": "Sub-Services",
-      "item": [
+        },
         {
-          "name": "Get Sub-Service by Slug",
+          "name": "Get Service Guide (Full Details)",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/sub-services/:slug",
+              "raw": "{{base_url}}/api/v1/services/citizenship-by-descent/guide",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "sub-services", ":slug"]
-            }
+              "path": ["api", "v1", "services", "citizenship-by-descent", "guide"]
+            },
+            "description": "Get full service guide (steps, documents, fees, etc.) for leaf service"
+          }
+        },
+        {
+          "name": "Get Service Breadcrumb",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/services/citizenship-by-descent/breadcrumb",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "services", "citizenship-by-descent", "breadcrumb"]
+            },
+            "description": "Get breadcrumb trail for service navigation"
           }
         }
       ]
@@ -81,7 +156,8 @@
               "raw": "{{base_url}}/api/v1/locations/provinces",
               "host": ["{{base_url}}"],
               "path": ["api", "v1", "locations", "provinces"]
-            }
+            },
+            "description": "Get all 7 provinces of Nepal"
           }
         },
         {
@@ -90,10 +166,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/locations/provinces/:provinceId/districts",
+              "raw": "{{base_url}}/api/v1/locations/provinces/3/districts",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "locations", "provinces", ":provinceId", "districts"]
-            }
+              "path": ["api", "v1", "locations", "provinces", "3", "districts"]
+            },
+            "description": "Get all districts in a province. Example: Province 3 (Bagmati)"
           }
         },
         {
@@ -102,10 +179,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/locations/districts/:districtId/municipalities",
+              "raw": "{{base_url}}/api/v1/locations/districts/27/municipalities",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "locations", "districts", ":districtId", "municipalities"]
-            }
+              "path": ["api", "v1", "locations", "districts", "27", "municipalities"]
+            },
+            "description": "Get all municipalities in a district. Example: District 27 (Kathmandu)"
           }
         },
         {
@@ -114,10 +192,11 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/locations/municipalities/:municipalityId/wards",
+              "raw": "{{base_url}}/api/v1/locations/municipalities/1/wards",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "locations", "municipalities", ":municipalityId", "wards"]
-            }
+              "path": ["api", "v1", "locations", "municipalities", "1", "wards"]
+            },
+            "description": "Get all wards in a municipality"
           }
         }
       ]
@@ -126,15 +205,157 @@
       "name": "Offices",
       "item": [
         {
-          "name": "Get Specific Offices Nearby",
+          "name": "Get Office Types",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/v1/offices/nearby/:officeType",
+              "raw": "{{base_url}}/api/v1/offices/types",
               "host": ["{{base_url}}"],
-              "path": ["api", "v1", "offices", "nearby", ":officeType"]
-            }
+              "path": ["api", "v1", "offices", "types"]
+            },
+            "description": "Get all office types with counts"
+          }
+        },
+        {
+          "name": "Get Office Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/categories",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "categories"]
+            },
+            "description": "Get all office categories with counts"
+          }
+        },
+        {
+          "name": "Search Offices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/search?q=passport&type=PASSPORT&limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "search"],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "passport",
+                  "description": "Search keyword (required)"
+                },
+                {
+                  "key": "type",
+                  "value": "PASSPORT",
+                  "description": "Office type filter (optional)"
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Max results, default 20, max 100 (optional)"
+                }
+              ]
+            },
+            "description": "Search offices by name with optional type filter"
+          }
+        },
+        {
+          "name": "Get Offices by Location (using IDs)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/by-location?provinceId=3&districtId=27&municipalityId=1&wardId=1",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "by-location"],
+              "query": [
+                {
+                  "key": "provinceId",
+                  "value": "3",
+                  "description": "Province ID (optional)"
+                },
+                {
+                  "key": "districtId",
+                  "value": "27",
+                  "description": "District ID (optional)"
+                },
+                {
+                  "key": "municipalityId",
+                  "value": "1",
+                  "description": "Municipality ID (optional)"
+                },
+                {
+                  "key": "wardId",
+                  "value": "1",
+                  "description": "Ward ID (optional)"
+                }
+              ]
+            },
+            "description": "Get offices in a location using individual location IDs"
+          }
+        },
+        {
+          "name": "Get Offices by Location (using code)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/by-location?locationCode=3-27-001-0001",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "by-location"],
+              "query": [
+                {
+                  "key": "locationCode",
+                  "value": "3-27-001-0001",
+                  "description": "Location code in format P-DD-MMM-WWWW"
+                }
+              ]
+            },
+            "description": "Get offices in a location using location code (P-DD-MMM-WWWW format)"
+          }
+        },
+        {
+          "name": "Get Offices by Type and Location",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/by-type?officeType=WARD&provinceId=3&districtId=27",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "by-type"],
+              "query": [
+                {
+                  "key": "officeType",
+                  "value": "WARD",
+                  "description": "Office type (WARD, MUNICIPALITY, DISTRICT, PROVINCE, etc.) - required"
+                },
+                {
+                  "key": "provinceId",
+                  "value": "3",
+                  "description": "Province ID (optional)"
+                },
+                {
+                  "key": "districtId",
+                  "value": "27",
+                  "description": "District ID (optional)"
+                }
+              ]
+            },
+            "description": "Get offices of specific type near a location"
+          }
+        },
+        {
+          "name": "Get Office by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/offices/clz1a2b3c4d5e6f7g8h9i0j1k",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "offices", "clz1a2b3c4d5e6f7g8h9i0j1k"]
+            },
+            "description": "Get single office details with full coverage information"
           }
         }
       ]
