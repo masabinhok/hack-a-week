@@ -312,10 +312,10 @@ model Office {
   officeId         String     @unique
   categoryId       String
   name             String
-    nameNepali       String?
+  nameNepali       String?
   type             OfficeType
   address          String
-    addressNepali    String?
+  addressNepali    String?
   contact          String?
   alternateContact String?
   email            String?
