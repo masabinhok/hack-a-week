@@ -1,9 +1,14 @@
-'use client';
+// ============================================
+// FILE: app/error.tsx
+// DESCRIPTION: Global error boundary page
+// ============================================
 
-import { useEffect } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { AlertCircle } from 'lucide-react';
+"use client";
+
+import { useEffect } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle, RefreshCw, Home } from "lucide-react";
 
 export default function Error({
   error,
@@ -13,38 +18,53 @@ export default function Error({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error(error);
+    // Log error to error reporting service
+    console.error("Application error:", error);
   }, [error]);
 
   return (
-    <>
-      <Header />
-      <main className="flex-1 flex items-center justify-center bg-gray-50 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <AlertCircle className="w-24 h-24 text-red-600 mx-auto mb-6" />
-          <h2 className="text-4xl font-bold text-gray-900 mb-4 font-mw">
-            Something went wrong!
-          </h2>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            We encountered an error while loading this page. Please try again.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <button
-              onClick={() => reset()}
-              className="bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 py-4 rounded-lg font-semibold transition-all shadow-lg"
-            >
-              Try Again
-            </button>
-            <a
-              href="/"
-              className="bg-white hover:bg-gray-50 text-gray-900 px-8 py-4 rounded-lg font-semibold transition-all shadow-lg border border-gray-300"
-            >
-              Go Home
-            </a>
-          </div>
+    <main className="flex-1 flex items-center justify-center py-16 md:py-24">
+      <div className="container-custom text-center">
+        {/* Icon */}
+        <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center text-red-500 mx-auto mb-8">
+          <AlertTriangle className="w-12 h-12" />
         </div>
-      </main>
-      <Footer />
-    </>
+
+        {/* Content */}
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+          Something Went Wrong
+        </h1>
+        <p className="text-lg text-foreground-secondary max-w-md mx-auto mb-8">
+          We encountered an unexpected error while loading this page. Please try
+          again or return to the homepage.
+        </p>
+
+        {/* Error Details (development only) */}
+        {process.env.NODE_ENV === "development" && error.message && (
+          <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg max-w-2xl mx-auto text-left">
+            <p className="text-sm font-mono text-red-700">{error.message}</p>
+            {error.digest && (
+              <p className="text-xs text-red-500 mt-2">
+                Error ID: {error.digest}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Actions */}
+        <div className="flex flex-wrap justify-center gap-4">
+          <Button onClick={reset} size="lg">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Try Again
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <Link href="/">
+              <Home className="w-4 h-4 mr-2" />
+              Go to Homepage
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </main>
   );
 }

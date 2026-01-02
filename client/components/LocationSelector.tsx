@@ -23,7 +23,7 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
 
   const [loading, setLoading] = useState(false);
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
   const loadProvinces = async () => {
     setLoading(true);

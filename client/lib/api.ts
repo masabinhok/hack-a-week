@@ -1,220 +1,467 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+// ============================================
+// FILE: lib/api.ts
+// DESCRIPTION: Comprehensive API client for Setu platform
+// ============================================
 
-export interface Service {
-  id: string;
-  serviceId: string;
-  name: string;
-  slug: string;
-  category: string;
-  description: string;
-  eligibility: string;
-  validityPeriod?: string;
-  createdAt: string;
-  updatedAt: string;
-  subServices?: SubService[];
+import type {
+  ApiResponse,
+  Category,
+  Service,
+  ServiceWithGuide,
+  ServiceBreadcrumb,
+  Province,
+  District,
+  Municipality,
+  Ward,
+  Office,
+  OfficeForService,
+  SearchResult,
+  OfficeType,
+} from "./types";
+
+// ==================== Configuration ====================
+
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080/api/v1";
+
+// Default cache times (in seconds)
+const CACHE_TIMES = {
+  LOCATIONS: 86400, // 24 hours - locations rarely change
+  CATEGORIES: 3600, // 1 hour
+  SERVICES: 3600, // 1 hour
+  OFFICES: 1800, // 30 minutes
+  SEARCH: 0, // No cache for search
+} as const;
+
+// ==================== Base Fetch Utility ====================
+
+interface FetchOptions extends RequestInit {
+  revalidate?: number;
+  tags?: string[];
 }
 
-export interface SubService {
-  id: string;
-  serviceId: string;
-  name: string;
-  slug: string;
-  description: string;
-  priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
-  isOnlineEnabled: boolean;
-  onlinePortalUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-  serviceSteps?: ServiceStep[];
-  detailedProc?: DetailedProc;
-  offices?: SubServiceOnOffice[];
+async function fetchAPI<T>(
+  endpoint: string,
+  options: FetchOptions = {}
+): Promise<T> {
+  const { revalidate = 3600, tags, ...fetchOptions } = options;
+
+  const url = `${API_BASE_URL}${endpoint}`;
+
+  try {
+    const response = await fetch(url, {
+      ...fetchOptions,
+      next: {
+        revalidate,
+        tags,
+      },
+      headers: {
+        "Content-Type": "application/json",
+        ...fetchOptions.headers,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(`API Error [${response.status}]: ${errorText}`);
+      throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+    }
+
+    const json: ApiResponse<T> = await response.json();
+
+    if (!json.success) {
+      throw new Error(json.message || "API request failed");
+    }
+
+    return json.data as T;
+  } catch (error) {
+    console.error(`Failed to fetch ${url}:`, error);
+    throw error;
+  }
 }
 
-export interface ServiceStep {
-  id: string;
-  subServiceId: string;
-  step: number;
-  stepTitle: string;
-  stepDescription: string;
-  officeType: string;
-  requiresAppointment: boolean;
-  documentsRequired: StepDocument[];
-  totalFees: StepFee[];
-  timeRequired?: StepTimeRequired;
-  workingHours: WorkingHours[];
-  responsibleAuthorities: StepAuthority[];
-  complaintAuthorities: StepAuthority[];
-}
+// ==================== Location API Functions ====================
 
-export interface StepDocument {
-  id: number;
-  serviceStepId: string;
-  docId: string;
-  name: string;
-  nameNepali: string;
-  type: string;
-  quantity: number;
-  format: string;
-  isMandatory: boolean;
-  notes?: string;
-  relatedService?: string;
-  alternativeDocuments: string[];
-}
-
-export interface StepFee {
-  id: number;
-  serviceStepId: string;
-  feeId: string;
-  feeTitle: string;
-  feeTitleNepali?: string;
-  feeAmount: number;
-  currency: string;
-  feeType: string;
-  isRefundable: boolean;
-  applicableCondition?: string;
-  notes?: string;
-}
-
-export interface StepTimeRequired {
-  id: number;
-  serviceStepId: string;
-  minimumTime: string;
-  maximumTime: string;
-  averageTime: string;
-  remarks?: string;
-  expeditedAvailable: boolean;
-  workingDaysOnly: boolean;
-}
-
-export interface WorkingHours {
-  id: number;
-  serviceStepId: string;
-  day: string;
-  openClose: string;
-}
-
-export interface StepAuthority {
-  id: number;
-  position: string;
-  positionNepali?: string;
-  department: string;
-  contactNumber: string;
-  email?: string;
-  complaintProcess?: string;
-  isResp: boolean;
-}
-
-export interface DetailedProc {
-  id: string;
-  subServiceId: string;
-  overview: string;
-  overviewNepali?: string;
-  stepByStepGuide: string[];
-  importantNotes: string[];
-  legalReferences: Array<{ lawName: string; section: string; url: string }>;
-  faqs: Array<{ question: string; answer: string }>;
-  commonIssues: Array<{ issue: string; solution: string }>;
-}
-
-export interface SubServiceOnOffice {
-  id: string;
-  subServiceId: string;
-  officeId: string;
-  locationBased: boolean;
-  fetchFromAPI: boolean;
-  apiEndpoint?: string;
-  remarks?: string;
-}
-
-export interface Province {
-  id: number;
-  name: string;
-  nameNep?: string;
-  slug: string;
-}
-
-export interface District {
-  id: number;
-  provinceId: number;
-  name: string;
-  nameNep?: string;
-  slug: string;
-}
-
-export interface Municipality {
-  id: number;
-  districtId: number;
-  name: string;
-  nameNep?: string;
-  slug: string;
-  type: string;
-}
-
-export interface Ward {
-  id: number;
-  municipalityId: number;
-  wardNumber: number;
-}
-
-export async function getAllServices(): Promise<Service[]> {
-  const res = await fetch(`${API_BASE_URL}/services`, {
-    next: { revalidate: 3600 }
+/**
+ * Get all provinces of Nepal
+ */
+export async function getProvinces(): Promise<Province[]> {
+  return fetchAPI<Province[]>("/locations/provinces", {
+    revalidate: CACHE_TIMES.LOCATIONS,
+    tags: ["provinces"],
   });
-  if (!res.ok) throw new Error('Failed to fetch services');
-  const json = await res.json();
-  return json.data || json;
 }
 
+/**
+ * Get all districts in a province
+ */
+export async function getDistrictsByProvince(
+  provinceId: number
+): Promise<District[]> {
+  return fetchAPI<District[]>(`/locations/provinces/${provinceId}/districts`, {
+    revalidate: CACHE_TIMES.LOCATIONS,
+    tags: ["districts", `province-${provinceId}`],
+  });
+}
+
+/**
+ * Get all municipalities in a district
+ */
+export async function getMunicipalitiesByDistrict(
+  districtId: number
+): Promise<Municipality[]> {
+  return fetchAPI<Municipality[]>(
+    `/locations/districts/${districtId}/municipalities`,
+    {
+      revalidate: CACHE_TIMES.LOCATIONS,
+      tags: ["municipalities", `district-${districtId}`],
+    }
+  );
+}
+
+/**
+ * Get all wards in a municipality
+ */
+export async function getWardsByMunicipality(
+  municipalityId: number
+): Promise<Ward[]> {
+  return fetchAPI<Ward[]>(
+    `/locations/municipalities/${municipalityId}/wards`,
+    {
+      revalidate: CACHE_TIMES.LOCATIONS,
+      tags: ["wards", `municipality-${municipalityId}`],
+    }
+  );
+}
+
+// ==================== Category API Functions ====================
+
+/**
+ * Categories response from API
+ */
+interface CategoriesResponse {
+  categories: Category[];
+  total: number;
+}
+
+/**
+ * Get all service categories
+ */
+export async function getCategories(): Promise<Category[]> {
+  const result = await fetchAPI<CategoriesResponse>("/categories", {
+    revalidate: CACHE_TIMES.CATEGORIES,
+    tags: ["categories"],
+  });
+  return result.categories;
+}
+
+/**
+ * Get a single category by slug
+ */
+export async function getCategoryBySlug(slug: string): Promise<Category> {
+  return fetchAPI<Category>(`/categories/${slug}`, {
+    revalidate: CACHE_TIMES.CATEGORIES,
+    tags: ["categories", `category-${slug}`],
+  });
+}
+
+/**
+ * Get all services in a category
+ */
+interface ServicesByCategoryResponse {
+  category: { id: string; name: string; slug: string };
+  services: Service[];
+  total: number;
+}
+
+export async function getServicesByCategory(
+  categorySlug: string
+): Promise<Service[]> {
+  const result = await fetchAPI<ServicesByCategoryResponse>(`/categories/${categorySlug}/services`, {
+    revalidate: CACHE_TIMES.SERVICES,
+    tags: ["services", `category-${categorySlug}`],
+  });
+  return result.services;
+}
+
+// ==================== Service API Functions ====================
+
+/**
+ * Root services response from API
+ */
+interface RootServicesResponse {
+  services: Service[];
+  total: number;
+}
+
+/**
+ * Get all root services (level 0)
+ */
+export async function getRootServices(): Promise<Service[]> {
+  const result = await fetchAPI<RootServicesResponse>("/services", {
+    revalidate: CACHE_TIMES.SERVICES,
+    tags: ["services", "root-services"],
+  });
+  return result.services;
+}
+
+/**
+ * Get a service by slug with its children
+ */
 export async function getServiceBySlug(slug: string): Promise<Service> {
-  const res = await fetch(`${API_BASE_URL}/services/${slug}`, {
-    next: { revalidate: 3600 }
+  return fetchAPI<Service>(`/services/${slug}`, {
+    revalidate: CACHE_TIMES.SERVICES,
+    tags: ["services", `service-${slug}`],
   });
-  if (!res.ok) throw new Error('Failed to fetch service');
-  const json = await res.json();
-  return json.data || json;
 }
 
-export async function getSubServiceBySlug(slug: string): Promise<SubService> {
-  const res = await fetch(`${API_BASE_URL}/sub-services/${slug}`, {
-    next: { revalidate: 3600 }
+/**
+ * Get complete step-by-step guide for a leaf service
+ */
+export async function getServiceGuide(slug: string): Promise<ServiceWithGuide> {
+  return fetchAPI<ServiceWithGuide>(`/services/${slug}/guide`, {
+    revalidate: CACHE_TIMES.SERVICES,
+    tags: ["services", "guides", `guide-${slug}`],
   });
-  if (!res.ok) throw new Error('Failed to fetch sub-service');
-  const json = await res.json();
-  return json.data || json;
 }
 
-export async function getAllProvinces(): Promise<Province[]> {
-  const res = await fetch(`${API_BASE_URL}/locations/provinces`, {
-    next: { revalidate: 86400 }
+/**
+ * Get breadcrumb hierarchy for a service
+ */
+export async function getServiceBreadcrumb(
+  slug: string
+): Promise<ServiceBreadcrumb[]> {
+  return fetchAPI<ServiceBreadcrumb[]>(`/services/${slug}/breadcrumb`, {
+    revalidate: CACHE_TIMES.SERVICES,
+    tags: ["services", `breadcrumb-${slug}`],
   });
-  if (!res.ok) throw new Error('Failed to fetch provinces');
-  const json = await res.json();
-  return json.data || json;
 }
 
-export async function getDistrictsByProvince(provinceId: number): Promise<District[]> {
-  const res = await fetch(`${API_BASE_URL}/locations/provinces/${provinceId}/districts`, {
-    next: { revalidate: 86400 }
+/**
+ * Search services by keyword
+ */
+export async function searchServices(query: string): Promise<Service[]> {
+  const encodedQuery = encodeURIComponent(query);
+  return fetchAPI<Service[]>(`/services/search?q=${encodedQuery}`, {
+    revalidate: CACHE_TIMES.SEARCH,
   });
-  if (!res.ok) throw new Error('Failed to fetch districts');
-  const json = await res.json();
-  return json.data || json;
 }
 
-export async function getMunicipalitiesByDistrict(districtId: number): Promise<Municipality[]> {
-  const res = await fetch(`${API_BASE_URL}/locations/districts/${districtId}/municipalities`, {
-    next: { revalidate: 86400 }
+// ==================== Office API Functions ====================
+
+/**
+ * Get offices for a service based on location
+ */
+export async function getOfficesForService(
+  serviceSlug: string,
+  options?: {
+    wardId?: number;
+    municipalityId?: number;
+    districtId?: number;
+  }
+): Promise<OfficeForService[]> {
+  const params = new URLSearchParams();
+  if (options?.wardId) params.append("wardId", options.wardId.toString());
+  if (options?.municipalityId)
+    params.append("municipalityId", options.municipalityId.toString());
+  if (options?.districtId)
+    params.append("districtId", options.districtId.toString());
+
+  const queryString = params.toString();
+  const endpoint = `/offices/for-service/${serviceSlug}${queryString ? `?${queryString}` : ""}`;
+
+  return fetchAPI<OfficeForService[]>(endpoint, {
+    revalidate: CACHE_TIMES.OFFICES,
+    tags: ["offices", `offices-${serviceSlug}`],
   });
-  if (!res.ok) throw new Error('Failed to fetch municipalities');
-  const json = await res.json();
-  return json.data || json;
 }
 
-export async function getWardsByMunicipality(municipalityId: number): Promise<Ward[]> {
-  const res = await fetch(`${API_BASE_URL}/locations/municipalities/${municipalityId}/wards`, {
-    next: { revalidate: 86400 }
+/**
+ * Get office by ID
+ */
+export async function getOfficeById(officeId: string): Promise<Office> {
+  return fetchAPI<Office>(`/offices/${officeId}`, {
+    revalidate: CACHE_TIMES.OFFICES,
+    tags: ["offices", `office-${officeId}`],
   });
-  if (!res.ok) throw new Error('Failed to fetch wards');
-  const json = await res.json();
-  return json.data || json;
 }
+
+/**
+ * Offices response from API
+ */
+interface OfficesResponse {
+  offices: Office[];
+  total: number;
+}
+
+/**
+ * Get offices by location
+ */
+export async function getOffices(filters?: {
+  provinceId?: number;
+  districtId?: number;
+  municipalityId?: number;
+  wardId?: number;
+  locationCode?: string;
+}): Promise<Office[]> {
+  const params = new URLSearchParams();
+  if (filters?.provinceId)
+    params.append("provinceId", filters.provinceId.toString());
+  if (filters?.districtId)
+    params.append("districtId", filters.districtId.toString());
+  if (filters?.municipalityId)
+    params.append("municipalityId", filters.municipalityId.toString());
+  if (filters?.wardId) params.append("wardId", filters.wardId.toString());
+  if (filters?.locationCode) params.append("locationCode", filters.locationCode);
+
+  const queryString = params.toString();
+  
+  // If no filters, return empty array (API requires at least one location param)
+  if (!queryString) {
+    return [];
+  }
+  
+  const endpoint = `/offices/by-location?${queryString}`;
+
+  const result = await fetchAPI<OfficesResponse>(endpoint, {
+    revalidate: CACHE_TIMES.OFFICES,
+    tags: ["offices"],
+  });
+  return result.offices;
+}
+
+/**
+ * Get office types
+ */
+export async function getOfficeTypes(): Promise<{ type: string; count: number }[]> {
+  const result = await fetchAPI<{ types: { type: string; count: number }[] }>("/offices/types", {
+    revalidate: CACHE_TIMES.OFFICES,
+    tags: ["office-types"],
+  });
+  return result.types;
+}
+
+/**
+ * Search offices
+ */
+export async function searchOffices(
+  query: string,
+  options?: { type?: string; limit?: number }
+): Promise<Office[]> {
+  const params = new URLSearchParams({ q: query });
+  if (options?.type) params.append("type", options.type);
+  if (options?.limit) params.append("limit", options.limit.toString());
+
+  const result = await fetchAPI<OfficesResponse>(`/offices/search?${params}`, {
+    revalidate: CACHE_TIMES.SEARCH,
+    tags: ["offices-search"],
+  });
+  return result.offices;
+}
+
+// ==================== Search API Functions ====================
+
+/**
+ * Global search across services, categories, and offices
+ */
+export async function globalSearch(query: string): Promise<SearchResult> {
+  // Parallel search across different endpoints
+  const [services] = await Promise.all([
+    searchServices(query).catch(() => [] as Service[]),
+  ]);
+
+  return {
+    services,
+    categories: [],
+    offices: [],
+  };
+}
+
+// ==================== Utility Functions ====================
+
+/**
+ * Format Nepali currency
+ */
+export function formatNPR(amount: number): string {
+  return `NPR ${amount.toLocaleString("en-NP")}`;
+}
+
+/**
+ * Get priority color class
+ */
+export function getPriorityColor(
+  priority: "HIGH" | "MEDIUM" | "LOW"
+): string {
+  const colors = {
+    HIGH: "bg-red-100 text-red-700 border-red-200",
+    MEDIUM: "bg-amber-100 text-amber-700 border-amber-200",
+    LOW: "bg-green-100 text-green-700 border-green-200",
+  };
+  return colors[priority] || colors.LOW;
+}
+
+/**
+ * Get office type display name
+ */
+export function getOfficeTypeName(type: OfficeType): string {
+  const names: Record<OfficeType, string> = {
+    WARD_OFFICE: "Ward Office",
+    MUNICIPALITY: "Municipality Office",
+    DISTRICT_ADMIN_OFFICE: "District Administration Office",
+    LAND_REVENUE: "Land Revenue Office",
+    SURVEY_OFFICE: "Survey Office",
+    PASSPORT_OFFICE: "Passport Office",
+    TRANSPORT_OFFICE: "Transport Office",
+    BANK: "Bank",
+    COURT: "Court",
+    POLICE: "Police Station",
+    OTHER: "Other Office",
+  };
+  return names[type] || type;
+}
+
+/**
+ * Get office type display name in Nepali
+ */
+export function getOfficeTypeNameNepali(type: OfficeType): string {
+  const names: Record<OfficeType, string> = {
+    WARD_OFFICE: "वडा कार्यालय",
+    MUNICIPALITY: "नगरपालिका कार्यालय",
+    DISTRICT_ADMIN_OFFICE: "जिल्ला प्रशासन कार्यालय",
+    LAND_REVENUE: "मालपोत कार्यालय",
+    SURVEY_OFFICE: "नापी कार्यालय",
+    PASSPORT_OFFICE: "राहदानी कार्यालय",
+    TRANSPORT_OFFICE: "यातायात कार्यालय",
+    BANK: "बैंक",
+    COURT: "अदालत",
+    POLICE: "प्रहरी कार्यालय",
+    OTHER: "अन्य कार्यालय",
+  };
+  return names[type] || type;
+}
+
+/**
+ * Format time duration for display
+ */
+export function formatDuration(duration: string): string {
+  // Convert ISO duration or time string to readable format
+  return duration;
+}
+
+// ==================== Re-export types ====================
+
+export type {
+  ApiResponse,
+  Category,
+  Service,
+  ServiceWithGuide,
+  ServiceBreadcrumb,
+  Province,
+  District,
+  Municipality,
+  Ward,
+  Office,
+  OfficeForService,
+  SearchResult,
+  OfficeType,
+} from "./types";

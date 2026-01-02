@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Merriweather, Inter } from "next/font/google";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import "./globals.css";
 
 // Primary font for body text (serif for government/formal feel)
@@ -74,8 +76,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${merriweather.variable} ${inter.variable}`}>
-      <body className="font-sans antialiased min-h-screen flex flex-col bg-gray-50">
+      <body className="antialiased min-h-screen flex flex-col bg-background text-foreground">
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
