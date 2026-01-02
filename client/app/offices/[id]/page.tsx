@@ -66,7 +66,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
   }
 
   const breadcrumbs = [
-    { label: "Home", href: "/" },
+
     { label: "Find Offices", href: "/offices" },
     { label: office.name, href: `/offices/${id}` },
   ];

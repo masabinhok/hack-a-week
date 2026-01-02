@@ -47,7 +47,6 @@ export default async function SearchPage({ searchParams }: PageProps) {
   }
 
   const breadcrumbs = [
-    { label: "Home", href: "/" },
     { label: "Search", href: "/search" },
   ];
 

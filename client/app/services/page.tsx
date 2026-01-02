@@ -47,7 +47,6 @@ export default async function ServicesPage() {
   }, {} as Record<string, { name: string; services: typeof services }>);
 
   const breadcrumbs = [
-    { label: "Home", href: "/" },
     { label: "Services", href: "/services" },
   ];
 

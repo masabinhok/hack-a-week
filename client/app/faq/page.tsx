@@ -157,7 +157,6 @@ const FAQ_CATEGORIES = [
 
 export default function FAQPage() {
   const breadcrumbs = [
-    { label: "Home", href: "/" },
     { label: "FAQ", href: "/faq" },
   ];
 

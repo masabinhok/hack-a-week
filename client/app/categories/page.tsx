@@ -28,7 +28,6 @@ export default async function CategoriesPage() {
   }
 
   const breadcrumbs = [
-    { label: "Home", href: "/" },
     { label: "Categories", href: "/categories" },
   ];
 

@@ -41,7 +41,7 @@ export default async function OfficesPage() {
   }
 
   const breadcrumbs = [
-    { label: "Home", href: "/" },
+
     { label: "Find Offices", href: "/offices" },
   ];
 

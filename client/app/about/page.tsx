@@ -67,7 +67,6 @@ const VALUES = [
 
 export default function AboutPage() {
   const breadcrumbs = [
-    { label: "Home", href: "/" },
     { label: "About", href: "/about" },
   ];
 
