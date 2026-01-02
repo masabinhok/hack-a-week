@@ -92,6 +92,13 @@ export class LocationCodeUtil {
   }
 
   /**
+   * Alias for decode() - parse location code into IDs
+   */
+  static parse(locationCode: string): ParsedLocation | null {
+    return this.decode(locationCode);
+  }
+
+  /**
    * Check if two location codes are in same jurisdiction level
    */
   static isSameProvince(code1: string, code2: string): boolean {

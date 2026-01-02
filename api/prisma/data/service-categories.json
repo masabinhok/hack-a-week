@@ -1,0 +1,54 @@
+[
+  {
+    "serviceSlug": "citizenship-services",
+    "categorySlug": "identity-citizenship"
+  },
+  {
+    "serviceSlug": "new-citizenship-certificate",
+    "categorySlug": "identity-citizenship"
+  },
+  {
+    "serviceSlug": "citizenship-by-descent",
+    "categorySlug": "identity-citizenship"
+  },
+  {
+    "serviceSlug": "citizenship-by-naturalization",
+    "categorySlug": "identity-citizenship"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "categorySlug": "identity-citizenship"
+  },
+  {
+    "serviceSlug": "civil-registration",
+    "categorySlug": "civil-registration"
+  },
+  {
+    "serviceSlug": "birth-registration",
+    "categorySlug": "civil-registration"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "categorySlug": "civil-registration"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "categorySlug": "civil-registration"
+  },
+  {
+    "serviceSlug": "passport-services",
+    "categorySlug": "travel-documents"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "categorySlug": "travel-documents"
+  },
+  {
+    "serviceSlug": "passport-renewal",
+    "categorySlug": "travel-documents"
+  },
+  {
+    "serviceSlug": "lost-passport-replacement",
+    "categorySlug": "travel-documents"
+  }
+]

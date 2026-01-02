@@ -1,0 +1,128 @@
+[
+  {
+    "name": "District Administration Office",
+    "slug": "district-administration-office",
+    "type": "DISTRICT_ADMINISTRATION_OFFICE",
+    "description": "District Administration Office (DAO) - Primary office for citizenship, recommendations, certificates, and district-level administration",
+    "descriptionNepali": "जिल्ला प्रशासन कार्यालय - नागरिकता, सिफारिस, प्रमाणपत्र र जिल्लास्तरीय प्रशासनको प्राथमिक कार्यालय",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["citizenship-certificates", "recommendations", "civil-registration-verification"]
+  },
+  {
+    "name": "Land Revenue Office",
+    "slug": "land-revenue-office",
+    "type": "LAND_REVENUE_OFFICE",
+    "description": "Land Revenue Office (Malpot) - Land registration, ownership transfer, and revenue collection",
+    "descriptionNepali": "मालपोत कार्यालय - जग्गा दर्ता, स्वामित्व हस्तान्तरण र राजस्व संकलन",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["land-registration", "ownership-transfer", "land-tax"]
+  },
+  {
+    "name": "District Education Office",
+    "slug": "district-education-office",
+    "type": "DISTRICT_EDUCATION_OFFICE",
+    "description": "District Education Office - SEE/SLC verification, certificate attestation, and educational services",
+    "descriptionNepali": "जिल्ला शिक्षा कार्यालय - एसईई/एसएलसी प्रमाणीकरण, प्रमाणपत्र प्रमाणीकरण र शैक्षिक सेवाहरू",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["certificate-verification", "attestation", "scholarship"]
+  },
+  {
+    "name": "Transport Management Office",
+    "slug": "transport-management-office",
+    "type": "TRANSPORT_MANAGEMENT_OFFICE",
+    "description": "Transport Management Office - Vehicle registration, blue book, route permits",
+    "descriptionNepali": "यातायात व्यवस्था कार्यालय - सवारी साधन दर्ता, नीलपुस्तिका, रुट अनुमति",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["vehicle-registration", "blue-book", "route-permit"]
+  },
+  {
+    "name": "Driving License Office",
+    "slug": "driving-license-office",
+    "type": "DRIVING_LICENSE_OFFICE",
+    "description": "Driving License Office - License tests, issuance, and renewals",
+    "descriptionNepali": "सवारी चालक अनुमतिपत्र कार्यालय - लाइसेन्स परीक्षा, जारी र नवीकरण",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["driving-license-new", "driving-license-renewal", "license-test"]
+  },
+  {
+    "name": "Municipality Office",
+    "slug": "municipality-office",
+    "type": "MUNICIPALITY_OFFICE",
+    "description": "Municipality Office (Nagarpalika) - Urban local government services, business tax, building permits",
+    "descriptionNepali": "नगरपालिका कार्यालय - शहरी स्थानीय सरकारी सेवाहरू, व्यापार कर, भवन अनुमति",
+    "jurisdictionLevel": "MUNICIPALITY",
+    "typicalServices": ["business-registration", "building-permit", "local-tax"]
+  },
+  {
+    "name": "Rural Municipality Office",
+    "slug": "rural-municipality-office",
+    "type": "RURAL_MUNICIPALITY_OFFICE",
+    "description": "Rural Municipality Office (Gaupalika) - Rural local government services",
+    "descriptionNepali": "गाउँपालिका कार्यालय - ग्रामीण स्थानीय सरकारी सेवाहरू",
+    "jurisdictionLevel": "MUNICIPALITY",
+    "typicalServices": ["business-registration", "local-recommendations", "rural-development"]
+  },
+  {
+    "name": "Ward Office",
+    "slug": "ward-office",
+    "type": "WARD_OFFICE",
+    "description": "Ward Office - First point of contact for most services, recommendations, birth/death registration",
+    "descriptionNepali": "वडा कार्यालय - अधिकांश सेवाहरूको पहिलो सम्पर्क बिन्दु, सिफारिस, जन्म/मृत्यु दर्ता",
+    "jurisdictionLevel": "WARD",
+    "typicalServices": ["birth-registration", "death-registration", "ward-recommendation", "business-registration"]
+  },
+  {
+    "name": "Passport Office",
+    "slug": "passport-office",
+    "type": "PASSPORT_OFFICE",
+    "description": "Department of Passport - Passport applications, renewals, and MRP issuance",
+    "descriptionNepali": "राहदानी विभाग - राहदानी आवेदन, नवीकरण र एमआरपी जारी",
+    "jurisdictionLevel": "SPECIAL",
+    "typicalServices": ["passport-new", "passport-renewal", "passport-lost"]
+  },
+  {
+    "name": "Immigration Office",
+    "slug": "immigration-office",
+    "type": "IMMIGRATION_OFFICE",
+    "description": "Department of Immigration - Visa services, travel permits, immigration clearance",
+    "descriptionNepali": "अध्यागमन विभाग - भिसा सेवा, यात्रा अनुमति, अध्यागमन मञ्जुरी",
+    "jurisdictionLevel": "SPECIAL",
+    "typicalServices": ["visa-extension", "travel-permit", "immigration-clearance"]
+  },
+  {
+    "name": "Office of Company Registrar",
+    "slug": "office-company-registrar",
+    "type": "OFFICE_OF_COMPANY_REGISTRAR",
+    "description": "Office of Company Registrar (OCR) - Company registration via e-OCR/CAMIS system",
+    "descriptionNepali": "कम्पनी रजिस्ट्रारको कार्यालय - ई-ओसीआर/क्यामिस प्रणालीमार्फत कम्पनी दर्ता",
+    "jurisdictionLevel": "FEDERAL",
+    "typicalServices": ["company-registration", "company-renewal", "name-reservation"]
+  },
+  {
+    "name": "Cottage & Small Industry Office",
+    "slug": "cottage-small-industry-office",
+    "type": "COTTAGE_SMALL_INDUSTRY_OFFICE",
+    "description": "District Cottage & Small Industry Office (DCSI) - Small business and cottage industry registration",
+    "descriptionNepali": "जिल्ला घरेलु तथा साना उद्योग कार्यालय - साना व्यापार र घरेलु उद्योग दर्ता",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["industry-registration", "cottage-industry-permit"]
+  },
+  {
+    "name": "Inland Revenue Office",
+    "slug": "inland-revenue-office",
+    "type": "INLAND_REVENUE_OFFICE",
+    "description": "Inland Revenue Office (IRD) - PAN/VAT registration, tax filing, tax clearance",
+    "descriptionNepali": "आन्तरिक राजस्व कार्यालय - प्यान/भ्याट दर्ता, कर दाखिला, कर चुक्ता",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["pan-registration", "vat-registration", "tax-filing", "tax-clearance"]
+  },
+  {
+    "name": "Labour Office",
+    "slug": "labour-office",
+    "type": "LABOUR_OFFICE",
+    "description": "Labour Office - Foreign employment services, work permits, labor disputes",
+    "descriptionNepali": "श्रम कार्यालय - वैदेशिक रोजगार सेवा, कार्य अनुमति, श्रम विवाद",
+    "jurisdictionLevel": "DISTRICT",
+    "typicalServices": ["labor-permit", "foreign-employment", "labor-dispute"]
+  }
+]

@@ -1,70 +1,272 @@
 [
   {
-    "subServiceSlug": "new-citizenship-certificate",
-    "overview": "Obtaining a citizenship certificate is a multi-step process that requires visiting your local ward office and district administration office. The entire process typically takes 10-15 days.",
-    "overviewNepali": "नागरिकता प्रमाणपत्र प्राप्त गर्न तपाईंले आफ्नो स्थानीय वडा कार्यालय र जिल्ला प्रशासन कार्यालयमा जानु पर्छ। सम्पूर्ण प्रक्रिया सामान्यतया १०-१५ दिन लाग्छ।",
+    "serviceSlug": "citizenship-by-descent",
+    "overview": "Obtaining a citizenship certificate by descent is a multi-step process that involves your local ward office and the District Administration Office (DAO). This is the most common type of citizenship for Nepali nationals whose parents are citizens of Nepal.",
+    "overviewNepali": "वंशजको आधारमा नागरिकता प्रमाणपत्र प्राप्त गर्नु एक बहु-चरण प्रक्रिया हो जसमा तपाईंको स्थानीय वडा कार्यालय र जिल्ला प्रशासन कार्यालय (जिप्रका) समावेश छ। यो नेपाली नागरिकहरूका लागि सबैभन्दा सामान्य प्रकारको नागरिकता हो जसका अभिभावकहरू नेपालका नागरिक हुन्।",
     "stepByStepGuide": [
-      "Collect your birth certificate and parents' citizenship photocopies",
-      "Visit your local ward office during working hours",
-      "Fill out the recommendation form at the ward office",
-      "Pay NPR 100 fee and obtain recommendation letter",
-      "Take 4 passport-size photos (red background)",
-      "Visit the District Administration Office with all documents",
-      "Fill out the citizenship application form (Form 1)",
-      "Submit documents and pay NPR 500 fee",
+      "Gather all required documents: birth certificate, parents' citizenship copies, and passport photos",
+      "Visit your local ward office during working hours (Sunday-Friday, 10 AM onwards)",
+      "Request a recommendation letter (सिफारिस पत्र) for citizenship",
+      "Ward secretary will verify your documents and residence",
+      "Obtain the sealed recommendation letter - valid for 35 days",
+      "Visit the District Administration Office (DAO) of your permanent residence",
+      "Fill out Form 1 (नागरिकता फाराम नं. १) - available at DAO",
+      "Submit all documents at the citizenship section counter",
+      "Pay Rs. 10 government fee",
+      "Provide biometric data (fingerprints) and have photo taken",
       "Receive acknowledgment receipt with collection date",
-      "Return to DAO on specified date to collect certificate"
+      "Return on specified date (7-15 days) to collect your citizenship certificate"
     ],
     "importantNotes": [
       "Applicant must be at least 16 years old",
       "Both parents must be Nepali citizens for citizenship by descent",
-      "Late registration of birth may require additional documentation",
-      "Bring original documents for verification, photocopies will be submitted",
+      "Father or guardian should accompany applicant to DAO for identity verification",
+      "Ward recommendation is valid for only 35 days - plan your DAO visit accordingly",
       "Friday office hours are shorter (closes at 3 PM)",
-      "Public holidays and Saturdays are closed"
+      "Bring original documents along with photocopies for verification",
+      "Government offices are closed on Saturdays and public holidays",
+      "Peak season (election periods, fiscal year end) may cause longer delays"
     ],
     "legalReferences": [
       {
         "lawName": "Nepal Citizenship Act, 2063 (2006)",
-        "section": "Section 3",
+        "lawNameNepali": "नेपाल नागरिकता ऐन, २०६३",
+        "section": "Section 3 - Citizenship by Descent",
         "url": "https://www.lawcommission.gov.np"
       },
       {
-        "lawName": "Citizenship Regulations, 2063",
-        "section": "Chapter 2",
-        "url": "https://www.mohp.gov.np"
+        "lawName": "Citizenship Rules, 2063 (2006)",
+        "lawNameNepali": "नागरिकता नियमावली, २०६३",
+        "section": "Chapter 2 - Procedures",
+        "url": "https://www.lawcommission.gov.np"
+      },
+      {
+        "lawName": "Constitution of Nepal, 2072",
+        "lawNameNepali": "नेपालको संविधान, २०७२",
+        "section": "Article 11 - Citizenship",
+        "url": "https://www.lawcommission.gov.np"
       }
     ],
     "faqs": [
       {
-        "question": "What if my birth registration was delayed?",
-        "answer": "You need to obtain a late birth registration certificate from the ward office first, with supporting documents like school certificates or immunization cards."
+        "question": "What is the minimum age to apply for citizenship?",
+        "questionNepali": "नागरिकताको लागि आवेदन दिन न्यूनतम उमेर कति हो?",
+        "answer": "You must be at least 16 years old to apply for citizenship certificate in Nepal.",
+        "answerNepali": "नेपालमा नागरिकता प्रमाणपत्रको लागि आवेदन दिन कम्तीमा १६ वर्ष उमेर पुगेको हुनुपर्छ।"
       },
       {
-        "question": "Can I apply if one parent is not a Nepali citizen?",
-        "answer": "If born before 2006, you can get citizenship if either parent is Nepali. If born after 2006, both parents must be Nepali for citizenship by descent."
+        "question": "What if my birth was not registered within 35 days?",
+        "questionNepali": "मेरो जन्म ३५ दिनभित्र दर्ता नगरिएको खण्डमा के गर्ने?",
+        "answer": "You'll need to obtain a late birth registration first. This requires supporting documents like school certificates, immunization cards, or witness statements. Visit your ward office with these documents.",
+        "answerNepali": "तपाईंले पहिले ढिलो जन्म दर्ता गराउनु पर्नेछ। यसको लागि विद्यालयको प्रमाणपत्र, खोप कार्ड वा साक्षीको बयान जस्ता सहयोगी कागजातहरू आवश्यक छ। यी कागजातहरू लिएर आफ्नो वडा कार्यालयमा जानुहोस्।"
+      },
+      {
+        "question": "Can I apply if only one parent is a Nepali citizen?",
+        "questionNepali": "एक जना अभिभावक मात्र नेपाली नागरिक भएमा आवेदन दिन सकिन्छ?",
+        "answer": "Yes, under the current law, if either your father or mother was a Nepali citizen at the time of your birth, you are eligible for citizenship by descent.",
+        "answerNepali": "हो, हालको कानून अनुसार, तपाईंको जन्म हुँदाको समयमा बाबु वा आमा मध्ये कुनै एक नेपाली नागरिक भएमा, तपाईं वंशजको आधारमा नागरिकताको लागि योग्य हुनुहुन्छ।"
       },
       {
         "question": "How long is the citizenship certificate valid?",
-        "answer": "The citizenship certificate is valid for lifetime and does not require renewal."
+        "questionNepali": "नागरिकता प्रमाणपत्र कति समयसम्म मान्य हुन्छ?",
+        "answer": "The citizenship certificate is valid for lifetime and does not require renewal. However, if lost or damaged, you'll need to apply for a duplicate.",
+        "answerNepali": "नागरिकता प्रमाणपत्र जीवनभर मान्य हुन्छ र नवीकरण आवश्यक पर्दैन। तर, हराएको वा बिग्रेको खण्डमा प्रतिलिपिको लागि आवेदन दिनुपर्छ।"
       },
       {
-        "question": "What if I lose my citizenship certificate?",
-        "answer": "You can apply for a duplicate citizenship certificate at the same DAO with a police complaint report and newspaper publication."
+        "question": "Can I apply at any DAO or only my home district?",
+        "questionNepali": "कुनै पनि जिप्रकामा आवेदन दिन सकिन्छ वा गृह जिल्लामा मात्र?",
+        "answer": "You must apply at the DAO of your permanent residence district. Your ward recommendation must also be from your permanent residence ward.",
+        "answerNepali": "तपाईंले आफ्नो स्थायी बसोबासको जिल्लाको जिप्रकामा आवेदन दिनुपर्छ। तपाईंको वडा सिफारिस पनि तपाईंको स्थायी बसोबासको वडाबाट हुनुपर्छ।"
       }
     ],
     "commonIssues": [
       {
         "issue": "Ward office refuses to provide recommendation",
-        "solution": "Ensure all documents are complete. If still refused, you can file a complaint with the ward chairperson or municipality office."
+        "issueNepali": "वडा कार्यालयले सिफारिस दिन अस्वीकार गरेको",
+        "solution": "Ensure all documents are complete and correct. If refused without valid reason, ask for written explanation. You can file complaint with the ward chairperson or municipality office.",
+        "solutionNepali": "सबै कागजातहरू पूर्ण र सही छन् भनी सुनिश्चित गर्नुहोस्। वैध कारण बिना अस्वीकार भएमा, लिखित स्पष्टीकरण माग्नुहोस्। तपाईं वडा अध्यक्ष वा नगरपालिका कार्यालयमा उजुरी दिन सक्नुहुन्छ।"
       },
       {
         "issue": "Processing takes longer than 15 days",
-        "solution": "Visit the DAO with your acknowledgment receipt and politely inquire about the status. You can escalate to the Chief District Officer if necessary."
+        "issueNepali": "प्रशोधन १५ दिनभन्दा बढी लाग्यो",
+        "solution": "Visit the DAO with your acknowledgment receipt and politely inquire about the status. If there's no valid reason for delay, request to meet with the Section Officer or CDO.",
+        "solutionNepali": "आफ्नो रसिद लिएर जिप्रकामा जानुहोस् र विनम्रतापूर्वक स्थितिबारे सोध्नुहोस्। ढिलाइको वैध कारण नभएमा, शाखा अधिकृत वा प्रजिअसँग भेट्न अनुरोध गर्नुहोस्।"
       },
       {
-        "issue": "Parents' citizenship numbers don't match records",
-        "solution": "Bring parents to the DAO with their original citizenship certificates for verification and record correction."
+        "issue": "Name mismatch between birth certificate and parents' citizenship",
+        "issueNepali": "जन्म प्रमाणपत्र र अभिभावकको नागरिकतामा नाम मेल नखाएको",
+        "solution": "Obtain a relationship certificate (नाता प्रमाणित) from your ward office that verifies your relationship with your parents despite the name difference.",
+        "solutionNepali": "नामको भिन्नता भए तापनि तपाईंको अभिभावकसँगको सम्बन्ध प्रमाणित गर्ने नाता प्रमाणित तपाईंको वडा कार्यालयबाट प्राप्त गर्नुहोस्।"
+      },
+      {
+        "issue": "Parents' citizenship records not found in DAO system",
+        "issueNepali": "अभिभावकको नागरिकता अभिलेख जिप्रका प्रणालीमा नभेटिएको",
+        "solution": "Bring parents with their original citizenship certificates to the DAO. The records may need to be retrieved from archives or the original issuing DAO.",
+        "solutionNepali": "अभिभावकहरूलाई तिनीहरूको मूल नागरिकता प्रमाणपत्र सहित जिप्रकामा ल्याउनुहोस्। अभिलेखहरू अभिलेखागार वा मूल जारी गर्ने जिप्रकाबाट पुन: प्राप्त गर्नुपर्ने हुन सक्छ।"
+      }
+    ]
+  },
+  {
+    "serviceSlug": "birth-registration",
+    "overview": "Birth registration is mandatory for every child born in Nepal. It should be done within 35 days of birth for free registration. Late registration incurs a small fee and may require additional documentation.",
+    "overviewNepali": "नेपालमा जन्मेका हरेक बच्चाको लागि जन्म दर्ता अनिवार्य छ। निःशुल्क दर्ताको लागि जन्मको ३५ दिनभित्र गर्नुपर्छ। ढिलो दर्तामा सामान्य शुल्क लाग्छ र थप कागजात आवश्यक पर्न सक्छ।",
+    "stepByStepGuide": [
+      "Collect birth documents from hospital (if hospital birth)",
+      "Gather parents' citizenship photocopies",
+      "Visit ward office of birth location or parents' residence",
+      "Fill out birth registration form",
+      "Submit documents and pay fee if applicable",
+      "Receive birth certificate immediately or within 1 day"
+    ],
+    "importantNotes": [
+      "Registration within 35 days is FREE",
+      "Late registration costs Rs. 100 and requires additional proof",
+      "Birth certificate is essential for school admission, citizenship, passport",
+      "Father or mother should be present for registration"
+    ],
+    "legalReferences": [
+      {
+        "lawName": "Civil Registration Act, 2033 (1976)",
+        "lawNameNepali": "व्यक्तिगत घटना दर्ता ऐन, २०३३",
+        "section": "Section 4 - Birth Registration",
+        "url": "https://www.lawcommission.gov.np"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Can I register my child's birth in a different ward than where the birth occurred?",
+        "questionNepali": "जन्म भएको ठाउँभन्दा फरक वडामा बच्चाको जन्म दर्ता गर्न सकिन्छ?",
+        "answer": "Yes, you can register at either the ward where birth occurred OR the ward of parents' permanent residence.",
+        "answerNepali": "हो, तपाईं जन्म भएको वडा वा अभिभावकको स्थायी बसोबासको वडामा दर्ता गर्न सक्नुहुन्छ।"
+      },
+      {
+        "question": "What if I don't have a hospital birth certificate?",
+        "questionNepali": "अस्पताल जन्म प्रमाणपत्र नभएमा के गर्ने?",
+        "answer": "For home births, you can provide a witness statement from the birth attendant or village health worker. Some wards accept immunization card as supporting evidence.",
+        "answerNepali": "घरमा जन्मको लागि, तपाईं जन्म सहायक वा गाउँ स्वास्थ्य कार्यकर्ताबाट साक्षी बयान प्रदान गर्न सक्नुहुन्छ। केही वडाहरूले खोप कार्ड पनि सहयोगी प्रमाणको रूपमा स्वीकार गर्छन्।"
+      }
+    ],
+    "commonIssues": [
+      {
+        "issue": "Very late registration (years after birth)",
+        "issueNepali": "धेरै ढिलो दर्ता (जन्मको वर्षौं पछि)",
+        "solution": "For registrations more than 1 year late, you may need court order or additional verification. Collect school certificates, immunization records, or affidavits from witnesses.",
+        "solutionNepali": "१ वर्षभन्दा बढी ढिला दर्ताको लागि, तपाईंलाई अदालतको आदेश वा थप प्रमाणीकरण आवश्यक पर्न सक्छ। विद्यालयको प्रमाणपत्र, खोप अभिलेख वा साक्षीहरूबाट शपथपत्र सङ्कलन गर्नुहोस्।"
+      }
+    ]
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "overview": "Nepal issues Machine Readable Passports (MRP) through the Department of Passport. The application process is now primarily online, with in-person verification at designated passport offices.",
+    "overviewNepali": "नेपालले राहदानी विभाग मार्फत मेशिन रिडेबल पासपोर्ट (एमआरपी) जारी गर्दछ। आवेदन प्रक्रिया अब मुख्यतया अनलाइन छ, तोकिएका राहदानी कार्यालयहरूमा व्यक्तिगत प्रमाणीकरण सहित।",
+    "stepByStepGuide": [
+      "Visit nepalpassport.gov.np and create an account",
+      "Fill the online application form with accurate details",
+      "Upload a recent passport-size photo (specifications provided on site)",
+      "Select preferred passport office and appointment date",
+      "Pay fee online via eSewa, Khalti, or bank transfer",
+      "Print application form and payment receipt",
+      "Visit passport office on appointment date with all documents",
+      "Complete biometric enrollment (photo and fingerprints)",
+      "Wait for processing (15-30 days regular, 2-5 days express)",
+      "Collect passport from the same office"
+    ],
+    "importantNotes": [
+      "Online application is MANDATORY - walk-in not accepted",
+      "Regular passport (34 pages): NPR 5,000 | 66 pages: NPR 7,000",
+      "Express service adds NPR 10,000 to regular fee",
+      "Passport valid for 10 years (adults) or 5 years (minors under 16)",
+      "Arrive 30 minutes before appointment time",
+      "Minors must be accompanied by both parents or legal guardian"
+    ],
+    "legalReferences": [
+      {
+        "lawName": "Nepal Passport Act, 2024 (1967)",
+        "lawNameNepali": "नेपाल राहदानी ऐन, २०२४",
+        "section": "As amended",
+        "url": "https://www.lawcommission.gov.np"
+      },
+      {
+        "lawName": "Nepal Passport Regulations, 2067 (2010)",
+        "lawNameNepali": "नेपाल राहदानी नियमावली, २०६७",
+        "section": "Full document",
+        "url": "https://dop.gov.np"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "How do I get an appointment if all slots are booked?",
+        "questionNepali": "सबै स्लट बुक भएमा भेटघाट कसरी पाउने?",
+        "answer": "New slots are released periodically. Check the website early morning (6-8 AM) for better availability. Slots for district offices often have more availability than Kathmandu.",
+        "answerNepali": "नयाँ स्लटहरू समय-समयमा जारी गरिन्छ। राम्रो उपलब्धताको लागि बिहान ६-८ बजे वेबसाइट जाँच गर्नुहोस्। जिल्ला कार्यालयहरूको स्लटहरू प्रायः काठमाडौंभन्दा बढी उपलब्ध हुन्छन्।"
+      },
+      {
+        "question": "Can minors apply for passport?",
+        "questionNepali": "नाबालिगहरूले राहदानीको लागि आवेदन दिन सक्छन्?",
+        "answer": "Yes, minors can get passport with consent from both parents (or legal guardian). Both parents must be present at the passport office with their citizenship certificates.",
+        "answerNepali": "हो, नाबालिगहरूले दुवै अभिभावक (वा कानूनी संरक्षक) को सहमतिमा राहदानी प्राप्त गर्न सक्छन्। दुवै अभिभावक आफ्नो नागरिकता प्रमाणपत्र सहित राहदानी कार्यालयमा उपस्थित हुनुपर्छ।"
+      }
+    ],
+    "commonIssues": [
+      {
+        "issue": "Photo rejected during online application",
+        "issueNepali": "अनलाइन आवेदनमा फोटो अस्वीकृत भयो",
+        "solution": "Ensure photo meets specifications: white background, recent (within 6 months), face centered, no glasses, proper lighting. Use the photo cropping tool on the website.",
+        "solutionNepali": "फोटोले विशिष्टताहरू पूरा गरेको सुनिश्चित गर्नुहोस्: सेतो पृष्ठभूमि, हालको (६ महिनाभित्रको), अनुहार केन्द्रमा, चश्मा नभएको, उचित प्रकाश। वेबसाइटमा फोटो क्रप गर्ने उपकरण प्रयोग गर्नुहोस्।"
+      },
+      {
+        "issue": "Payment failed but amount deducted",
+        "issueNepali": "भुक्तानी असफल भयो तर रकम कट्यो",
+        "solution": "Wait 24-48 hours for automatic reversal. If not refunded, contact your payment provider (eSewa/Khalti) or the passport helpline with transaction details.",
+        "solutionNepali": "स्वचालित फिर्ताको लागि २४-४८ घण्टा पर्खनुहोस्। फिर्ता नभएमा, लेनदेन विवरणहरू सहित आफ्नो भुक्तानी प्रदायक (eSewa/Khalti) वा राहदानी हेल्पलाइनमा सम्पर्क गर्नुहोस्।"
+      }
+    ]
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "overview": "If your citizenship certificate is lost, stolen, or damaged beyond recognition, you can apply for a duplicate certificate. This requires a police report, newspaper publication, and verification at the DAO.",
+    "overviewNepali": "तपाईंको नागरिकता प्रमाणपत्र हराएको, चोरी भएको वा चिन्न नसकिने गरी बिग्रेको खण्डमा, तपाईंले प्रतिलिपि प्रमाणपत्रको लागि आवेदन दिन सक्नुहुन्छ। यसको लागि प्रहरी प्रतिवेदन, समाचारपत्र प्रकाशन र जिप्रकामा प्रमाणीकरण आवश्यक छ।",
+    "stepByStepGuide": [
+      "File FIR at the nearest police station for lost/stolen citizenship",
+      "Get a copy of the police report",
+      "Publish a notice in a national daily newspaper declaring the loss",
+      "Visit ward office for recommendation letter with police report and newspaper",
+      "Go to the DAO where original citizenship was issued (or current residence)",
+      "Fill duplicate citizenship application form",
+      "Submit all documents and pay Rs. 400 fee",
+      "Complete biometric enrollment",
+      "Wait for verification (7-21 days)",
+      "Collect duplicate certificate"
+    ],
+    "importantNotes": [
+      "Duplicate fee is Rs. 400 (vs Rs. 10 for first-time)",
+      "Process takes longer as original records need verification",
+      "If DAO doesn't have digital records, they may contact original issuing DAO",
+      "Keep duplicate application receipt safely",
+      "Old citizenship number is retained in most cases"
+    ],
+    "legalReferences": [
+      {
+        "lawName": "Citizenship Rules, 2063",
+        "lawNameNepali": "नागरिकता नियमावली, २०६३",
+        "section": "Rule 10 - Duplicate Citizenship",
+        "url": "https://www.lawcommission.gov.np"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Do I need to apply at my original DAO?",
+        "questionNepali": "मूल जिप्रकामा नै आवेदन दिनुपर्छ?",
+        "answer": "It's recommended but not mandatory. You can apply at your current residence DAO, but they will need to verify records with the original issuing DAO, which may take longer.",
+        "answerNepali": "सिफारिस गरिएको छ तर अनिवार्य छैन। तपाईं हालको बसोबासको जिप्रकामा आवेदन दिन सक्नुहुन्छ, तर तिनीहरूले मूल जारी गर्ने जिप्रकासँग अभिलेख प्रमाणीकरण गर्नुपर्नेछ, जसले बढी समय लिन सक्छ।"
+      }
+    ],
+    "commonIssues": [
+      {
+        "issue": "Original DAO records not found",
+        "issueNepali": "मूल जिप्रका अभिलेख फेला परेन",
+        "solution": "This can happen for older citizenships. Bring any supporting documents: old photos with citizenship, voter ID, passport, or relatives who can verify your identity.",
+        "solutionNepali": "पुरानो नागरिकताहरूमा यो हुन सक्छ। कुनै पनि सहयोगी कागजातहरू ल्याउनुहोस्: नागरिकता सहितको पुरानो फोटो, मतदाता परिचयपत्र, राहदानी, वा तपाईंको पहिचान प्रमाणित गर्न सक्ने आफन्तहरू।"
       }
     ]
   }

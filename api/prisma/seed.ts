@@ -3,12 +3,12 @@ import { seedLocations } from './seeders/01-locations.seed';
 import { seedOfficeCategories } from './seeders/02-office-categories.seed';
 import { seedOffices } from './seeders/03-offices.seed';
 import { seedOfficeLocations } from './seeders/04-office-locations.seed';
-import { seedServices } from './seeders/05-services.seed';
-import { seedSubServices } from './seeders/06-sub-services.seed';
-import { seedServiceSteps } from './seeders/07-service-steps.seed';
-import { seedStepDetails } from './seeders/08-step-details.seed';
-import { seedDetailedProc } from './seeders/09-detailed-proc.seed';
-import { seedServiceOffices } from './seeders/10-service-offices.seed';
+import { seedCategories } from './seeders/05-categories.seed';
+import { seedServices } from './seeders/06-services.seed';
+import { seedServiceCategories } from './seeders/07-service-categories.seed';
+import { seedServiceSteps } from './seeders/08-service-steps.seed';
+import { seedStepDetails } from './seeders/09-step-details.seed';
+import { seedDetailedProc } from './seeders/10-detailed-proc.seed';
 
 const dbUrl = String(process.env.DATABASE_URL || '').trim();
 let finalConnectionUrl: string;
@@ -29,18 +29,24 @@ const prisma = new (require('src/generated/prisma/client').PrismaClient)({ adapt
 
 async function main() {
   try {
-    console.log('🚀 Prisma Modular Seeding Started');
+    console.log('🚀 Prisma Modular Seeding Started\n');
+    
+    // Phase 1: Locations & Offices
     await seedLocations(prisma);
-    // we can add more seeders here as they are implemented
-    await seedOfficeCategories(prisma);    // 2. Office categories
-    await seedOffices(prisma);             // 3. Offices
-    await seedOfficeLocations(prisma);     // 4. Link offices to locations
-    await seedServices(prisma);            // 5. Services
-    await seedSubServices(prisma);         // 6. Sub-services
-    await seedServiceSteps(prisma);        // 7. Steps
-    await seedStepDetails(prisma);         // 8. Step details (docs, fees, etc.)
-    await seedDetailedProc(prisma);        // 9. Detailed procedures
-    await seedServiceOffices(prisma);      // 10. Link services to offices
+    await seedOfficeCategories(prisma);
+    await seedOffices(prisma);
+    await seedOfficeLocations(prisma);
+    
+    // Phase 2: Categories & Services
+    await seedCategories(prisma);
+    await seedServices(prisma);
+    await seedServiceCategories(prisma);
+    
+    // Phase 3: Service Steps & Details
+    await seedServiceSteps(prisma);
+    await seedStepDetails(prisma);
+    await seedDetailedProc(prisma);
+    
     console.log('✅ All seeders completed successfully!');
   } catch (err) {
     console.error('❌ Seeding failed:', err);

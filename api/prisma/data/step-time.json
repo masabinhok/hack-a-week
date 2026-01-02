@@ -1,31 +1,221 @@
 [
   {
     "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "minimumTime": "30 minutes",
     "maximumTime": "2 hours",
     "averageTime": "1 hour",
-    "remarks": "Depends on queue at ward office",
+    "remarks": "Depends on queue at ward office. Morning visits (10-11 AM) typically have shorter wait times.",
     "expeditedAvailable": false,
     "workingDaysOnly": true
   },
   {
     "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
-    "minimumTime": "7 days",
-    "maximumTime": "15 days",
-    "averageTime": "10 days",
-    "remarks": "Processing time after document submission",
+    "serviceSlug": "citizenship-by-descent",
+    "minimumTime": "1 hour",
+    "maximumTime": "4 hours",
+    "averageTime": "2 hours",
+    "remarks": "Document submission and verification. Long queues common in urban DAOs.",
     "expeditedAvailable": false,
     "workingDaysOnly": true
   },
   {
     "stepNumber": 3,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "minimumTime": "15 minutes",
     "maximumTime": "1 hour",
     "averageTime": "30 minutes",
-    "remarks": "Quick collection process",
+    "remarks": "Biometric enrollment is usually quick once called.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 4,
+    "serviceSlug": "citizenship-by-descent",
+    "minimumTime": "7 days",
+    "maximumTime": "15 days",
+    "averageTime": "10 days",
+    "remarks": "Processing time for verification and certificate printing. Can be longer during peak seasons.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 1,
+    "serviceSlug": "birth-registration",
+    "minimumTime": "15 minutes",
+    "maximumTime": "1 hour",
+    "averageTime": "30 minutes",
+    "remarks": "Quick process if all documents are complete. Ward offices are usually less crowded than district offices.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 2,
+    "serviceSlug": "birth-registration",
+    "minimumTime": "10 minutes",
+    "maximumTime": "30 minutes",
+    "averageTime": "15 minutes",
+    "remarks": "Form filling with assistance from ward staff.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 3,
+    "serviceSlug": "birth-registration",
+    "minimumTime": "Same day",
+    "maximumTime": "1 day",
+    "averageTime": "Same day",
+    "remarks": "Certificate usually issued immediately for timely registrations.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 1,
+    "serviceSlug": "death-registration",
+    "minimumTime": "15 minutes",
+    "maximumTime": "1 hour",
+    "averageTime": "30 minutes",
+    "remarks": "Process is expedited during difficult times. Staff usually prioritize death registrations.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 2,
+    "serviceSlug": "death-registration",
+    "minimumTime": "10 minutes",
+    "maximumTime": "30 minutes",
+    "averageTime": "20 minutes",
+    "remarks": "Document verification is usually straightforward.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 3,
+    "serviceSlug": "death-registration",
+    "minimumTime": "Same day",
+    "maximumTime": "1 day",
+    "averageTime": "Same day",
+    "remarks": "Death certificate usually issued same day.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 1,
+    "serviceSlug": "marriage-registration",
+    "minimumTime": "30 minutes",
+    "maximumTime": "2 hours",
+    "averageTime": "1 hour",
+    "remarks": "Both parties and witnesses must be present together.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 2,
+    "serviceSlug": "marriage-registration",
+    "minimumTime": "15 minutes",
+    "maximumTime": "45 minutes",
+    "averageTime": "30 minutes",
+    "remarks": "Form filling and document submission.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 3,
+    "serviceSlug": "marriage-registration",
+    "minimumTime": "1 day",
+    "maximumTime": "3 days",
+    "averageTime": "1 day",
+    "remarks": "Marriage certificate issued after verification. Usually within 1-3 days.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 1,
+    "serviceSlug": "new-passport-application",
+    "minimumTime": "15 minutes",
+    "maximumTime": "1 hour",
+    "averageTime": "30 minutes",
+    "remarks": "Online form can be saved and completed in multiple sessions.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": false
+  },
+  {
+    "stepNumber": 2,
+    "serviceSlug": "new-passport-application",
+    "minimumTime": "5 minutes",
+    "maximumTime": "30 minutes",
+    "averageTime": "10 minutes",
+    "remarks": "Online payment is instant. Bank payments may take longer.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": false
+  },
+  {
+    "stepNumber": 3,
+    "serviceSlug": "new-passport-application",
+    "minimumTime": "30 minutes",
+    "maximumTime": "3 hours",
+    "averageTime": "1 hour",
+    "remarks": "Wait time varies by appointment slot. Morning appointments recommended.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 4,
+    "serviceSlug": "new-passport-application",
+    "minimumTime": "15 days",
+    "maximumTime": "30 days",
+    "averageTime": "20 days",
+    "remarks": "Regular service processing time. Express service: 2-5 days.",
+    "expeditedAvailable": true,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 1,
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "minimumTime": "30 minutes",
+    "maximumTime": "2 hours",
+    "averageTime": "1 hour",
+    "remarks": "Filing police report at local police station.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 2,
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "minimumTime": "1 day",
+    "maximumTime": "3 days",
+    "averageTime": "1 day",
+    "remarks": "Newspaper publication timing depends on newspaper's schedule.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": false
+  },
+  {
+    "stepNumber": 3,
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "minimumTime": "30 minutes",
+    "maximumTime": "2 hours",
+    "averageTime": "1 hour",
+    "remarks": "Ward recommendation process.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 4,
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "minimumTime": "1 hour",
+    "maximumTime": "4 hours",
+    "averageTime": "2 hours",
+    "remarks": "DAO application submission with all documents.",
+    "expeditedAvailable": false,
+    "workingDaysOnly": true
+  },
+  {
+    "stepNumber": 5,
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "minimumTime": "7 days",
+    "maximumTime": "21 days",
+    "averageTime": "14 days",
+    "remarks": "Processing time for duplicate verification. May involve checking original DAO records.",
     "expeditedAvailable": false,
     "workingDaysOnly": true
   }

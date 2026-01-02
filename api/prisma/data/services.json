@@ -1,17 +1,266 @@
 [
   {
-    "serviceId": "SRV-001",
+    "serviceId": "SRV-CITIZENSHIP",
+    "parentId": null,
+    "level": 0,
     "name": "Citizenship Services",
+    "nameNepali": "नागरिकता सेवाहरू",
     "slug": "citizenship-services",
-    "category": "Civil Registration",
-    "description": "Services related to obtaining and managing Nepali citizenship certificates",
-    "eligibility": "Nepali nationals by descent or naturalization",
-    "validityPeriod": "Lifetime",
+    "description": "All services related to obtaining, renewing, and managing Nepali citizenship certificates",
+    "descriptionNepali": "नेपाली नागरिकता प्रमाणपत्र प्राप्त गर्ने, नवीकरण गर्ने र व्यवस्थापन गर्ने सम्बन्धी सबै सेवाहरू",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "eligibility": "Nepali nationals by descent, naturalization, or other legal provisions",
+    "eligibilityNepali": "वंशज, नागरिकता प्राप्ति वा अन्य कानूनी व्यवस्था अनुसारका नेपाली नागरिकहरू",
+    "validityPeriod": "Lifetime (unless revoked)",
     "metadata": {
       "version": "1.0",
       "dataSource": "Department of National ID and Civil Registration",
       "verifiedBy": "Ministry of Home Affairs",
-      "lastUpdated": "2026-01-01T00:00:00.000Z"
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-CIT-NEW",
+    "parentId": "SRV-CITIZENSHIP",
+    "level": 1,
+    "name": "New Citizenship Certificate",
+    "nameNepali": "नयाँ नागरिकता प्रमाणपत्र",
+    "slug": "new-citizenship-certificate",
+    "description": "Apply for a new citizenship certificate for the first time",
+    "descriptionNepali": "पहिलो पटक नयाँ नागरिकता प्रमाणपत्रको लागि आवेदन दिनुहोस्",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "eligibility": "Nepali citizens aged 16 years and above who have not obtained citizenship certificate before",
+    "eligibilityNepali": "१६ वर्ष र माथिका नेपाली नागरिकहरू जसले पहिले नागरिकता प्रमाणपत्र प्राप्त गरेका छैनन्"
+  },
+  {
+    "serviceId": "SRV-CIT-NEW-DESCENT",
+    "parentId": "SRV-CIT-NEW",
+    "level": 2,
+    "name": "Citizenship by Descent",
+    "nameNepali": "वंशजको आधारमा नागरिकता",
+    "slug": "citizenship-by-descent",
+    "description": "Citizenship certificate for those born to Nepali citizen parents (by descent)",
+    "descriptionNepali": "नेपाली नागरिक अभिभावकबाट जन्मेकाहरूको लागि नागरिकता प्रमाणपत्र (वंशजको आधारमा)",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "eligibility": "Person born to father or mother who is a citizen of Nepal at the time of birth",
+    "eligibilityNepali": "जन्म हुँदाको समयमा बाबु वा आमा नेपालको नागरिक भएको व्यक्ति",
+    "validityPeriod": "Lifetime",
+    "onlinePortalUrl": null,
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Nepal Citizenship Act, 2063 (2006) - Section 3",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-CIT-NEW-NATURALIZATION",
+    "parentId": "SRV-CIT-NEW",
+    "level": 2,
+    "name": "Citizenship by Naturalization",
+    "nameNepali": "अंगीकृत नागरिकता",
+    "slug": "citizenship-by-naturalization",
+    "description": "Citizenship for foreign nationals who meet residency and other requirements",
+    "descriptionNepali": "बसोबास र अन्य आवश्यकताहरू पूरा गर्ने विदेशी नागरिकहरूको लागि नागरिकता",
+    "priority": "MEDIUM",
+    "isOnlineEnabled": false,
+    "eligibility": "Foreign national residing in Nepal for at least 15 years with permanent residence, knowledge of Nepali language, and no previous citizenship elsewhere",
+    "eligibilityNepali": "कम्तीमा १५ वर्ष नेपालमा स्थायी बसोबास गरेको, नेपाली भाषाको ज्ञान भएको र अन्यत्र पहिलेको नागरिकता नभएको विदेशी नागरिक",
+    "validityPeriod": "Lifetime",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Nepal Citizenship Act, 2063 (2006) - Section 5",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-CIT-DUPLICATE",
+    "parentId": "SRV-CITIZENSHIP",
+    "level": 1,
+    "name": "Duplicate Citizenship Certificate",
+    "nameNepali": "प्रतिलिपि नागरिकता प्रमाणपत्र",
+    "slug": "duplicate-citizenship-certificate",
+    "description": "Obtain a duplicate copy of citizenship certificate if original is lost, damaged, or stolen",
+    "descriptionNepali": "मूल नागरिकता हराएको, बिग्रेको वा चोरी भएको खण्डमा प्रतिलिपि प्राप्त गर्नुहोस्",
+    "priority": "MEDIUM",
+    "isOnlineEnabled": false,
+    "eligibility": "Nepali citizens who have lost, damaged, or had their citizenship certificate stolen",
+    "eligibilityNepali": "नागरिकता प्रमाणपत्र हराएको, बिग्रेको वा चोरी भएका नेपाली नागरिकहरू",
+    "validityPeriod": "Lifetime",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Citizenship Rules, 2063 - Rule 10",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-CIVIL-REG",
+    "parentId": null,
+    "level": 0,
+    "name": "Civil Registration",
+    "nameNepali": "व्यक्तिगत घटना दर्ता",
+    "slug": "civil-registration",
+    "description": "Registration of vital events - birth, death, marriage, divorce, and migration",
+    "descriptionNepali": "महत्वपूर्ण घटनाहरूको दर्ता - जन्म, मृत्यु, विवाह, सम्बन्ध विच्छेद र बसाइसराइ",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Civil Registration Act, 2033 (1976)",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-BIRTH-REG",
+    "parentId": "SRV-CIVIL-REG",
+    "level": 1,
+    "name": "Birth Registration",
+    "nameNepali": "जन्म दर्ता",
+    "slug": "birth-registration",
+    "description": "Register birth of a child within 35 days of birth (free) or later with late fee",
+    "descriptionNepali": "जन्मको ३५ दिनभित्र बच्चाको जन्म दर्ता (निःशुल्क) वा पछि जरिवाना सहित",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "eligibility": "All newborns in Nepal must be registered",
+    "eligibilityNepali": "नेपालमा जन्मेका सबै नवजात शिशुहरूको दर्ता हुनुपर्छ",
+    "validityPeriod": "Lifetime",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Civil Registration Act, 2033 - Section 4",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-DEATH-REG",
+    "parentId": "SRV-CIVIL-REG",
+    "level": 1,
+    "name": "Death Registration",
+    "nameNepali": "मृत्यु दर्ता",
+    "slug": "death-registration",
+    "description": "Register death within 35 days of occurrence (free) or later with late fee",
+    "descriptionNepali": "घटना भएको ३५ दिनभित्र मृत्यु दर्ता (निःशुल्क) वा पछि जरिवाना सहित",
+    "priority": "HIGH",
+    "isOnlineEnabled": false,
+    "eligibility": "All deaths in Nepal must be registered by family members or local authority",
+    "eligibilityNepali": "नेपालमा भएका सबै मृत्युहरू परिवारका सदस्य वा स्थानीय अधिकारीले दर्ता गर्नुपर्छ",
+    "validityPeriod": "Permanent record",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Civil Registration Act, 2033 - Section 5",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-MARRIAGE-REG",
+    "parentId": "SRV-CIVIL-REG",
+    "level": 1,
+    "name": "Marriage Registration",
+    "nameNepali": "विवाह दर्ता",
+    "slug": "marriage-registration",
+    "description": "Register marriage within 35 days of marriage ceremony",
+    "descriptionNepali": "विवाह समारोहको ३५ दिनभित्र विवाह दर्ता",
+    "priority": "MEDIUM",
+    "isOnlineEnabled": false,
+    "eligibility": "Both parties must be of legal age (20 for males, 20 for females) and consent to marriage",
+    "eligibilityNepali": "दुवै पक्ष कानूनी उमेर (पुरुषको लागि २० र महिलाको लागि २०) को हुनुपर्छ र विवाहमा सहमति हुनुपर्छ",
+    "validityPeriod": "Permanent record",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Civil Registration Act, 2033 - Section 6",
+      "verifiedBy": "Ministry of Home Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-PASSPORT",
+    "parentId": null,
+    "level": 0,
+    "name": "Passport Services",
+    "nameNepali": "राहदानी सेवाहरू",
+    "slug": "passport-services",
+    "description": "Machine Readable Passport (MRP) issuance, renewal, and related services",
+    "descriptionNepali": "मेशिन रिडेबल पासपोर्ट (एमआरपी) जारी, नवीकरण र सम्बन्धित सेवाहरू",
+    "priority": "HIGH",
+    "isOnlineEnabled": true,
+    "onlinePortalUrl": "https://nepalpassport.gov.np",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Department of Passport",
+      "verifiedBy": "Ministry of Foreign Affairs",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-PASSPORT-NEW",
+    "parentId": "SRV-PASSPORT",
+    "level": 1,
+    "name": "New Passport Application",
+    "nameNepali": "नयाँ राहदानी आवेदन",
+    "slug": "new-passport-application",
+    "description": "Apply for a new Machine Readable Passport (MRP) for the first time",
+    "descriptionNepali": "पहिलो पटक नयाँ मेशिन रिडेबल पासपोर्ट (एमआरपी) को लागि आवेदन दिनुहोस्",
+    "priority": "HIGH",
+    "isOnlineEnabled": true,
+    "onlinePortalUrl": "https://nepalpassport.gov.np",
+    "eligibility": "Nepali citizens with valid citizenship certificate",
+    "eligibilityNepali": "वैध नागरिकता प्रमाणपत्र भएका नेपाली नागरिकहरू",
+    "validityPeriod": "10 years for adults, 5 years for minors",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Nepal Passport Regulations, 2067",
+      "verifiedBy": "Department of Passport",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-PASSPORT-RENEW",
+    "parentId": "SRV-PASSPORT",
+    "level": 1,
+    "name": "Passport Renewal",
+    "nameNepali": "राहदानी नवीकरण",
+    "slug": "passport-renewal",
+    "description": "Renew an expired or expiring passport",
+    "descriptionNepali": "म्याद सकिएको वा सकिन लागेको राहदानी नवीकरण",
+    "priority": "HIGH",
+    "isOnlineEnabled": true,
+    "onlinePortalUrl": "https://nepalpassport.gov.np",
+    "eligibility": "Nepali citizens with passport expiring within 6 months or already expired",
+    "eligibilityNepali": "६ महिनाभित्र म्याद सकिने वा पहिले नै सकिएको राहदानी भएका नेपाली नागरिकहरू",
+    "validityPeriod": "10 years for adults, 5 years for minors",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Nepal Passport Regulations, 2067",
+      "verifiedBy": "Department of Passport",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
+    }
+  },
+  {
+    "serviceId": "SRV-PASSPORT-LOST",
+    "parentId": "SRV-PASSPORT",
+    "level": 1,
+    "name": "Lost Passport Replacement",
+    "nameNepali": "हराएको राहदानी प्रतिस्थापन",
+    "slug": "lost-passport-replacement",
+    "description": "Apply for a replacement passport if original is lost or stolen",
+    "descriptionNepali": "मूल राहदानी हराएको वा चोरी भएको खण्डमा प्रतिस्थापनको लागि आवेदन दिनुहोस्",
+    "priority": "URGENT",
+    "isOnlineEnabled": false,
+    "eligibility": "Nepali citizens who have lost or had their passport stolen",
+    "eligibilityNepali": "राहदानी हराएको वा चोरी भएका नेपाली नागरिकहरू",
+    "validityPeriod": "10 years for adults, 5 years for minors",
+    "metadata": {
+      "version": "1.0",
+      "dataSource": "Nepal Passport Regulations, 2067",
+      "verifiedBy": "Department of Passport",
+      "lastUpdated": "2026-01-02T00:00:00.000Z"
     }
   }
 ]
