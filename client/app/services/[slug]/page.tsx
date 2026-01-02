@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
-import { getServiceBySlug, getServiceGuide } from "@/lib/api";
+import { getServiceBySlug } from "@/lib/api";
 import type { Service } from "@/lib/types";
 import { BreadcrumbTrail, PriorityBadge } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
@@ -41,7 +41,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const hasChildren = service.children && service.children.length > 0;
-  const descriptionSuffix = `Browse available ${service.name.toLowerCase()} services in Nepal.`;
+  const descriptionSuffix = hasChildren 
+    ? `Browse available ${service.name.toLowerCase()} services in Nepal.`
+    : `Learn how to get ${service.name.toLowerCase()} in Nepal.`;
 
   return {
     title: service.name,

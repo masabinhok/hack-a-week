@@ -21,7 +21,6 @@ import {
   ExternalLink,
   Navigation,
   Copy,
-  FileText,
 } from "lucide-react";
 import { getGoogleMapsUrl } from "@/lib/utils";
 
@@ -101,7 +100,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-16 h-16 rounded-2xl bg-gradient-to-br from-nepal-blue-100 to-nepal-blue-200 flex items-center justify-center text-primary-blue">
+                  <div className="shrink-0 w-16 h-16 rounded-2xl bg-linear-to-br from-nepal-blue-100 to-nepal-blue-200 flex items-center justify-center text-primary-blue">
                     <Building2 className="w-8 h-8" />
                   </div>
                   <div className="flex-1">
@@ -346,7 +345,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
             )} */}
 
             {/* Quick Actions */}
-            <Card className="bg-gradient-to-br from-nepal-crimson-50 to-nepal-crimson-100 border-nepal-crimson-200">
+            <Card className="bg-linear-to-br from-nepal-crimson-50 to-nepal-crimson-100 border-nepal-crimson-200">
               <CardContent className="p-6 text-center">
                 <Building2 className="w-10 h-10 text-primary-crimson mx-auto mb-3" />
                 <p className="font-medium text-foreground mb-2">
