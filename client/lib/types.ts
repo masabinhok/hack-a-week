@@ -103,6 +103,8 @@ export interface Service {
   descriptionNepali?: string;
   priority: Priority;
   isOnlineEnabled: boolean;
+  eligibility?: string;
+  validityPeriod?: string;
   onlinePortalUrl?: string;
   isActive?: boolean;
   sortOrder?: number;
@@ -134,6 +136,7 @@ export interface ServiceMetadata {
 export interface ServiceWithGuide extends Service {
   steps: ServiceStep[];
   detailedProcedure?: DetailedProcedure;
+  breadcrumb?: ServiceBreadcrumb[];
 }
 
 export interface ServiceBreadcrumb {
