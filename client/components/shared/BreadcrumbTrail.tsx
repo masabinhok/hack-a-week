@@ -51,8 +51,8 @@ export function BreadcrumbTrail({
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-1 text-foreground-muted hover:text-nepal-blue transition-colors",
-                    isFirst && "text-nepal-blue"
+                    "flex items-center gap-1 text-foreground-muted hover:text-nepal-crimson transition-colors",
+                    isFirst && "text-black"
                   )}
                 >
                   {isFirst && <Home className="w-4 h-4" />}
