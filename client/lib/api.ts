@@ -86,10 +86,14 @@ async function fetchAPI<T>(
  * Get all provinces of Nepal
  */
 export async function getProvinces(): Promise<Province[]> {
-  return fetchAPI<Province[]>("/locations/provinces", {
+  const result = await fetchAPI<{ provinces: Province[] }>("/locations/provinces", {
     revalidate: CACHE_TIMES.LOCATIONS,
     tags: ["provinces"],
   });
+  return result.provinces.map(p => ({
+    ...p,
+    nameNepali: (p as any).nameNep || p.nameNepali,
+  }));
 }
 
 /**
@@ -98,10 +102,14 @@ export async function getProvinces(): Promise<Province[]> {
 export async function getDistrictsByProvince(
   provinceId: number
 ): Promise<District[]> {
-  return fetchAPI<District[]>(`/locations/provinces/${provinceId}/districts`, {
+  const result = await fetchAPI<{ province: any; districts: District[] }>(`/locations/provinces/${provinceId}/districts`, {
     revalidate: CACHE_TIMES.LOCATIONS,
     tags: ["districts", `province-${provinceId}`],
   });
+  return result.districts.map(d => ({
+    ...d,
+    nameNepali: (d as any).nameNep || d.nameNepali,
+  }));
 }
 
 /**
@@ -110,13 +118,17 @@ export async function getDistrictsByProvince(
 export async function getMunicipalitiesByDistrict(
   districtId: number
 ): Promise<Municipality[]> {
-  return fetchAPI<Municipality[]>(
+  const result = await fetchAPI<{ district: any; municipalities: Municipality[] }>(
     `/locations/districts/${districtId}/municipalities`,
     {
       revalidate: CACHE_TIMES.LOCATIONS,
       tags: ["municipalities", `district-${districtId}`],
     }
   );
+  return result.municipalities.map(m => ({
+    ...m,
+    nameNepali: (m as any).nameNep || m.nameNepali,
+  }));
 }
 
 /**
@@ -125,13 +137,14 @@ export async function getMunicipalitiesByDistrict(
 export async function getWardsByMunicipality(
   municipalityId: number
 ): Promise<Ward[]> {
-  return fetchAPI<Ward[]>(
+  const result = await fetchAPI<{ municipality: any; wards: Ward[] }>(
     `/locations/municipalities/${municipalityId}/wards`,
     {
       revalidate: CACHE_TIMES.LOCATIONS,
       tags: ["wards", `municipality-${municipalityId}`],
     }
   );
+  return result.wards;
 }
 
 // ==================== Category API Functions ====================
@@ -231,10 +244,20 @@ export async function getServiceGuide(slug: string): Promise<ServiceWithGuide> {
 export async function getServiceBreadcrumb(
   slug: string
 ): Promise<ServiceBreadcrumb[]> {
-  return fetchAPI<ServiceBreadcrumb[]>(`/services/${slug}/breadcrumb`, {
+  const result = await fetchAPI<{ breadcrumb: ServiceBreadcrumb[] }>(`/services/${slug}/breadcrumb`, {
     revalidate: CACHE_TIMES.SERVICES,
     tags: ["services", `breadcrumb-${slug}`],
   });
+  return result.breadcrumb;
+  }
+
+/**
+ * Search services response from API
+ */
+interface SearchServicesResponse {
+  services: Service[];
+  total: number;
+  query: string;
 }
 
 /**
@@ -242,9 +265,10 @@ export async function getServiceBreadcrumb(
  */
 export async function searchServices(query: string): Promise<Service[]> {
   const encodedQuery = encodeURIComponent(query);
-  return fetchAPI<Service[]>(`/services/search?q=${encodedQuery}`, {
+  const result = await fetchAPI<SearchServicesResponse>(`/services/search?q=${encodedQuery}`, {
     revalidate: CACHE_TIMES.SEARCH,
   });
+  return result.services;
 }
 
 // ==================== Office API Functions ====================
@@ -390,9 +414,10 @@ export function formatNPR(amount: number): string {
  * Get priority color class
  */
 export function getPriorityColor(
-  priority: "HIGH" | "MEDIUM" | "LOW"
+  priority: "URGENT" | "HIGH" | "MEDIUM" | "LOW"
 ): string {
   const colors = {
+    URGENT: "bg-purple-100 text-purple-800 border-purple-200",
     HIGH: "bg-red-100 text-red-700 border-red-200",
     MEDIUM: "bg-amber-100 text-amber-700 border-amber-200",
     LOW: "bg-green-100 text-green-700 border-green-200",
@@ -405,17 +430,27 @@ export function getPriorityColor(
  */
 export function getOfficeTypeName(type: OfficeType): string {
   const names: Record<OfficeType, string> = {
+    // District Level
+    DISTRICT_ADMINISTRATION_OFFICE: "District Administration Office (DAO)",
+    LAND_REVENUE_OFFICE: "Land Revenue Office",
+    DISTRICT_EDUCATION_OFFICE: "District Education Office",
+    // Transport
+    TRANSPORT_MANAGEMENT_OFFICE: "Transport Management Office",
+    DRIVING_LICENSE_OFFICE: "Driving License Office",
+    // Local Government
+    MUNICIPALITY_OFFICE: "Municipality Office",
+    RURAL_MUNICIPALITY_OFFICE: "Rural Municipality Office",
+    // Ward Level
     WARD_OFFICE: "Ward Office",
-    MUNICIPALITY: "Municipality Office",
-    DISTRICT_ADMIN_OFFICE: "District Administration Office",
-    LAND_REVENUE: "Land Revenue Office",
-    SURVEY_OFFICE: "Survey Office",
+    // Travel & Immigration
     PASSPORT_OFFICE: "Passport Office",
-    TRANSPORT_OFFICE: "Transport Office",
-    BANK: "Bank",
-    COURT: "Court",
-    POLICE: "Police Station",
-    OTHER: "Other Office",
+    IMMIGRATION_OFFICE: "Immigration Office",
+    // Business Registration
+    OFFICE_OF_COMPANY_REGISTRAR: "Office of Company Registrar (OCR)",
+    COTTAGE_SMALL_INDUSTRY_OFFICE: "Cottage & Small Industry Office",
+    INLAND_REVENUE_OFFICE: "Inland Revenue Office",
+    // Social Services
+    LABOUR_OFFICE: "Labour Office",
   };
   return names[type] || type;
 }
@@ -425,17 +460,27 @@ export function getOfficeTypeName(type: OfficeType): string {
  */
 export function getOfficeTypeNameNepali(type: OfficeType): string {
   const names: Record<OfficeType, string> = {
+    // District Level
+    DISTRICT_ADMINISTRATION_OFFICE: "जिल्ला प्रशासन कार्यालय",
+    LAND_REVENUE_OFFICE: "मालपोत कार्यालय",
+    DISTRICT_EDUCATION_OFFICE: "जिल्ला शिक्षा कार्यालय",
+    // Transport
+    TRANSPORT_MANAGEMENT_OFFICE: "यातायात व्यवस्थापन कार्यालय",
+    DRIVING_LICENSE_OFFICE: "सवारी चालक अनुमतिपत्र कार्यालय",
+    // Local Government
+    MUNICIPALITY_OFFICE: "नगरपालिका कार्यालय",
+    RURAL_MUNICIPALITY_OFFICE: "गाउँपालिका कार्यालय",
+    // Ward Level
     WARD_OFFICE: "वडा कार्यालय",
-    MUNICIPALITY: "नगरपालिका कार्यालय",
-    DISTRICT_ADMIN_OFFICE: "जिल्ला प्रशासन कार्यालय",
-    LAND_REVENUE: "मालपोत कार्यालय",
-    SURVEY_OFFICE: "नापी कार्यालय",
+    // Travel & Immigration
     PASSPORT_OFFICE: "राहदानी कार्यालय",
-    TRANSPORT_OFFICE: "यातायात कार्यालय",
-    BANK: "बैंक",
-    COURT: "अदालत",
-    POLICE: "प्रहरी कार्यालय",
-    OTHER: "अन्य कार्यालय",
+    IMMIGRATION_OFFICE: "अध्यागमन कार्यालय",
+    // Business Registration
+    OFFICE_OF_COMPANY_REGISTRAR: "कम्पनी रजिस्ट्रारको कार्यालय",
+    COTTAGE_SMALL_INDUSTRY_OFFICE: "घरेलु तथा साना उद्योग कार्यालय",
+    INLAND_REVENUE_OFFICE: "आन्तरिक राजस्व कार्यालय",
+    // Social Services
+    LABOUR_OFFICE: "श्रम कार्यालय",
   };
   return names[type] || type;
 }

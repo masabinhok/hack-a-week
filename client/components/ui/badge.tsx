@@ -27,6 +27,8 @@ const badgeVariants = cva(
         outline:
           "border-border text-foreground",
         // Priority variants
+        "priority-urgent":
+          "border-purple-200 bg-purple-100 text-purple-800",
         "priority-high":
           "border-red-200 bg-red-100 text-red-700",
         "priority-medium":

@@ -27,9 +27,15 @@ const PRIORITY_CONFIG: Record<
     label: string;
     labelNepali: string;
     icon: LucideIcon;
-    variant: "priority-high" | "priority-medium" | "priority-low";
+    variant: "priority-high" | "priority-medium" | "priority-low" | "priority-urgent";
   }
 > = {
+  URGENT: {
+    label: "Urgent",
+    labelNepali: "अत्यावश्यक",
+    icon: AlertTriangle,
+    variant: "priority-urgent",
+  },
   HIGH: {
     label: "High Priority",
     labelNepali: "उच्च प्राथमिकता",

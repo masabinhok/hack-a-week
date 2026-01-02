@@ -80,7 +80,8 @@ export interface Category {
 
 // ==================== Service Types ====================
 
-export type Priority = "HIGH" | "MEDIUM" | "LOW";
+// Priority aligned with backend Prisma enum
+export type Priority = "LOW" | "MEDIUM" | "HIGH" | "URGENT";
 
 /**
  * Category reference in service response (simplified)
@@ -164,18 +165,29 @@ export interface ServiceStep {
   responsibleAuthorities: StepAuthority[];
 }
 
+// OfficeType aligned with backend Prisma enum
 export type OfficeType =
-  | "WARD_OFFICE"
-  | "MUNICIPALITY"
-  | "DISTRICT_ADMIN_OFFICE"
-  | "LAND_REVENUE"
-  | "SURVEY_OFFICE"
-  | "PASSPORT_OFFICE"
-  | "TRANSPORT_OFFICE"
-  | "BANK"
-  | "COURT"
-  | "POLICE"
-  | "OTHER";
+  // District Level - Core Services (77 offices each)
+  | "DISTRICT_ADMINISTRATION_OFFICE" // DAO - Citizenship, recommendations, certificates
+  | "LAND_REVENUE_OFFICE" // Malpot - Land registration, ownership transfer
+  | "DISTRICT_EDUCATION_OFFICE" // SEE/SLC verification, certificate attestation
+  // Transport Services
+  | "TRANSPORT_MANAGEMENT_OFFICE" // Vehicle registration, blue book, license
+  | "DRIVING_LICENSE_OFFICE" // License tests and renewals
+  // Local Government - Daily services (753 offices)
+  | "MUNICIPALITY_OFFICE" // Nagarpalika - Local services, business tax
+  | "RURAL_MUNICIPALITY_OFFICE" // Gaupalika - Rural local services
+  // Ward Level - Highest volume (6,743 offices)
+  | "WARD_OFFICE" // Birth/death registration, business registration, recommendations
+  // Travel & Immigration
+  | "PASSPORT_OFFICE" // Passport applications and renewals
+  | "IMMIGRATION_OFFICE" // Visa, travel documents
+  // Business Registration - Federal Level
+  | "OFFICE_OF_COMPANY_REGISTRAR" // OCR - Company registration (e-OCR/CAMIS)
+  | "COTTAGE_SMALL_INDUSTRY_OFFICE" // DCSI - Cottage/small industry registration
+  | "INLAND_REVENUE_OFFICE" // IRD - PAN/VAT registration, tax filing
+  // Social Services
+  | "LABOUR_OFFICE"; // Foreign employment, work permits, labor disputes
 
 export interface StepDocument {
   id: number;
@@ -190,15 +202,14 @@ export interface StepDocument {
   notesNepali?: string;
 }
 
+// DocumentType aligned with backend Prisma DocType enum
 export type DocumentType =
   | "ORIGINAL"
   | "PHOTOCOPY"
-  | "CERTIFIED_COPY"
-  | "SELF_ATTESTED"
+  | "PHOTOGRAPH"
+  | "PRINTOUT"
   | "NOTARIZED"
-  | "PHOTO"
-  | "FORM"
-  | "OTHER";
+  | "CERTIFIED_COPY";
 
 export interface StepFee {
   id: number;
@@ -213,30 +224,26 @@ export interface StepFee {
   notesNepali?: string;
 }
 
+// FeeType aligned with backend Prisma enum
 export type FeeType =
-  | "APPLICATION"
-  | "PROCESSING"
-  | "STAMP"
-  | "SERVICE_CHARGE"
+  | "GOVERNMENT"
+  | "SERVICE"
   | "PENALTY"
-  | "TAX"
-  | "OTHER";
+  | "TAX";
 
 export interface StepTime {
-  id: number;
   minimumTime: string;
   maximumTime: string;
   averageTime: string;
   remarks?: string;
   remarksNepali?: string;
+  expeditedAvailable?: boolean;
 }
 
+// Backend returns openClose as a combined string like "10:00 AM - 5:00 PM"
 export interface StepWorkingHours {
-  id: number;
   day: DayOfWeek;
-  openTime: string;
-  closeTime: string;
-  isHoliday: boolean;
+  openClose: string;
 }
 
 export type DayOfWeek =

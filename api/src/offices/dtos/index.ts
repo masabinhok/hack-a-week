@@ -46,6 +46,28 @@ export class FindOfficesByLocationDto {
   locationCode?: string; // P-DD-MMM-WWWW format
 }
 
+export class FindOfficesForServiceDto {
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  provinceId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  districtId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  municipalityId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Type(() => Number)
+  wardId?: number;
+}
+
 export class FindOfficesByTypeDto {
   @IsEnum(OfficeType)
   @Transform(({ value }) => value?.toUpperCase())

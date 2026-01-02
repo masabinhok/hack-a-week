@@ -4,6 +4,7 @@ import {
   FindOfficesByLocationDto, 
   FindOfficesByTypeDto, 
   SearchOfficesDto, 
+  FindOfficesForServiceDto,
   OfficeType 
 } from './dtos';
 import { LocationCodeUtil } from '../common/utils/location-code.util';
@@ -437,5 +438,90 @@ export class OfficesService {
       })),
       total: categories.length,
     };
+  }
+
+  /**
+   * Get offices relevant to a service's steps based on user location
+   * Returns offices grouped by step number, matching the officeType required for each step
+   */
+  async findForService(slug: string, dto: FindOfficesForServiceDto) {
+    const { wardId, municipalityId, districtId, provinceId } = dto;
+
+    // Get service with its steps
+    const service = await this.prisma.service.findFirst({
+      where: { slug },
+      include: {
+        serviceSteps: {
+          select: {
+            step: true,
+            officeType: true,
+          },
+          orderBy: { step: 'asc' },
+        },
+      },
+    });
+
+    if (!service) {
+      throw new NotFoundException(`Service '${slug}' not found`);
+    }
+
+    if (service.serviceSteps.length === 0) {
+      return [];
+    }
+
+    // Get unique office types needed for this service
+    const officeTypes = [...new Set(service.serviceSteps.map((s) => s.officeType))];
+
+    // Build location filter for offices
+    const locationFilter: any[] = [];
+    if (wardId) {
+      locationFilter.push({ wardOffices: { some: { wardId } } });
+    }
+    if (municipalityId) {
+      locationFilter.push({ municipalityOffices: { some: { municipalityId } } });
+    }
+    if (districtId) {
+      locationFilter.push({ districtOffices: { some: { districtId } } });
+    }
+    if (provinceId) {
+      locationFilter.push({ provinceOffices: { some: { provinceId } } });
+    }
+
+    // Fetch all relevant offices
+    const offices = await this.prisma.office.findMany({
+      where: {
+        type: { in: officeTypes },
+        ...(locationFilter.length > 0 ? { OR: locationFilter } : {}),
+      },
+      include: {
+        category: true,
+      },
+      orderBy: [{ type: 'asc' }, { name: 'asc' }],
+    });
+
+    // Group offices by step
+    const result = service.serviceSteps.map((step) => ({
+      stepNumber: step.step,
+      officeType: step.officeType,
+      offices: offices
+        .filter((o) => o.type === step.officeType)
+        .map((o) => ({
+          id: o.id,
+          officeId: o.officeId,
+          name: o.name,
+          nameNepali: o.nameNepali,
+          type: o.type,
+          address: o.address,
+          addressNepali: o.addressNepali,
+          contact: o.contact,
+          email: o.email,
+          website: o.website,
+          category: o.category
+            ? { name: o.category.name, description: o.category.description }
+            : null,
+        })),
+    }));
+
+    return result;
   }
 }

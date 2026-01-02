@@ -4,6 +4,7 @@ import {
   FindOfficesByLocationDto,
   FindOfficesByTypeDto,
   SearchOfficesDto,
+  FindOfficesForServiceDto,
 } from './dtos';
 
 @Controller({
@@ -58,6 +59,18 @@ export class OfficesController {
   @Get('by-type')
   findByType(@Query() dto: FindOfficesByTypeDto) {
     return this.officesService.findByTypeAndLocation(dto);
+  }
+
+  /**
+   * GET /api/v1/offices/for-service/:slug?wardId=1&municipalityId=2&districtId=3
+   * Get offices relevant to a service's steps based on location
+   */
+  @Get('for-service/:slug')
+  findForService(
+    @Param('slug') slug: string,
+    @Query() dto: FindOfficesForServiceDto
+  ) {
+    return this.officesService.findForService(slug, dto);
   }
 
   /**
