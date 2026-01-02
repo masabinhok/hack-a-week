@@ -1,5 +1,5 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ServicesService } from './services.service.new';
+import { ServicesService } from './services.service';
 
 @Controller({
   path: 'services',
