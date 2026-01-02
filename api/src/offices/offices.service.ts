@@ -13,12 +13,37 @@ import { LocationCodeUtil } from '../common/utils/location-code.util';
 export class OfficesService {
   constructor(private readonly prisma: PrismaService) {}
 
+  async getAllOffices(page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
+    const [offices, total] = await Promise.all([
+      this.prisma.office.findMany({
+        include: {
+          category: true,
+        },
+        orderBy: [{ type: 'asc' }, { name: 'asc' }],
+        skip,
+        take: limit,
+      }),
+      this.prisma.office.count(),
+    ]);
+
+    return {
+      offices,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
+
   /**
    * Get all offices in a location with their details
    * Uses either explicit IDs or location code
    */
   async findByLocation(dto: FindOfficesByLocationDto) {
-    let { provinceId, districtId, municipalityId, wardId, locationCode } = dto;
+    let { provinceId, districtId, municipalityId, wardId, locationCode, page = 1, limit = 20 } = dto;
+    const skip = (page - 1) * limit;
 
     // Parse location code if provided
     if (locationCode) {
@@ -76,23 +101,32 @@ export class OfficesService {
       });
     }
 
-    const offices = await this.prisma.office.findMany({
-      where: {
-        OR: orConditions,
-      },
-      include: {
-        category: true,
-        _count: {
-          select: {
-            wardOffices: true,
-            municipalityOffices: true,
-            districtOffices: true,
-            provinceOffices: true,
+    const [offices, total] = await Promise.all([
+      this.prisma.office.findMany({
+        where: {
+          OR: orConditions,
+        },
+        include: {
+          category: true,
+          _count: {
+            select: {
+              wardOffices: true,
+              municipalityOffices: true,
+              districtOffices: true,
+              provinceOffices: true,
+            },
           },
         },
-      },
-      orderBy: [{ type: 'asc' }, { name: 'asc' }],
-    });
+        orderBy: [{ type: 'asc' }, { name: 'asc' }],
+        skip,
+        take: limit,
+      }),
+      this.prisma.office.count({
+        where: {
+          OR: orConditions,
+        },
+      }),
+    ]);
 
     return {
       offices: offices.map((o) => ({
@@ -119,7 +153,10 @@ export class OfficesService {
           provinces: o._count.provinceOffices,
         },
       })),
-      total: offices.length,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
       query: {
         provinceId,
         districtId,
@@ -133,7 +170,8 @@ export class OfficesService {
    * Get offices of specific type near a location
    */
   async findByTypeAndLocation(dto: FindOfficesByTypeDto) {
-    let { officeType, provinceId, districtId, municipalityId, wardId, locationCode } = dto;
+    let { officeType, provinceId, districtId, municipalityId, wardId, locationCode, page = 1, limit = 20 } = dto;
+    const skip = (page - 1) * limit;
 
     // Parse location code if provided
     if (locationCode) {
@@ -194,13 +232,20 @@ export class OfficesService {
       whereClause.OR = orConditions;
     }
 
-    const offices = await this.prisma.office.findMany({
-      where: whereClause,
-      include: {
-        category: true,
-      },
-      orderBy: { name: 'asc' },
-    });
+    const [offices, total] = await Promise.all([
+      this.prisma.office.findMany({
+        where: whereClause,
+        include: {
+          category: true,
+        },
+        orderBy: { name: 'asc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.office.count({
+        where: whereClause,
+      }),
+    ]);
 
     return {
       offices: offices.map((o) => ({
@@ -221,7 +266,10 @@ export class OfficesService {
             }
           : null,
       })),
-      total: offices.length,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
       query: {
         officeType,
         provinceId,
@@ -347,7 +395,8 @@ export class OfficesService {
    * Search offices by name
    */
   async search(dto: SearchOfficesDto) {
-    const { q, type, limit = 20 } = dto;
+    const { q, type, page = 1, limit = 20 } = dto;
+    const skip = (page - 1) * limit;
 
     if (!q || q.length < 2) {
       return {
@@ -369,14 +418,20 @@ export class OfficesService {
       whereClause.type = type;
     }
 
-    const offices = await this.prisma.office.findMany({
-      where: whereClause,
-      include: {
-        category: true,
-      },
-      take: limit,
-      orderBy: { name: 'asc' },
-    });
+    const [offices, total] = await Promise.all([
+      this.prisma.office.findMany({
+        where: whereClause,
+        include: {
+          category: true,
+        },
+        skip,
+        take: limit,
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.office.count({
+        where: whereClause,
+      }),
+    ]);
 
     return {
       offices: offices.map((o) => ({
@@ -387,7 +442,10 @@ export class OfficesService {
         address: o.address,
         category: o.category?.name || null,
       })),
-      total: offices.length,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
       query: q,
     };
   }

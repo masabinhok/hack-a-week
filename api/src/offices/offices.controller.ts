@@ -5,6 +5,7 @@ import {
   FindOfficesByTypeDto,
   SearchOfficesDto,
   FindOfficesForServiceDto,
+  PaginationDto,
 } from './dtos';
 
 @Controller({
@@ -13,6 +14,12 @@ import {
 })
 export class OfficesController {
   constructor(private readonly officesService: OfficesService) {}
+
+  @Get()
+  getAllOffices(@Query() dto: PaginationDto) {
+    return this.officesService.getAllOffices(dto.page, dto.limit);
+  }
+  
 
   /**
    * GET /api/v1/offices/types

@@ -1,6 +1,22 @@
 import { IsEnum, IsNumber, IsOptional, IsString, Min, Max } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 
+// Base pagination DTO
+export class PaginationDto {
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Type(() => Number)
+  page?: number = 1;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  @Type(() => Number)
+  limit?: number = 20;
+}
+
 // OfficeType enum values based on schema
 export enum OfficeType {
   WARD = 'WARD',
@@ -19,7 +35,7 @@ export enum OfficeType {
   OTHER = 'OTHER',
 }
 
-export class FindOfficesByLocationDto {
+export class FindOfficesByLocationDto extends PaginationDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
@@ -46,7 +62,7 @@ export class FindOfficesByLocationDto {
   locationCode?: string; // P-DD-MMM-WWWW format
 }
 
-export class FindOfficesForServiceDto {
+export class FindOfficesForServiceDto extends PaginationDto {
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
@@ -68,7 +84,7 @@ export class FindOfficesForServiceDto {
   wardId?: number;
 }
 
-export class FindOfficesByTypeDto {
+export class FindOfficesByTypeDto extends PaginationDto {
   @IsEnum(OfficeType)
   @Transform(({ value }) => value?.toUpperCase())
   officeType: OfficeType;
@@ -99,7 +115,7 @@ export class FindOfficesByTypeDto {
   locationCode?: string;
 }
 
-export class SearchOfficesDto {
+export class SearchOfficesDto extends PaginationDto {
   @IsString()
   @Transform(({ value }) => value?.trim())
   q: string;
@@ -108,11 +124,4 @@ export class SearchOfficesDto {
   @IsEnum(OfficeType)
   @Transform(({ value }) => value?.toUpperCase())
   type?: OfficeType;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  @Max(100)
-  @Type(() => Number)
-  limit?: number = 20;
 }
