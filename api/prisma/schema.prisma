@@ -45,32 +45,32 @@ enum DocType {
 
 enum OfficeType {
   // District Level - Core Services (77 offices each)
-  DISTRICT_ADMINISTRATION_OFFICE    // DAO - Citizenship, recommendations, certificates
-  LAND_REVENUE_OFFICE              // Malpot - Land registration, ownership transfer
-  DISTRICT_EDUCATION_OFFICE        // SEE/SLC verification, certificate attestation
-  
+  DISTRICT_ADMINISTRATION_OFFICE // DAO - Citizenship, recommendations, certificates
+  LAND_REVENUE_OFFICE // Malpot - Land registration, ownership transfer
+  DISTRICT_EDUCATION_OFFICE // SEE/SLC verification, certificate attestation
+
   // Transport Services
-  TRANSPORT_MANAGEMENT_OFFICE      // Vehicle registration, blue book, license
-  DRIVING_LICENSE_OFFICE           // License tests and renewals
-  
+  TRANSPORT_MANAGEMENT_OFFICE // Vehicle registration, blue book, license
+  DRIVING_LICENSE_OFFICE // License tests and renewals
+
   // Local Government - Daily services (753 offices)
-  MUNICIPALITY_OFFICE              // Nagarpalika - Local services, business tax
-  RURAL_MUNICIPALITY_OFFICE        // Gaupalika - Rural local services
-  
+  MUNICIPALITY_OFFICE // Nagarpalika - Local services, business tax
+  RURAL_MUNICIPALITY_OFFICE // Gaupalika - Rural local services
+
   // Ward Level - Highest volume (6,743 offices)
-  WARD_OFFICE                      // Birth/death registration, business registration, recommendations
-  
+  WARD_OFFICE // Birth/death registration, business registration, recommendations
+
   // Travel & Immigration
-  PASSPORT_OFFICE                  // Passport applications and renewals
-  IMMIGRATION_OFFICE               // Visa, travel documents
-  
+  PASSPORT_OFFICE // Passport applications and renewals
+  IMMIGRATION_OFFICE // Visa, travel documents
+
   // Business Registration - Federal Level
-  OFFICE_OF_COMPANY_REGISTRAR      // OCR - Company registration (e-OCR/CAMIS)
-  COTTAGE_SMALL_INDUSTRY_OFFICE    // DCSI - Cottage/small industry registration
-  INLAND_REVENUE_OFFICE            // IRD - PAN/VAT registration, tax filing
-  
+  OFFICE_OF_COMPANY_REGISTRAR // OCR - Company registration (e-OCR/CAMIS)
+  COTTAGE_SMALL_INDUSTRY_OFFICE // DCSI - Cottage/small industry registration
+  INLAND_REVENUE_OFFICE // IRD - PAN/VAT registration, tax filing
+
   // Social Services - NEWLY ADDED
-  LABOUR_OFFICE                    // Foreign employment, work permits, labor disputes
+  LABOUR_OFFICE // Foreign employment, work permits, labor disputes
 }
 
 enum WeekDay {
@@ -85,108 +85,137 @@ enum WeekDay {
 
 // ---------------  HIERARCHICAL LOCATION  ---------------
 model Province {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
+  id        Int              @id @default(autoincrement())
+  code      String?          @unique // "P1" "P2"
+  name      String           @unique
   nameNep   String?
-  slug      String     @unique
+  slug      String           @unique
   districts District[]
-  offices   ProvinceOffice[] 
+  offices   ProvinceOffice[]
 }
 
 model District {
-  id             Int            @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   provinceId     Int
-  name           String         @unique
+  name           String           @unique
   nameNep        String?
-  slug           String         @unique
-  province       Province       @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  slug           String           @unique
+  province       Province         @relation(fields: [provinceId], references: [id], onDelete: Cascade)
   municipalities Municipality[]
-  offices        DistrictOffice[]       // Add this
+  offices        DistrictOffice[] // Add this
 }
 
 model Municipality {
-  id         Int        @id @default(autoincrement())
+  id         Int                  @id @default(autoincrement())
   districtId Int
   name       String
   nameNep    String?
   slug       String
-  type       String     @default("Municipality")
-  district   District   @relation(fields: [districtId], references: [id], onDelete: Cascade)
+  type       String               @default("Municipality")
+  district   District             @relation(fields: [districtId], references: [id], onDelete: Cascade)
   wards      Ward[]
   offices    MunicipalityOffice[] // Add this
 
   @@unique([districtId, slug])
 }
 
-
 model Ward {
-  id             Int            @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   municipalityId Int
   wardNumber     Int
-  municipality   Municipality  @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
+  municipality   Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
   offices        WardOffice[]
 
   @@unique([municipalityId, wardNumber])
 }
 
-// ---------------  TOP-LEVEL SERVICE TREE  ---------------
 model Service {
-  id              String   @id @default(cuid())
-  serviceId       String   @unique // service_001 …
-  name            String
-  slug            String   @unique
-  category        String
-  description     String
-  eligibility     String
-  validityPeriod  String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id        String @id @default(cuid())
+  serviceId String @unique
 
-  subServices SubService[]
-  metadata    ServiceMetadata?
+  // Hierarchy fields
+  parentId String? // NULL = root service
+  level    Int     @default(0) // 0 = root, 1 = child, 2 = grandchild, etc.
 
+  // Basic info
+  name        String
+  slug        String
+  categories  ServiceCategory[]
+  description String?
+
+  // Service metadata
+  priority        Priority?
+  isOnlineEnabled Boolean   @default(false)
+  onlinePortalUrl String?
+
+  // Eligibility & validity
+  eligibility    String?
+  validityPeriod String?
+
+  // Self-referential relations
+  parent   Service?  @relation("ServiceHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Service[] @relation("ServiceHierarchy")
+
+  // Service steps (only leaf services have steps)
+  serviceSteps ServiceStep[]
+
+  // Detailed procedure (only leaf services)
+  detailedProc DetailedProc?
+
+  // Metadata
+  metadata ServiceMetadata?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([parentId, slug]) // Unique slug within same parent
+  @@index([parentId])
   @@index([slug])
-  @@index([category])
+  @@index([level])
+}
+
+model Category {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  slug        String            @unique
+  description String?
+  icon        String?
+  color       String?
+  services    ServiceCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt //
+}
+
+model ServiceCategory {
+  id         String   @id @default(cuid())
+  serviceId  String
+  categoryId String
+  service    Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([serviceId, categoryId])
   @@index([serviceId])
+  @@index([categoryId])
 }
 
 model ServiceMetadata {
   id          String   @id @default(cuid())
   serviceId   String   @unique
   lastUpdated DateTime @default(now())
-  version     String
-  dataSource  String
-  verifiedBy  String
+  version     String?
+  dataSource  String?
+  verifiedBy  String?
   service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 }
 
-// ---------------  SUB-SERVICE  ---------------
-model SubService {
-  id              String   @id @default(cuid())
-  // subServiceId    String   @unique
-  serviceId       String
-  name            String
-  slug            String   @unique
-  description     String
-  priority        Priority @default(MEDIUM)
-  isOnlineEnabled Boolean  @default(false)
-  onlinePortalUrl String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-
-  service      Service              @relation(fields: [serviceId], references: [id], onDelete: Cascade)
-  serviceSteps ServiceStep[]
-  detailedProc DetailedProc?
-  offices      SubServiceOnOffice[]
-
-  @@index([serviceId])
-  @@index([isOnlineEnabled])
-}
-
-// ---------------  STEP (inside subService)  ---------------
+// ---------------  STEP (inside service)  ---------------
 model ServiceStep {
   id                  String     @id @default(cuid())
-  subServiceId        String
+  serviceId           String
   step                Int
   stepTitle           String
   stepDescription     String
@@ -195,22 +224,23 @@ model ServiceStep {
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
 
-  subService             SubService        @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
-  documentsRequired      StepDocument[]
-  totalFees              StepFee[]
-  
+  service           Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  documentsRequired StepDocument[]
+  totalFees         StepFee[]
+
   timeRequired           StepTimeRequired?
   workingHours           WorkingHours[]
-  responsibleAuthorities StepAuthority[] @relation("ResponsibleAuthority")
-  complaintAuthorities   StepAuthority[] @relation("ComplaintAuthority")
+  responsibleAuthorities StepAuthority[]   @relation("ResponsibleAuthority")
+  complaintAuthorities   StepAuthority[]   @relation("ComplaintAuthority")
 
-  @@index([subServiceId])
+  @@unique([serviceId, step])
+  @@index([serviceId])
   @@index([officeType])
 }
 
 // ---------------  DOCUMENT (per step)  ---------------
 model StepDocument {
-  id                   Int @id @default(autoincrement())
+  id                   Int         @id @default(autoincrement())
   serviceStepId        String
   docId                String
   name                 String
@@ -229,25 +259,25 @@ model StepDocument {
 
 // ---------------  FEE (per step)  ---------------
 model StepFee {
-  id                  Int      @id @default(autoincrement())
+  id                  Int         @id @default(autoincrement())
   serviceStepId       String
   feeId               String
   feeTitle            String
   feeTitleNepali      String?
   feeAmount           Float
-  currency            Currency @default(NPR)
+  currency            Currency    @default(NPR)
   feeType             FeeType
-  isRefundable        Boolean  @default(false)
+  isRefundable        Boolean     @default(false)
   applicableCondition String?
   notes               String?
   step                ServiceStep @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
 
-  @@unique([serviceStepId, feeId])  // Prevent duplicate fees per step
+  @@unique([serviceStepId, feeId]) // Prevent duplicate fees per step
 }
 
 // ---------------  TIME (per step)  ---------------
 model StepTimeRequired {
-   id                   Int @id @default(autoincrement())
+  id                 Int         @id @default(autoincrement())
   serviceStepId      String      @unique
   minimumTime        String
   maximumTime        String
@@ -260,43 +290,44 @@ model StepTimeRequired {
 
 // ---------------  AUTHORITY (resp & complaint)  ---------------
 model StepAuthority {
-   id                   Int @id @default(autoincrement())
+  id                Int     @id @default(autoincrement())
   responsibleStepId String?
-  complaintStepId String?
-  position         String
-  positionNepali   String?
-  department       String
-  contactNumber    String
-  email            String?
-  complaintProcess String?
-  isResp           Boolean // true = responsible, false = complaint
+  complaintStepId   String?
+  position          String
+  positionNepali    String?
+  department        String
+  contactNumber     String
+  email             String?
+  complaintProcess  String?
+  isResp            Boolean // true = responsible, false = complaint
 
   responsibleForStep ServiceStep? @relation("ResponsibleAuthority", fields: [responsibleStepId], references: [id], onDelete: Cascade)
-  complaintForStep ServiceStep? @relation("ComplaintAuthority", fields: [complaintStepId], references: [id], onDelete: Cascade)
+  complaintForStep   ServiceStep? @relation("ComplaintAuthority", fields: [complaintStepId], references: [id], onDelete: Cascade)
 }
 
 // ---------------  WORKING HOURS (per step)  ---------------
 model WorkingHours {
-   id                   Int @id @default(autoincrement())
+  id            Int         @id @default(autoincrement())
   serviceStepId String
   day           WeekDay
   openClose     String // "10:00 AM - 5:00 PM"
   step          ServiceStep @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
-  @@unique([serviceStepId, day])  // One entry per day per step
+
+  @@unique([serviceStepId, day]) // One entry per day per step
 }
 
 // ---------------  DETAILED PROCEDURE  ---------------
 model DetailedProc {
-  id              String     @id @default(cuid())
-  subServiceId    String     @unique
+  id              String   @id @default(cuid())
+  serviceId       String   @unique
   overview        String
-    overviewNepali  String?
+  overviewNepali  String?
   stepByStepGuide String[]
   importantNotes  String[]
   legalReferences Json[] // {lawName, section, url}
   faqs            Json[] // {question, answer}
   commonIssues    Json[] // {issue, solution}
-  subService      SubService @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
+  service         Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 }
 
 // ---------------  OFFICE (linked to Ward + OfficeCategory)  ---------------
@@ -333,9 +364,12 @@ model Office {
   districtOffices     DistrictOffice[]
   provinceOffices     ProvinceOffice[]
 
-  category    OfficeCategory       @relation(fields: [categoryId], references: [id])
-  subServices SubServiceOnOffice[]
-  ratings     OfficeRating?
+  category OfficeCategory @relation(fields: [categoryId], references: [id])
+  ratings  OfficeRating?
+
+  @@index([type])
+  @@index([isActive])
+  @@index([categoryId])
 }
 
 // Explicit junction tables
@@ -344,6 +378,8 @@ model WardOffice {
   wardId   Int
   office   Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
   ward     Ward   @relation(fields: [wardId], references: [id], onDelete: Cascade)
+
+  @@index([wardId])
 }
 
 model MunicipalityOffice {
@@ -351,6 +387,8 @@ model MunicipalityOffice {
   municipalityId Int
   office         Office       @relation(fields: [officeId], references: [id], onDelete: Cascade)
   municipality   Municipality @relation(fields: [municipalityId], references: [id], onDelete: Cascade)
+
+  @@index([municipalityId])
 }
 
 model DistrictOffice {
@@ -358,6 +396,8 @@ model DistrictOffice {
   districtId Int
   office     Office   @relation(fields: [officeId], references: [id], onDelete: Cascade)
   district   District @relation(fields: [districtId], references: [id], onDelete: Cascade)
+
+  @@index([districtId])
 }
 
 model ProvinceOffice {
@@ -365,6 +405,8 @@ model ProvinceOffice {
   provinceId Int
   office     Office   @relation(fields: [officeId], references: [id], onDelete: Cascade)
   province   Province @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+
+  @@index([provinceId])
 }
 
 model OfficeRating {
@@ -375,28 +417,22 @@ model OfficeRating {
   office        Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
 }
 
-// many-to-many between SubService and Office (with dynamicData flag)
-model SubServiceOnOffice {
-  id            String  @id @default(cuid())
-  subServiceId  String
-  officeId      String
-  locationBased Boolean @default(true)
-  fetchFromAPI  Boolean @default(true)
-  apiEndpoint   String?
-  remarks       String?
-
-  subService SubService @relation(fields: [subServiceId], references: [id], onDelete: Cascade)
-  office     Office     @relation(fields: [officeId], references: [id], onDelete: Cascade)
-
-  @@unique([subServiceId, officeId])
-}
-
-// ---------------  USER ADDRESS (optional)  ---------------
 model User {
-  id           String   @id @default(cuid())
-  phone        String
-  name         String?
-  locationCode String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id    String  @id @default(cuid())
+  phone String  @unique
+  name  String?
+  email String? @unique
+
+  // Location codes (encoded: P-DD-MMM-WWWW)
+  permanentLocationCode String? // e.g., "3-25-217-0001" (Bagmati-Kathmandu-KTM Metro-Ward 1)
+  temporaryLocationCode String? // e.g., "3-26-218-0005" (Current residence)
+
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([phone])
+  @@index([email])
+  @@index([permanentLocationCode]) // For location-based queries
+  @@index([temporaryLocationCode])
 }
