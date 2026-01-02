@@ -9,9 +9,10 @@ export class OfficesController {
 
   @Get('nearby/:officeType')
   async getSpecificOfficesNearby(
-    @Param('officeType') officeType: OfficeType,
+    @Param('officeType') officeType: string,
     @Body() officesByLocationDto: OfficesByLocationDto 
   ){
-    return this.officesService.getSpecificOfficesNearby(officeType, officesByLocationDto);
+    const trimmedOfficeType = officeType.trim() as OfficeType;
+    return this.officesService.getSpecificOfficesNearby(trimmedOfficeType, officesByLocationDto);
   }
 }
