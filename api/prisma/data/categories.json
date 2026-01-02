@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Civil Registration",
+    "slug": "civil-registration",
+    "description": "Services related to vital events registration including birth, death, and marriage certificates",
+    "descriptionNepali": "जन्म, मृत्यु र विवाह प्रमाणपत्रहरू लगायतका महत्त्वपूर्ण घटनाहरूको दर्तासम्बन्धी सेवाहरू",
+    "icon": "DocumentText",
+    "color": "#2563EB"
+  },
+  {
+    "name": "Identity & Citizenship",
+    "slug": "identity-citizenship",
+    "description": "Citizenship certificates, national ID cards, and identity verification services",
+    "descriptionNepali": "नागरिकता प्रमाणपत्र, राष्ट्रिय परिचयपत्र र पहिचान प्रमाणीकरण सेवाहरू",
+    "icon": "Identification",
+    "color": "#DC2626"
+  },
+  {
+    "name": "Travel Documents",
+    "slug": "travel-documents",
+    "description": "Passport applications, renewals, and travel-related documentation",
+    "descriptionNepali": "राहदानी आवेदन, नवीकरण र यात्रासम्बन्धी कागजातहरू",
+    "icon": "GlobeAlt",
+    "color": "#7C3AED"
+  },
+  {
+    "name": "Licenses & Permits",
+    "slug": "licenses-permits",
+    "description": "Driving licenses, vehicle permits, and various operational licenses",
+    "descriptionNepali": "सवारी चालक अनुमतिपत्र, सवारी अनुमति र विभिन्न सञ्चालन अनुमतिपत्रहरू",
+    "icon": "ClipboardCheck",
+    "color": "#059669"
+  },
+  {
+    "name": "Property & Land",
+    "slug": "property-land",
+    "description": "Land registration, ownership transfer, and property-related services",
+    "descriptionNepali": "जग्गा दर्ता, स्वामित्व हस्तान्तरण र सम्पत्तिसम्बन्धी सेवाहरू",
+    "icon": "Home",
+    "color": "#B45309"
+  },
+  {
+    "name": "Business & Commerce",
+    "slug": "business-commerce",
+    "description": "Business registration, PAN/VAT, company formation, and trade licenses",
+    "descriptionNepali": "व्यापार दर्ता, प्यान/भ्याट, कम्पनी गठन र व्यापार अनुमतिपत्रहरू",
+    "icon": "Briefcase",
+    "color": "#0891B2"
+  },
+  {
+    "name": "Education & Certificates",
+    "slug": "education-certificates",
+    "description": "Educational certificates verification, equivalency, and attestation services",
+    "descriptionNepali": "शैक्षिक प्रमाणपत्र प्रमाणीकरण, समकक्षता र प्रमाणीकरण सेवाहरू",
+    "icon": "AcademicCap",
+    "color": "#4F46E5"
+  },
+  {
+    "name": "Social Welfare",
+    "slug": "social-welfare",
+    "description": "Social security, pensions, disability cards, and welfare programs",
+    "descriptionNepali": "सामाजिक सुरक्षा, पेन्सन, अपाङ्गता परिचयपत्र र कल्याण कार्यक्रमहरू",
+    "icon": "Heart",
+    "color": "#DB2777"
+  },
+  {
+    "name": "Legal & Judicial",
+    "slug": "legal-judicial",
+    "description": "Court services, legal aid, police verification, and judicial processes",
+    "descriptionNepali": "अदालत सेवाहरू, कानूनी सहायता, प्रहरी प्रमाणीकरण र न्यायिक प्रक्रियाहरू",
+    "icon": "Scale",
+    "color": "#64748B"
+  },
+  {
+    "name": "Health & Medical",
+    "slug": "health-medical",
+    "description": "Health certificates, medical registrations, and health-related permits",
+    "descriptionNepali": "स्वास्थ्य प्रमाणपत्र, चिकित्सा दर्ता र स्वास्थ्यसम्बन्धी अनुमतिपत्रहरू",
+    "icon": "HeartPulse",
+    "color": "#16A34A"
+  }
+]

@@ -1,73 +1,181 @@
 [
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "SUNDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "MONDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "TUESDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "WEDNESDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "THURSDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 1,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "citizenship-by-descent",
     "day": "FRIDAY",
     "openClose": "10:00 AM - 3:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
     "day": "SUNDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
     "day": "MONDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
     "day": "TUESDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
     "day": "WEDNESDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
     "day": "THURSDAY",
     "openClose": "10:00 AM - 5:00 PM"
   },
   {
-    "stepNumber": 2,
-    "subServiceSlug": "new-citizenship-certificate",
+    "serviceSlug": "birth-registration",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 3:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "death-registration",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 3:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "marriage-registration",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 3:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 4:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 4:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 4:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 4:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 4:00 PM"
+  },
+  {
+    "serviceSlug": "new-passport-application",
+    "day": "FRIDAY",
+    "openClose": "10:00 AM - 2:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "day": "SUNDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "day": "MONDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "day": "TUESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "day": "WEDNESDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
+    "day": "THURSDAY",
+    "openClose": "10:00 AM - 5:00 PM"
+  },
+  {
+    "serviceSlug": "duplicate-citizenship-certificate",
     "day": "FRIDAY",
     "openClose": "10:00 AM - 3:00 PM"
   }

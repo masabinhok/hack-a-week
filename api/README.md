@@ -1,98 +1,186 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Setu API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+**सेतु** - Your bridge to Nepal government services
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+A comprehensive REST API providing information about Nepal government services, including step-by-step procedures, required documents, fees, and office locations.
 
-## Description
+## 🎯 Overview
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Setu API helps citizens navigate Nepal's government bureaucracy by providing:
 
-## Project setup
+- **📋 Service Guides**: Step-by-step procedures for government services
+- **📄 Document Requirements**: What you need to bring
+- **💰 Fee Information**: Government fees for each service
+- **🏢 Office Locations**: Where to go (ward, municipality, district, province)
+- **📍 Location Data**: Complete Nepal administrative hierarchy
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js 22.x
+- PostgreSQL 15+
+- npm or pnpm
+
+### Installation
 
 ```bash
-$ npm install
+# Clone repository
+git clone <repo-url>
+cd api
+
+# Install dependencies
+npm install
+
+# Setup environment
+cp .env.example .env
+# Edit .env with your database credentials
+
+# Generate Prisma client
+npx prisma generate
+
+# Run migrations
+npx prisma migrate dev
+
+# Seed database
+npx prisma db seed
+
+# Start development server
+npm run start:dev
 ```
 
-## Compile and run the project
+### API Base URL
+
+```
+http://localhost:3000/api/v1
+```
+
+## 📚 API Endpoints
+
+### Categories
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/categories` | List all service categories |
+| GET | `/categories/:slug` | Get category details |
+| GET | `/categories/:slug/services` | Get services in category |
+
+### Services
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/services` | List root services |
+| GET | `/services/search?q=keyword` | Search services |
+| GET | `/services/:slug` | Get service with children |
+| GET | `/services/:slug/guide` | Get full service guide |
+| GET | `/services/:slug/breadcrumb` | Get navigation breadcrumb |
+
+### Offices
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/offices/types` | List office types |
+| GET | `/offices/categories` | List office categories |
+| GET | `/offices/search?q=keyword` | Search offices |
+| GET | `/offices/by-location?locationCode=...` | Get offices by location |
+| GET | `/offices/by-type?officeType=...` | Get offices by type |
+| GET | `/offices/:id` | Get office details |
+
+### Locations
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/locations/provinces` | List provinces |
+| GET | `/locations/provinces/:id/districts` | Districts in province |
+| GET | `/locations/districts/:id/municipalities` | Municipalities in district |
+| GET | `/locations/municipalities/:id/wards` | Wards in municipality |
+
+## 🏗️ Project Structure
+
+```
+api/
+├── prisma/
+│   ├── schema.prisma     # Database schema
+│   ├── data/             # Seed data (JSON)
+│   └── seeders/          # Seeder functions
+├── src/
+│   ├── categories/       # Categories module
+│   ├── services/         # Services module
+│   ├── offices/          # Offices module
+│   ├── locations/        # Locations module
+│   ├── prisma/           # Prisma module
+│   └── common/           # Shared utilities
+└── docs/                 # Documentation
+```
+
+## 📖 Documentation
+
+- [API Documentation](docs/API_DOCUMENTATION.md) - Full API reference
+- [Architecture](docs/ARCHITECTURE.md) - System design
+- [Seeding Guide](docs/SEEDING_GUIDE.md) - Database seeding
+- [Codebase Analysis](docs/CODEBASE_ANALYSIS.md) - Technical analysis
+
+## 🗄️ Database Schema
+
+Key entities:
+- **Service**: Hierarchical services (self-referential parent-child)
+- **ServiceStep**: Steps for completing a service
+- **DocumentRequired**: Required documents per step
+- **Fee**: Government fees
+- **Office**: Government offices with jurisdiction mappings
+- **Province/District/Municipality/Ward**: Nepal administrative divisions
+
+## 📍 Location Code System
+
+Location codes follow format: `P-DD-MMM-WWWW`
+
+- P: Province (1-7)
+- DD: District (01-77)
+- MMM: Municipality (001-753)
+- WWWW: Ward (0001-9999)
+
+Example: `3-27-001-0005` = Kathmandu Metropolitan City, Ward 5
+
+## 🛠️ Development
 
 ```bash
-# development
-$ npm run start
+# Run in watch mode
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
+# Run tests
+npm run test
 
-# production mode
-$ npm run start:prod
+# Lint code
+npm run lint
+
+# Format code
+npm run format
+
+# Prisma studio (database GUI)
+npx prisma studio
 ```
 
-## Run tests
+## 📊 Data Sources
 
-```bash
-# unit tests
-$ npm run test
+Service information is compiled from official Nepal government sources:
+- Nepal Law Commission
+- Ministry websites
+- Official government service charters
 
-# e2e tests
-$ npm run test:e2e
+## 🤝 Contributing
 
-# test coverage
-$ npm run test:cov
-```
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -m 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit pull request
 
-## Deployment
+## 📄 License
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+[MIT](LICENSE)
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+## 🙏 Acknowledgments
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- NestJS framework
+- Prisma ORM
+- Nepal government service documentation
