@@ -27,18 +27,17 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
 # Install only production dependencies
 RUN npm ci --only=production
 
-# Copy Prisma schema and generate client
-RUN npx prisma generate
-
 # Copy built application from builder
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/src/generated ./src/generated
 
 # Expose port
 EXPOSE 3000
 
 # Start the application
-CMD ["npm", "run", "start:prod"]
+CMD ["node", "dist/src/main.js"]
