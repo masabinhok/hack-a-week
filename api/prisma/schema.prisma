@@ -221,6 +221,8 @@ model ServiceStep {
   stepDescription     String
   officeTypes         OfficeType[] // Changed from single officeType to array
   requiresAppointment Boolean      @default(false)
+  isOnline            Boolean      @default(false) // NEW: If true, this step is completed online
+  onlineFormUrl       String?      // NEW: URL to online form/portal for this step
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
 

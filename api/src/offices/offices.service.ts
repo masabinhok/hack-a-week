@@ -515,6 +515,8 @@ export class OfficesService {
             id: true,
             step: true,
             officeTypes: true, // Changed from officeType to officeTypes
+            isOnline: true,
+            onlineFormUrl: true,
           },
           orderBy: { step: 'asc' },
         },
@@ -530,67 +532,91 @@ export class OfficesService {
     }
 
     // Workaround for Prisma adapter-pg bug with enum arrays
-    // Fetch officeTypes separately using raw SQL
+    // Fetch officeTypes and isOnline separately using raw SQL
     const stepIds = service.serviceSteps.map(s => s.id);
-    const officeTypesResult = await this.prisma.$queryRaw<{ id: string; officeTypes: string[] }[]>`
-      SELECT id, "officeTypes"::text[] as "officeTypes" FROM "ServiceStep" WHERE id = ANY(${stepIds})
+    const stepDetailsResult = await this.prisma.$queryRaw<{ 
+      id: string; 
+      officeTypes: string[];
+      isOnline: boolean;
+      onlineFormUrl: string | null;
+    }[]>`
+      SELECT id, "officeTypes"::text[] as "officeTypes", "isOnline", "onlineFormUrl" 
+      FROM "ServiceStep" 
+      WHERE id = ANY(${stepIds})
     `;
-    const officeTypesMap = new Map(officeTypesResult.map(r => [r.id, r.officeTypes || []]));
+    const stepDetailsMap = new Map(stepDetailsResult.map(r => [r.id, r]));
 
-    // Get unique office types needed for this service - flatten the array since each step can have multiple types
-    const allOfficeTypes = service.serviceSteps.flatMap((s) => officeTypesMap.get(s.id) || []);
+    // Filter out online steps when getting office types
+    const allOfficeTypes = service.serviceSteps
+      .filter(s => {
+        const details = stepDetailsMap.get(s.id);
+        return !details?.isOnline; // Only include non-online steps
+      })
+      .flatMap((s) => stepDetailsMap.get(s.id)?.officeTypes || []);
     const officeTypes = [...new Set(allOfficeTypes)] as PrismaOfficeType[];
 
-    // Build location filter for offices
-    const locationFilter: any[] = [];
-    if (wardId) {
-      locationFilter.push({ wardOffices: { some: { wardId } } });
-    }
-    if (municipalityId) {
-      locationFilter.push({ municipalityOffices: { some: { municipalityId } } });
-    }
-    if (districtId) {
-      locationFilter.push({ districtOffices: { some: { districtId } } });
-    }
-    if (provinceId) {
-      locationFilter.push({ provinceOffices: { some: { provinceId } } });
-    }
+    // Build location filter for offices (only if there are non-online steps)
+    let offices: (Office & { category: { name: string; description: string | null } | null })[] = [];
+    
+    if (officeTypes.length > 0) {
+      const locationFilter: any[] = [];
+      if (wardId) {
+        locationFilter.push({ wardOffices: { some: { wardId } } });
+      }
+      if (municipalityId) {
+        locationFilter.push({ municipalityOffices: { some: { municipalityId } } });
+      }
+      if (districtId) {
+        locationFilter.push({ districtOffices: { some: { districtId } } });
+      }
+      if (provinceId) {
+        locationFilter.push({ provinceOffices: { some: { provinceId } } });
+      }
 
-    // Fetch all relevant offices
-    const offices = await this.prisma.office.findMany({
-      where: {
-        type: { in: officeTypes },
-        ...(locationFilter.length > 0 ? { OR: locationFilter } : {}),
-      },
-      include: {
-        category: true,
-      },
-      orderBy: [{ type: 'asc' }, { name: 'asc' }],
-    }) as (Office & { category: { name: string; description: string | null } | null })[];
+      // Fetch all relevant offices
+      offices = await this.prisma.office.findMany({
+        where: {
+          type: { in: officeTypes },
+          ...(locationFilter.length > 0 ? { OR: locationFilter } : {}),
+        },
+        include: {
+          category: true,
+        },
+        orderBy: [{ type: 'asc' }, { name: 'asc' }],
+      }) as (Office & { category: { name: string; description: string | null } | null })[];
+    }
 
     // Group offices by step
     const result = service.serviceSteps.map((step) => {
-      const stepOfficeTypes = officeTypesMap.get(step.id) || [];
+      const stepDetails = stepDetailsMap.get(step.id);
+      const stepOfficeTypes = stepDetails?.officeTypes || [];
+      const isOnline = stepDetails?.isOnline || false;
+      const onlineFormUrl = stepDetails?.onlineFormUrl || null;
+
       return {
         stepNumber: step.step,
-        officeTypes: stepOfficeTypes, // Use raw SQL result
-        offices: offices
-          .filter((o) => stepOfficeTypes.includes(o.type)) // Match any of the office types
-          .map((o) => ({
-            id: o.id,
-            officeId: o.officeId,
-            name: o.name,
-            nameNepali: o.nameNepali,
-            type: o.type,
-            address: o.address,
-            addressNepali: o.addressNepali,
-            contact: o.contact,
-            email: o.email,
-            website: o.website,
-            category: o.category
-              ? { name: o.category.name, description: o.category.description }
-              : null,
-          })),
+        officeTypes: stepOfficeTypes,
+        isOnline,
+        onlineFormUrl,
+        offices: isOnline 
+          ? [] // Return empty offices array for online steps
+          : offices
+              .filter((o) => stepOfficeTypes.includes(o.type)) // Match any of the office types
+              .map((o) => ({
+                id: o.id,
+                officeId: o.officeId,
+                name: o.name,
+                nameNepali: o.nameNepali,
+                type: o.type,
+                address: o.address,
+                addressNepali: o.addressNepali,
+                contact: o.contact,
+                email: o.email,
+                website: o.website,
+                category: o.category
+                  ? { name: o.category.name, description: o.category.description }
+                  : null,
+              })),
       };
     });
 

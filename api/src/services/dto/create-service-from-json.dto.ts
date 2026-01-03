@@ -250,6 +250,15 @@ export class CreateServiceStepDto {
   @IsBoolean()
   requiresAppointment: boolean;
 
+  @IsOptional()
+  @IsBoolean()
+  isOnline?: boolean;
+
+  @IsOptional()
+  @IsUrl()
+  onlineFormUrl?: string;
+
+
   @ValidateNested()
   @Type(() => StepDocumentsDto)
   documentsRequired: StepDocumentsDto;

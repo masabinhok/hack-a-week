@@ -307,6 +307,8 @@ export class ServicesService {
         stepDescriptionNepali: null,
         officeTypes: officeTypesMap.get(step.id) || [], // Use raw SQL result
         requiresAppointment: step.requiresAppointment,
+        isOnline: step.isOnline,
+        onlineFormUrl: step.onlineFormUrl,
         isActive: true,
         documentsRequired: step.documentsRequired.map((doc) => ({
           id: doc.id,

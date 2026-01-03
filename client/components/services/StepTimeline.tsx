@@ -231,8 +231,53 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                         <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
-                      {/* Office Finder - Show if serviceSlug is provided and step has officeTypes */}
-                      {serviceSlug && step.officeTypes && step.officeTypes.length > 0 && (
+                      
+                      {/* Online Form Link - Show if step is online */}
+                      {step.isOnline && step.onlineFormUrl && (
+                        <div className="mt-6 p-4 bg-green-50 border-2 border-green-200 rounded-lg">
+                          <div className="flex items-start gap-3">
+                            <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                              <Building2 className="w-5 h-5 text-green-600" />
+                            </div>
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-green-900 mb-1">
+                                Complete This Step Online
+                              </h4>
+                              <p className="text-sm text-green-700 mb-3">
+                                This step can be completed entirely online. Click the button below to access the online form.
+                              </p>
+                              <Button
+                                asChild
+                                className="bg-green-600 hover:bg-green-700"
+                              >
+                                <a
+                                  href={step.onlineFormUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  Go to Online Form
+                                  <svg
+                                    className="w-4 h-4 ml-2"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    />
+                                  </svg>
+                                </a>
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Office Finder - Show if serviceSlug is provided, step has officeTypes, and NOT online */}
+                      {serviceSlug && !step.isOnline && step.officeTypes && step.officeTypes.length > 0 && (
                         <OfficeFinderCard
                           serviceSlug={serviceSlug}
                           stepNumber={step.step}

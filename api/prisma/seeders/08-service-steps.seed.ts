@@ -18,6 +18,8 @@ interface ServiceStepData {
   stepDescriptionNepali?: string;
   officeTypes: OfficeType[];
   requiresAppointment: boolean;
+  isOnline?: boolean;
+  onlineFormUrl?: string;
 }
 
 function readJsonFile<T>(filename: string): T {
@@ -72,6 +74,8 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
       stepDescription: step.stepDescription,
       officeTypes: step.officeTypes,
       requiresAppointment: step.requiresAppointment,
+      isOnline: step.isOnline || false,
+      onlineFormUrl: step.onlineFormUrl || null,
     };
 
     if (existingStep) {

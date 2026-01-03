@@ -163,9 +163,9 @@
         "stepDescription":  "Visit nepalpassport.gov.np, create an account, and fill out the passport application form. Upload a recent passport-size photo and select your preferred appointment date and passport office.",
         "stepDescriptionNepali":  "nepalpassport.gov.np मा जानुहोस्, खाता बनाउनुहोस्, र राहदानी आवेदन फाराम भर्नुहोस्। हालको पासपोर्ट साइजको फोटो अपलोड गर्नुहोस् र आफ्नो मनपर्ने भेटघाट मिति र राहदानी कार्यालय छान्नुहोस्।",
         "requiresAppointment":  true,
-        "officeTypes":  [
-                            "PASSPORT_OFFICE"
-                        ]
+        "isOnline": true,
+        "onlineFormUrl": "https://nepalpassport.gov.np",
+        "officeTypes":  []
     },
     {
         "serviceSlug":  "new-passport-application",
@@ -175,9 +175,9 @@
         "stepDescription":  "Pay the passport fee online via eSewa, Khalti, or bank transfer. For regular service, fee is NPR 5,000 for 34 pages or NPR 7,000 for 66 pages. Express service costs additional NPR 10,000.",
         "stepDescriptionNepali":  "eSewa, Khalti, वा बैंक ट्रान्सफर मार्फत अनलाइन राहदानी शुल्क तिर्नुहोस्। नियमित सेवाको लागि, शुल्क ३४ पृष्ठको लागि रु ५,००० वा ६६ पृष्ठको लागि रु ७,००० हो। द्रुत सेवाको लागि थप रु १०,००० लाग्छ।",
         "requiresAppointment":  false,
-        "officeTypes":  [
-                            "PASSPORT_OFFICE"
-                        ]
+        "isOnline": true,
+        "onlineFormUrl": "https://nepalpassport.gov.np/payment",
+        "officeTypes":  []
     },
     {
         "serviceSlug":  "new-passport-application",

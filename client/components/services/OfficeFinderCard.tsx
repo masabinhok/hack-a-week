@@ -85,6 +85,13 @@ export function OfficeFinderCard({
 
         // Filter for current step
         const stepOffices = result.find((r) => r.stepNumber === stepNumber);
+        
+        // If step is online, don't show offices
+        if (stepOffices?.isOnline) {
+          setOffices([]);
+          return;
+        }
+        
         setOffices(stepOffices?.offices || []);
       } catch (err) {
         console.error("Failed to fetch offices:", err);

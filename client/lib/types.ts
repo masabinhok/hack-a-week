@@ -160,6 +160,8 @@ export interface ServiceStep {
   stepDescriptionNepali?: string;
   officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
   requiresAppointment: boolean;
+  isOnline?: boolean; // NEW: If true, this step is completed online
+  onlineFormUrl?: string; // NEW: URL to online form/portal for this step
   isActive: boolean;
   documentsRequired: StepDocument[];
   totalFees: StepFee[];
@@ -375,6 +377,8 @@ export interface OfficeWorkingHours {
 export interface OfficeForService {
   stepNumber: number;
   officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
+  isOnline?: boolean; // NEW: If true, this step is completed online
+  onlineFormUrl?: string; // NEW: URL to online form/portal for this step
   offices: Office[];
 }
 
