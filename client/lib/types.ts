@@ -168,6 +168,20 @@ export interface ServiceStep {
   timeRequired?: StepTime;
   workingHours: StepWorkingHours[];
   responsibleAuthorities: StepAuthority[];
+  constraints?: ServiceStepConstraint[]; // Optional constraints for this step
+}
+
+export interface ServiceStepConstraint {
+  id: string;
+  serviceStepId: string;
+  specificOfficeIds: string[]; // Specific office IDs if applicable
+  provinceIds: number[]; // Province restrictions
+  districtIds: number[]; // District restrictions
+  municipalityIds: number[]; // Municipality restrictions
+  reason?: string; // Human-readable explanation
+  isException: boolean; // true = adds exceptions, false = restricts
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 // OfficeType aligned with backend Prisma enum
@@ -192,7 +206,9 @@ export type OfficeType =
   | "COTTAGE_SMALL_INDUSTRY_OFFICE" // DCSI - Cottage/small industry registration
   | "INLAND_REVENUE_OFFICE" // IRD - PAN/VAT registration, tax filing
   // Social Services
-  | "LABOUR_OFFICE"; // Foreign employment, work permits, labor disputes
+  | "LABOUR_OFFICE" // Foreign employment, work permits, labor disputes
+  // Special Services
+  | "NATIONAL_ID_CENTER"; // National ID Card enrollment and biometric registration
 
 export interface StepDocument {
   id: number;

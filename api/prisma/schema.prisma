@@ -71,6 +71,9 @@ enum OfficeType {
 
   // Social Services - NEWLY ADDED
   LABOUR_OFFICE // Foreign employment, work permits, labor disputes
+  
+  // Special Services
+  NATIONAL_ID_CENTER // National ID Card enrollment and biometric registration
 }
 
 enum WeekDay {

@@ -278,13 +278,41 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
 
                       {/* Office Finder - Show if serviceSlug is provided, step has officeTypes, and NOT online */}
                       {serviceSlug && !step.isOnline && step.officeTypes && step.officeTypes.length > 0 && (
-                        <OfficeFinderCard
+                        <>
+                          {/* Constraints Information - Show if constraints exist */}
+                          {step.constraints && step.constraints.length > 0 && (
+                            <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                              <div className="flex items-start gap-2">
+                                <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 shrink-0" />
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-blue-900 mb-2">
+                                    {step.constraints.some(c => c.isException) 
+                                      ? "Additional Locations Available" 
+                                      : "Location Restrictions Apply"}
+                                  </h4>
+                                  <div className="space-y-2">
+                                    {step.constraints.map((constraint, idx) => (
+                                      <p key={idx} className="text-sm text-blue-700">
+                                        {constraint.reason || 
+                                          (constraint.isException 
+                                            ? "Special enrollment centers are available for this service." 
+                                            : "This service is only available in specific locations.")}
+                                      </p>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
+                          <OfficeFinderCard
                           serviceSlug={serviceSlug}
                           stepNumber={step.step}
                           officeTypes={step.officeTypes}
                           userLocations={userLocations}
                           addressType="convenient" // TODO: Determine from step metadata
                         />
+                        </>
                       )}
                     </div>
                   )}

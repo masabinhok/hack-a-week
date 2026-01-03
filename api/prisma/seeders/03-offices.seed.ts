@@ -1,7 +1,7 @@
 import { OfficeType, PrismaClient } from 'src/generated/prisma/client';
 
 export async function seedOffices(prisma: PrismaClient) {
-  console.log('🏢 Seeding offices...\n');
+  console.log('🏢 [Offices] Seeding offices...\n');
 
   // 1. Get office categories first
   const daoCategory = await prisma.officeCategory.findUnique({
@@ -12,12 +12,16 @@ export async function seedOffices(prisma: PrismaClient) {
     where: { name: 'WARD_OFFICE' }
   });
 
-  if (!daoCategory || !wardCategory) {
+  const nationalIdCategory = await prisma.officeCategory.findUnique({
+    where: { name: 'NATIONAL_ID_CENTER' }
+  });
+
+  if (!daoCategory || !wardCategory || !nationalIdCategory) {
     throw new Error('Office categories not found! Seed them first.');
   }
 
   // 2. Generate DAOs (77 total - one per district)
-  console.log('  → Generating District Administration Offices...');
+  console.log('  → [Offices] Generating District Administration Offices...');
   
   const districts = await prisma.district.findMany({
     include: { province: true }
@@ -52,14 +56,65 @@ export async function seedOffices(prisma: PrismaClient) {
     
     daoCount++;
     if (daoCount % 10 === 0) {
-      console.log(`    Created ${daoCount}/${districts.length} DAOs...`);
+      console.log(`    [Offices] Created ${daoCount}/${districts.length} DAOs...`);
     }
   }
   
-  console.log(`  ✓ Created ${daoCount} District Administration Offices\n`);
+  console.log(`  ✓ [Offices] Created ${daoCount} District Administration Offices\n`);
+
+  // 2.5. Create special NID enrollment center - Narayan Hiti Durbar
+  console.log('  → [Offices] Creating special NID enrollment center...');
+  
+  // Get Kathmandu district for location reference
+  const kathmandu = await prisma.district.findFirst({
+    where: { name: 'Kathmandu' },
+    include: { province: true }
+  });
+
+  if (kathmandu) {
+    const narayanHitiOffice = await prisma.office.upsert({
+      where: { officeId: 'OFFICE-NARAYAN-HITI-DURBAR' },
+      update: {},
+      create: {
+        officeId: 'OFFICE-NARAYAN-HITI-DURBAR',
+        categoryId: nationalIdCategory.id,
+        name: 'Narayan Hiti Durbar NID Enrollment Center',
+        nameNepali: 'नारायणहिटी दरबार राष्ट्रिय परिचयपत्र दर्ता केन्द्र',
+        type: 'NATIONAL_ID_CENTER',
+        address: 'Narayan Hiti Palace (Old Passport Department), Kathmandu',
+        addressNepali: 'नारायणहिटी दरबार (पुरानो राहदानी विभाग), काठमाडौं',
+        contact: '01-4107000',
+        alternateContact: null,
+        email: 'nid@donidcr.gov.np',
+        website: 'https://enrollment.donidcr.gov.np',
+        photoUrls: [],
+        facilities: [
+          'Biometric enrollment',
+          'NID card distribution',
+          'Document verification',
+          'Online appointment system'
+        ],
+        nearestLandmark: 'Near Thamel, Kathmandu',
+        publicTransport: 'Multiple bus routes to Thamel area',
+        isActive: true,
+      }
+    });
+    
+    // Link to Kathmandu district
+    await prisma.districtOffice.upsert({
+      where: { officeId: narayanHitiOffice.id },
+      update: {},
+      create: {
+        officeId: narayanHitiOffice.id,
+        districtId: kathmandu.id,
+      }
+    });
+    
+    console.log(`  ✓ [Offices] Created Narayan Hiti Durbar NID Enrollment Center\n`);
+  }
 
   // 3. Generate Ward Offices (6,743 total)
-  console.log('  → Generating Ward Offices...');
+  console.log('  → [Offices] Generating Ward Offices...');
   
   const wards = await prisma.ward.findMany({
     include: { 
@@ -104,11 +159,11 @@ export async function seedOffices(prisma: PrismaClient) {
     });
 
     wardOfficeCount += batch.length;
-    console.log(`    Created ${wardOfficeCount}/${wards.length} Ward Offices...`);
+    console.log(`    [Offices] Created ${wardOfficeCount}/${wards.length} Ward Offices...`);
   }
 
-  console.log(`  ✓ Created ${wardOfficeCount} Ward Offices\n`);
-  console.log(`📊 Total offices created: ${daoCount + wardOfficeCount}\n`);
+  console.log(`  ✓ [Offices] Created ${wardOfficeCount} Ward Offices\n`);
+  console.log(`✅ [Offices] Total offices created: ${daoCount + wardOfficeCount}\n`);
 }
 
 if (require.main === module) {

@@ -18,6 +18,11 @@ export async function seedOfficeCategories(prisma: PrismaClient) {
     { name: 'COTTAGE_SMALL_INDUSTRY_OFFICE', description: 'Cottage & Small Industry Office (DCSI) - Cottage/small industry registration' },
     { name: 'INLAND_REVENUE_OFFICE', description: 'Inland Revenue Office (IRD) - PAN/VAT registration, tax filing' },
     { name: 'LABOUR_OFFICE', description: 'Labour Office - Foreign employment, work permits, labor disputes' },
+    {
+  name: 'NATIONAL_ID_CENTER',
+  description: 'National ID Card Center - National identity card enrollment and biometric registration'
+}
+
   ];
   await prisma.officeCategory.createMany({ data: categories, skipDuplicates: true });
   console.log('✅ [OfficeCategory] Seeded office categories.');

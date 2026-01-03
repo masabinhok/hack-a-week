@@ -557,6 +557,8 @@ export function getOfficeTypeName(type: OfficeType): string {
     INLAND_REVENUE_OFFICE: "Inland Revenue Office",
     // Social Services
     LABOUR_OFFICE: "Labour Office",
+    // Special Services
+    NATIONAL_ID_CENTER: "National ID Card Center",
   };
   return names[type] || type;
 }
@@ -587,6 +589,8 @@ export function getOfficeTypeNameNepali(type: OfficeType): string {
     INLAND_REVENUE_OFFICE: "आन्तरिक राजस्व कार्यालय",
     // Social Services
     LABOUR_OFFICE: "श्रम कार्यालय",
+    // Special Services
+    NATIONAL_ID_CENTER: "राष्ट्रिय परिचयपत्र केन्द्र",
   };
   return names[type] || type;
 }

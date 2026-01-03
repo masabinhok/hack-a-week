@@ -119,6 +119,12 @@ const OFFICE_CONFIG: Partial<
     icon: Building,
     className: "bg-slate-100 text-slate-700 border-slate-200",
   },
+  NATIONAL_ID_CENTER: {
+    label: "National ID Center",
+    labelNepali: "राष्ट्रिय परिचयपत्र",
+    icon: Landmark,
+    className: "bg-teal-100 text-teal-700 border-teal-200",
+  },
 };
 
 const DEFAULT_OFFICE_CONFIG = {

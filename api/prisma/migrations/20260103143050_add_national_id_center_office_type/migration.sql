@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "OfficeType" ADD VALUE 'NATIONAL_ID_CENTER';

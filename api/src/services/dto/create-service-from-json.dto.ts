@@ -231,6 +231,39 @@ export class AuthoritiesDto {
   create: CreateAuthorityDto[];
 }
 
+// ========== Service Step Constraint DTOs ==========
+export class CreateServiceStepConstraintDto {
+  @IsArray()
+  @IsString({ each: true })
+  specificOfficeIds: string[];
+
+  @IsArray()
+  @IsInt({ each: true })
+  provinceIds: number[];
+
+  @IsArray()
+  @IsInt({ each: true })
+  districtIds: number[];
+
+  @IsArray()
+  @IsInt({ each: true })
+  municipalityIds: number[];
+
+  @IsOptional()
+  @IsString()
+  reason?: string;
+
+  @IsBoolean()
+  isException: boolean;
+}
+
+export class ServiceStepConstraintsDto {
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateServiceStepConstraintDto)
+  create: CreateServiceStepConstraintDto[];
+}
+
 // ========== Service Step DTOs ==========
 export class CreateServiceStepDto {
   @IsInt()
@@ -258,6 +291,10 @@ export class CreateServiceStepDto {
   @IsUrl()
   onlineFormUrl?: string;
 
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => ServiceStepConstraintsDto)
+  constraints?: ServiceStepConstraintsDto;
 
   @ValidateNested()
   @Type(() => StepDocumentsDto)

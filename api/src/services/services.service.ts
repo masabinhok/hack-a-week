@@ -243,6 +243,7 @@ export class ServicesService {
             workingHours: true,
             responsibleAuthorities: true,
             complaintAuthorities: true,
+            constraints: true, // Include constraints
           },
           orderBy: { step: 'asc' },
         },
@@ -355,6 +356,18 @@ export class ServicesService {
           contactNumber: auth.contactNumber,
           email: auth.email,
         })),
+        constraints: step.constraints?.map((constraint) => ({
+          id: constraint.id,
+          serviceStepId: constraint.serviceStepId,
+          specificOfficeIds: constraint.specificOfficeIds,
+          provinceIds: constraint.provinceIds,
+          districtIds: constraint.districtIds,
+          municipalityIds: constraint.municipalityIds,
+          reason: constraint.reason,
+          isException: constraint.isException,
+          createdAt: constraint.createdAt,
+          updatedAt: constraint.updatedAt,
+        })) || [],
       })),
       detailedProcedure: service.detailedProc
         ? {

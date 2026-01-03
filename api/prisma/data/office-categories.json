@@ -124,5 +124,14 @@
     "descriptionNepali": "श्रम कार्यालय - वैदेशिक रोजगार सेवा, कार्य अनुमति, श्रम विवाद",
     "jurisdictionLevel": "DISTRICT",
     "typicalServices": ["labor-permit", "foreign-employment", "labor-dispute"]
+  },
+  {
+    "name": "National ID Card Center",
+    "slug": "national-id-center",
+    "type": "NATIONAL_ID_CENTER",
+    "description": "National ID Card Center - National identity card enrollment and biometric registration",
+    "descriptionNepali": "राष्ट्रिय परिचयपत्र केन्द्र - राष्ट्रिय परिचयपत्र दर्ता र बायोमेट्रिक दर्ता",
+    "jurisdictionLevel": "SPECIAL",
+    "typicalServices": ["national-id-enrollment", "biometric-registration"]
   }
 ]
