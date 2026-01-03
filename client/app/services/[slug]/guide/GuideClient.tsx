@@ -348,12 +348,128 @@ export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
               <h2 className="text-xl font-bold text-foreground mb-6">
                 Detailed Procedure
               </h2>
-              <div className="prose max-w-none">
-                <div
-                  className="bg-surface p-6 rounded-lg"
-                  dangerouslySetInnerHTML={{ __html: service.detailedProcedure }}
-                />
-              </div>
+              
+              {/* Overview */}
+              {service.detailedProcedure.overview && (
+                <div className="bg-surface p-6 rounded-lg mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-3">Overview</h3>
+                  <p className="text-foreground-secondary leading-relaxed">
+                    {service.detailedProcedure.overview}
+                  </p>
+                  {service.detailedProcedure.overviewNepali && (
+                    <p className="text-foreground-muted nepali-text mt-3 leading-relaxed">
+                      {service.detailedProcedure.overviewNepali}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* Step by Step Guide */}
+              {service.detailedProcedure.stepByStepGuide && 
+               service.detailedProcedure.stepByStepGuide.length > 0 && (
+                <div className="bg-surface p-6 rounded-lg mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Step-by-Step Guide
+                  </h3>
+                  <ol className="space-y-3 list-decimal list-inside">
+                    {service.detailedProcedure.stepByStepGuide.map((step, index) => (
+                      <li key={index} className="text-foreground-secondary leading-relaxed">
+                        {step}
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Important Notes */}
+              {service.detailedProcedure.importantNotes && 
+               service.detailedProcedure.importantNotes.length > 0 && (
+                <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg mb-6">
+                  <h3 className="text-lg font-semibold text-yellow-900 mb-4 flex items-center gap-2">
+                    <AlertCircle className="w-5 h-5" />
+                    Important Notes
+                  </h3>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {service.detailedProcedure.importantNotes.map((note, index) => (
+                      <li key={index} className="text-yellow-800 leading-relaxed">
+                        {note}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* FAQs */}
+              {service.detailedProcedure.faqs && 
+               service.detailedProcedure.faqs.length > 0 && (
+                <div className="bg-surface p-6 rounded-lg mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Frequently Asked Questions
+                  </h3>
+                  <div className="space-y-4">
+                    {service.detailedProcedure.faqs.map((faq, index) => (
+                      <div key={`faq-${index}`} className="border-l-4 border-primary-blue pl-4">
+                        <p className="font-medium text-foreground mb-2">
+                          Q: {faq.question}
+                        </p>
+                        <p className="text-foreground-secondary leading-relaxed">
+                          A: {faq.answer}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Common Issues */}
+              {service.detailedProcedure.commonIssues && 
+               service.detailedProcedure.commonIssues.length > 0 && (
+                <div className="bg-surface p-6 rounded-lg mb-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Common Issues & Solutions
+                  </h3>
+                  <div className="space-y-4">
+                    {service.detailedProcedure.commonIssues.map((item, index) => (
+                      <div key={`issue-${index}`} className="border border-border rounded-lg p-4">
+                        <p className="font-medium text-red-600 mb-2">
+                          Issue: {item.issue}
+                        </p>
+                        <p className="text-green-700 leading-relaxed">
+                          Solution: {item.solution}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Legal References */}
+              {service.detailedProcedure.legalReferences && 
+               service.detailedProcedure.legalReferences.length > 0 && (
+                <div className="bg-surface p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">
+                    Legal References
+                  </h3>
+                  <ul className="space-y-2">
+                    {service.detailedProcedure.legalReferences.map((ref, index) => (
+                      <li key={`legal-${index}`} className="text-foreground-secondary">
+                        <span className="font-medium">{ref.lawName}</span>
+                        {ref.section && <span> - {ref.section}</span>}
+                        {ref.url && (
+                          <a
+                            href={ref.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary-blue hover:underline ml-2"
+                          >
+                            View Document
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </section>
           )}
 
