@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ServiceNotFoundException } from '../common/exceptions/app.exception';
 
 @Injectable()
 export class ServicesService {
@@ -190,19 +191,19 @@ export class ServicesService {
     });
 
     if (!service) {
-      throw new NotFoundException(`Service '${slug}' not found`);
+      throw new ServiceNotFoundException(slug);
     }
 
     // Only leaf services have guides
     if (service._count.children > 0) {
-      throw new NotFoundException(
-        `Service '${slug}' is a parent service. Use /services/${slug} to see children, or navigate to a leaf service for the guide.`
+      throw new ServiceNotFoundException(
+        `${slug} (parent service - navigate to leaf service)`
       );
     }
 
     if (service.serviceSteps.length === 0) {
-      throw new NotFoundException(
-        `Service '${slug}' does not have a guide yet. It may be a placeholder service.`
+      throw new ServiceNotFoundException(
+        `${slug} (no guide available yet)`
       );
     }
 

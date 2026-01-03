@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Merriweather, Inter } from "next/font/google";
+import { Toaster } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -36,6 +37,17 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <Toaster 
+          position="top-right" 
+          richColors 
+          closeButton
+          duration={4000}
+          toastOptions={{
+            style: {
+              whiteSpace: 'pre-line', // Support multiline for bilingual messages
+            },
+          }}
+        />
       </body>
     </html>
   );

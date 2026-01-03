@@ -1,12 +1,12 @@
 // ============================================
 // FILE: app/services/[slug]/guide/page.tsx
-// DESCRIPTION: Server component for service guide page
+// DESCRIPTION: Server component for service guide page with safe error handling
 // ============================================
 
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { getServiceGuide } from "@/lib/api";
+import { getSafeServiceGuide, ApiError } from "@/lib/api-wrapper";
 import { GuideClient } from "./GuideClient";
+import { GuideErrorPage } from "./error-page";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -15,12 +15,12 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  let service = null;
-  try {
-    service = await getServiceGuide(slug);
-  } catch {
+  const [service, error] = await getSafeServiceGuide(slug);
+
+  if (error || !service) {
     return {
       title: "Service Guide Not Found",
+      description: "The requested service guide is not available.",
     };
   }
 
@@ -41,16 +41,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServiceGuidePage({ params }: PageProps) {
   const { slug } = await params;
   
-  let service = null;
-  try {
-    service = await getServiceGuide(slug);
-  } catch (error) {
-    console.error("Failed to fetch service guide:", error);
-    notFound();
+  // Use safe API wrapper that returns [data, error] tuple
+  const [service, error] = await getSafeServiceGuide(slug);
+
+  // If we have an error, show the error page
+  if (error) {
+    // Only log unexpected errors (not SERVICE_NOT_FOUND which is handled gracefully)
+    const isExpectedError = error instanceof ApiError && 
+      (error.errorCode === 'SERVICE_NOT_FOUND' || error.statusCode === 404);
+    
+    if (!isExpectedError) {
+      console.error(`[Guide Error] ${slug}:`, error.message);
+    }
+    
+    return <GuideErrorPage error={error} />;
   }
 
+  // If no service data returned, show error page
   if (!service) {
-    notFound();
+    return <GuideErrorPage error={new Error('Service not found')} />;
   }
 
   // Build breadcrumbs using the breadcrumb data from API

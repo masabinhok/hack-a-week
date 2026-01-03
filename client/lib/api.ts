@@ -18,6 +18,8 @@ import type {
   SearchResult,
   OfficeType,
 } from "./types";
+import type { ErrorResponse } from "./error-types";
+import { ErrorCode } from "./error-types";
 
 // ==================== Configuration ====================
 
@@ -49,6 +51,48 @@ interface FetchOptions extends RequestInit {
   tags?: string[];
 }
 
+/**
+ * Custom API error class that includes bilingual messages
+ */
+export class ApiError extends Error {
+  public readonly errorCode: ErrorCode;
+  public readonly statusCode: number;
+  public readonly messageNepali?: string;
+  public readonly details?: Record<string, any>;
+
+  constructor(
+    errorCode: ErrorCode,
+    statusCode: number,
+    message: string,
+    messageNepali?: string,
+    details?: Record<string, any>
+  ) {
+    super(message);
+    this.name = 'ApiError';
+    this.errorCode = errorCode;
+    this.statusCode = statusCode;
+    this.messageNepali = messageNepali;
+    this.details = details;
+    
+    // Maintains proper stack trace for where error was thrown (only available on V8)
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, ApiError);
+    }
+  }
+
+  toErrorResponse(): ErrorResponse {
+    return {
+      success: false,
+      message: this.message,
+      messageNepali: this.messageNepali,
+      errorCode: this.errorCode,
+      statusCode: this.statusCode,
+      timestamp: new Date().toISOString(),
+      details: this.details,
+    };
+  }
+}
+
 async function fetchAPI<T>(
   endpoint: string,
   options: FetchOptions = {}
@@ -71,21 +115,74 @@ async function fetchAPI<T>(
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`API Error [${response.status}]: ${errorText}`);
-      throw new Error(`API Error: ${response.status} - ${response.statusText}`);
+      // Try to parse error response from backend
+      try {
+        const errorData: ErrorResponse = await response.json();
+        
+        // Backend returned structured error
+        if (errorData.errorCode && errorData.message) {
+          throw new ApiError(
+            errorData.errorCode,
+            errorData.statusCode,
+            errorData.message,
+            errorData.messageNepali,
+            errorData.details
+          );
+        }
+      } catch (parseError) {
+        // If parsing fails or error is not structured, create generic error
+        if (parseError instanceof ApiError) {
+          throw parseError;
+        }
+      }
+
+      // Fallback for non-JSON or unexpected errors
+      throw new ApiError(
+        ErrorCode.INTERNAL_SERVER_ERROR,
+        response.status,
+        `API Error: ${response.status} - ${response.statusText}`,
+        'एपीआई त्रुटि भयो। कृपया पछि पुन: प्रयास गर्नुहोस्।'
+      );
     }
 
     const json: ApiResponse<T> = await response.json();
 
     if (!json.success) {
-      throw new Error(json.message || "API request failed");
+      throw new ApiError(
+        ErrorCode.BAD_REQUEST,
+        400,
+        json.message || "API request failed",
+        'अनुरोध असफल भयो। कृपया पुन: प्रयास गर्नुहोस्।'
+      );
     }
 
     return json.data as T;
   } catch (error) {
+    // Network errors (fetch failures)
+    if (error instanceof TypeError && error.message.includes('fetch')) {
+      throw new ApiError(
+        ErrorCode.NETWORK_ERROR,
+        0,
+        'Network error. Please check your connection.',
+        'नेटवर्क त्रुटि। कृपया आफ्नो जडान जाँच गर्नुहोस्।'
+      );
+    }
+
+    // Re-throw ApiError as-is
+    if (error instanceof ApiError) {
+      throw error;
+    }
+
+    // Log unexpected errors
     console.error(`Failed to fetch ${url}:`, error);
-    throw error;
+    
+    // Wrap unknown errors
+    throw new ApiError(
+      ErrorCode.INTERNAL_SERVER_ERROR,
+      500,
+      error instanceof Error ? error.message : 'An unexpected error occurred',
+      'अप्रत्याशित त्रुटि भयो। कृपया पछि पुन: प्रयास गर्नुहोस्।'
+    );
   }
 }
 
