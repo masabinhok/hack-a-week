@@ -14,7 +14,6 @@ import {
   ExternalLink,
   Heart,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 
 const FOOTER_LINKS = {
   services: [

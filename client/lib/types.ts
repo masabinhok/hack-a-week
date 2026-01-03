@@ -191,6 +191,7 @@ export type OfficeType =
   | "INLAND_REVENUE_OFFICE" // IRD - PAN/VAT registration, tax filing
   // Social Services
   | "LABOUR_OFFICE"; // Foreign employment, work permits, labor disputes
+  "OTHER"; // Other types not categorized above
 
 export interface StepDocument {
   id: number;

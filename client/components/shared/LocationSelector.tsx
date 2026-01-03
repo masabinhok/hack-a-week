@@ -6,7 +6,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { MapPin, ChevronRight, RotateCcw, Loader2 } from "lucide-react";
+import { MapPin,  RotateCcw, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,

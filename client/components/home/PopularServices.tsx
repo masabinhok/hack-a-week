@@ -6,8 +6,6 @@
 import Link from "next/link";
 import {
   ArrowRight,
-  Clock,
-  Banknote,
   Globe,
   ChevronRight,
 } from "lucide-react";

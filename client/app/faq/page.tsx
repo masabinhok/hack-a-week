@@ -17,7 +17,6 @@ import {
   FileText,
   Building2,
   Globe,
-  Clock,
   Mail,
 } from "lucide-react";
 

@@ -16,7 +16,6 @@ import {
   Shield,
   type LucideIcon,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { OfficeType } from "@/lib/types";
 

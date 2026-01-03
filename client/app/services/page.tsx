@@ -14,9 +14,7 @@ import {
   Search,
   Globe,
   FileText,
-  Clock,
   ChevronRight,
-  Filter,
 } from "lucide-react";
 
 export const metadata: Metadata = {

@@ -5,8 +5,7 @@
 
 "use client";
 
-import { useState } from "react";
-import { Search, MapPin, ArrowRight, ChevronDown } from "lucide-react";
+import {  MapPin, ArrowRight, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/shared/SearchBar";
 import Link from "next/link";

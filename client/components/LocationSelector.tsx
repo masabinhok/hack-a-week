@@ -108,7 +108,7 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
       province: selectedProvince,
       district: selectedDistrict,
       municipality: selectedMunicipality,
-      ward: wardNumber,
+      ward: selectedWard,
       officeType
     });
   };
@@ -177,7 +177,7 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
                       className="text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
                     >
                       <div className="font-semibold text-gray-900">{province.name}</div>
-                      {province.nameNep && (
+                      {province.nameNepali&& (
                         <div className="text-sm text-gray-600">{province.nameNep}</div>
                       )}
                     </button>
