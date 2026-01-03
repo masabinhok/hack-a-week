@@ -232,8 +232,9 @@ model ServiceStep {
 
   timeRequired           StepTimeRequired?
   workingHours           WorkingHours[]
-  responsibleAuthorities StepAuthority[]   @relation("ResponsibleAuthority")
-  complaintAuthorities   StepAuthority[]   @relation("ComplaintAuthority")
+  responsibleAuthorities StepAuthority[]          @relation("ResponsibleAuthority")
+  complaintAuthorities   StepAuthority[]          @relation("ComplaintAuthority")
+  constraints            ServiceStepConstraint[] // Location/office constraints for this step
 
   @@unique([serviceId, step])
   @@index([serviceId])
@@ -315,6 +316,30 @@ model WorkingHours {
   step          ServiceStep @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
 
   @@unique([serviceStepId, day]) // One entry per day per step
+}
+
+// ---------------  STEP CONSTRAINTS (location/office restrictions)  ---------------
+model ServiceStepConstraint {
+  id            String   @id @default(cuid())
+  serviceStepId String
+
+  // Constraint types (at least one should be set)
+  // If no constraint exists for a step → all offices of the specified officeTypes are valid
+  specificOfficeIds String[] // If set, only these specific offices can handle this step
+  provinceIds       Int[]    // If set, only offices in these provinces are valid
+  districtIds       Int[]    // If set, only offices in these districts are valid
+  municipalityIds   Int[]    // If set, only offices in these municipalities are valid
+
+  // Description of why this constraint exists
+  reason      String? // e.g., "NID can also be obtained from Narayan Hiti Durbar"
+  isException Boolean @default(false) // true if this adds an exception, false if it restricts
+
+  serviceStep ServiceStep @relation(fields: [serviceStepId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serviceStepId])
 }
 
 // ---------------  DETAILED PROCEDURE  ---------------
