@@ -3,26 +3,24 @@ import { AppModule } from './app.module';
 import { ResponseTransformInterceptor } from './common/interceptors/response-transform.interceptor';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
+import cookieParser from 'cookie-parser'; // Changed from import * as
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  //
+  // Enable cookie parser
+  app.use(cookieParser());
+
   app.enableCors({
-    origin: '*',
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    credentials: true,
   });
   
-  // Set global prefix
   app.setGlobalPrefix('api/v1');
-  
-  // Apply global interceptor for response transformation
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
-  
-  // Apply global exception filter
   app.useGlobalFilters(new HttpExceptionFilter());
   
-  // Enable validation pipes with transform
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
