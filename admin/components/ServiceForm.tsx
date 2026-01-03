@@ -113,6 +113,84 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
     fetchCategories();
   }, []);
 
+  // Update formData when service prop changes
+  useEffect(() => {
+    if (service) {
+      setFormData({
+        serviceId: service.serviceId || '',
+        parentId: service.parentId || parentId || null,
+        name: service.name || '',
+        slug: service.slug || '',
+        description: service.description || '',
+        priority: service.priority || undefined,
+        isOnlineEnabled: service.isOnlineEnabled || false,
+        onlinePortalUrl: service.onlinePortalUrl || '',
+        eligibility: service.eligibility || '',
+        validityPeriod: service.validityPeriod || '',
+        categoryIds: service.categories?.map((c) => c.id) || [],
+        steps: service.serviceSteps?.map((s) => ({
+          step: s.step,
+          stepTitle: s.stepTitle,
+          stepDescription: s.stepDescription,
+          officeTypes: s.officeTypes,
+          requiresAppointment: s.requiresAppointment,
+          isOnline: s.isOnline,
+          onlineFormUrl: s.onlineFormUrl,
+          documentsRequired: s.documentsRequired?.map((d) => ({
+            docId: d.docId,
+            name: d.name,
+            nameNepali: d.nameNepali,
+            type: d.type,
+            quantity: d.quantity,
+            format: d.format,
+            isMandatory: d.isMandatory,
+            notes: d.notes,
+          })) || [],
+          totalFees: s.totalFees?.map((f) => ({
+            feeId: f.feeId,
+            feeTitle: f.feeTitle,
+            feeTitleNepali: f.feeTitleNepali,
+            feeAmount: f.feeAmount,
+            currency: f.currency,
+            feeType: f.feeType,
+            isRefundable: f.isRefundable,
+            notes: f.notes,
+          })) || [],
+          timeRequired: s.timeRequired ? {
+            minimumTime: s.timeRequired.minimumTime,
+            maximumTime: s.timeRequired.maximumTime,
+            averageTime: s.timeRequired.averageTime,
+            remarks: s.timeRequired.remarks,
+            expeditedAvailable: s.timeRequired.expeditedAvailable,
+          } : undefined,
+          workingHours: s.workingHours?.map((w) => ({
+            day: w.day,
+            openClose: w.openClose,
+          })) || [],
+          responsibleAuthorities: s.responsibleAuthorities?.map((a) => ({
+            position: a.position,
+            positionNepali: a.positionNepali,
+            department: a.department,
+            contactNumber: a.contactNumber,
+            email: a.email,
+            isResp: true,
+          })) || [],
+        })) || [],
+        detailedProc: service.detailedProc ? {
+          overview: service.detailedProc.overview,
+          overviewNepali: service.detailedProc.overviewNepali,
+          stepByStepGuide: service.detailedProc.stepByStepGuide,
+          importantNotes: service.detailedProc.importantNotes,
+        } : undefined,
+        metadata: service.metadata ? {
+          version: service.metadata.version,
+          dataSource: service.metadata.dataSource,
+          verifiedBy: service.metadata.verifiedBy,
+        } : undefined,
+      });
+    }
+  }, [service, parentId]);
+
   const fetchCategories = async () => {
     try {
       const response = await api.getCategories();
@@ -460,7 +538,8 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
       {/* Steps Tab */}
       {activeTab === 'steps' && (
         <div className="space-y-6">
-          {formData.steps?.map((step, stepIndex) => (
+          {formData.steps && formData.steps.length > 0 ? (
+            formData.steps.map((step, stepIndex) => (
             <Card key={stepIndex} className="overflow-visible">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <div className="flex items-center gap-3">
@@ -706,7 +785,12 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          ))
+          ) : (
+            <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+              <p className="text-gray-500 mb-4">No steps added yet. Click the button below to add the first step.</p>
+            </div>
+          )}
 
           <Button type="button" variant="outline" onClick={addStep} className="w-full py-6 border-dashed">
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -730,7 +814,12 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                 value={formData.detailedProc?.overview || ''}
                 onChange={(e) => setFormData((prev) => ({
                   ...prev,
-                  detailedProc: { ...prev.detailedProc, overview: e.target.value },
+                  detailedProc: { 
+                    overview: e.target.value,
+                    overviewNepali: prev.detailedProc?.overviewNepali || '',
+                    stepByStepGuide: prev.detailedProc?.stepByStepGuide || [],
+                    importantNotes: prev.detailedProc?.importantNotes || []
+                  },
                 }))}
                 placeholder="Provide an overview of the service procedure..."
                 rows={4}
@@ -745,8 +834,10 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                 onChange={(e) => setFormData((prev) => ({
                   ...prev,
                   detailedProc: {
-                    ...prev.detailedProc,
+                    overview: prev.detailedProc?.overview || '',
+                    overviewNepali: prev.detailedProc?.overviewNepali || '',
                     stepByStepGuide: e.target.value.split('\n').filter((s) => s.trim()),
+                    importantNotes: prev.detailedProc?.importantNotes || []
                   },
                 }))}
                 placeholder="Step 1: Fill the form&#10;Step 2: Submit documents&#10;..."
@@ -762,7 +853,9 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                 onChange={(e) => setFormData((prev) => ({
                   ...prev,
                   detailedProc: {
-                    ...prev.detailedProc,
+                    overview: prev.detailedProc?.overview || '',
+                    overviewNepali: prev.detailedProc?.overviewNepali || '',
+                    stepByStepGuide: prev.detailedProc?.stepByStepGuide || [],
                     importantNotes: e.target.value.split('\n').filter((s) => s.trim()),
                   },
                 }))}

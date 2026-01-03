@@ -20,8 +20,10 @@ export default function EditServicePage() {
 
   const fetchService = async (id: string) => {
     try {
-      const data = await api.getService(id);
-      setService(data);
+      const response = await api.getService(id);
+      // API wraps response in { data: ... }
+      const serviceData = (response as any).data || response;
+      setService(serviceData);
     } catch (err: any) {
       setError(err.message || 'Failed to load service');
     } finally {
