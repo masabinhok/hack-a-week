@@ -50,11 +50,16 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
     container_name: project-client
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
+      # Server-side API URL (internal Docker network)
+      API_URL: http://api:3000/api/v1
+      # Client-side API URL (for browser)
       NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
       NODE_ENV: production
     depends_on:

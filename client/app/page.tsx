@@ -7,6 +7,9 @@ import type { Metadata } from "next";
 import { getCategories, getRootServices } from "@/lib/api";
 import { Hero, CategoryGrid, PopularServices, HowItWorks, Stats } from "@/components/home";
 
+// Force dynamic rendering to avoid build-time API calls
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Setu | Nepal Government Services Guide",
   description:

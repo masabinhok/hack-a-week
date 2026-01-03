@@ -19,6 +19,9 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+// Force dynamic rendering to avoid build-time API calls
+export const dynamic = 'force-dynamic';
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

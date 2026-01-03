@@ -21,8 +21,17 @@ import type {
 
 // ==================== Configuration ====================
 
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+// Use internal Docker network URL for server-side requests, public URL for client-side
+const getApiBaseUrl = () => {
+  // Server-side: use internal Docker network or fallback
+  if (typeof window === 'undefined') {
+    return process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+  }
+  // Client-side: use public URL
+  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api/v1";
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Default cache times (in seconds)
 const CACHE_TIMES = {

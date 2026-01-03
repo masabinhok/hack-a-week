@@ -11,6 +11,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CategoryIcon } from "@/components/shared";
 import { ArrowRight } from "lucide-react";
 
+// Force dynamic rendering to avoid build-time API calls
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Service Categories",
   description:
