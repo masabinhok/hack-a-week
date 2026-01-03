@@ -7,6 +7,7 @@ import { ServicesModule } from './services/services.module';
 import { OfficesModule } from './offices/offices.module';
 import { LocationsModule } from './locations/locations.module';
 import { CategoriesModule } from './categories/categories.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CategoriesModule } from './categories/categories.module';
     ServicesModule,
     OfficesModule,
     LocationsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

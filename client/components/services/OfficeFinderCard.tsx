@@ -1,6 +1,6 @@
 // ============================================
 // FILE: components/services/OfficeFinderCard.tsx
-// DESCRIPTION: Inline office finder for service steps
+// DESCRIPTION: Inline office finder for service steps - uses stored user locations
 // ============================================
 
 "use client";
@@ -9,10 +9,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { LocationSelector } from "@/components/shared";
-import type { LocationValue } from "@/components/shared/LocationSelector";
 import { OfficeTypeBadge } from "@/components/shared";
-import { getOfficesForService } from "@/lib/api";
+import { getOfficesForService, type UpdateUserLocationsDto } from "@/lib/api";
 import type { Office, OfficeType } from "@/lib/types";
 import {
   Building2,
@@ -22,12 +20,15 @@ import {
   ExternalLink,
   AlertCircle,
   Loader2,
+  Home,
 } from "lucide-react";
 
 interface OfficeFinderCardProps {
   serviceSlug: string;
   stepNumber: number;
   officeType: OfficeType;
+  addressType?: "permanent" | "convenient"; // Which address to use
+  userLocations?: UpdateUserLocationsDto | null;
   className?: string;
 }
 
@@ -35,18 +36,38 @@ export function OfficeFinderCard({
   serviceSlug,
   stepNumber,
   officeType,
+  addressType = "convenient", // Default to convenient address
+  userLocations,
   className = "",
 }: OfficeFinderCardProps) {
-  const [location, setLocation] = useState<LocationValue>({});
   const [offices, setOffices] = useState<Office[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch offices when location changes
+  // Fetch offices when component mounts or locations change
   useEffect(() => {
     const fetchOffices = async () => {
-      // Only fetch if we have at least a district
-      if (!location.districtId) {
+      if (!userLocations) {
+        setOffices([]);
+        return;
+      }
+
+      // Determine which location to use based on addressType
+      const districtId =
+        addressType === "permanent"
+          ? userLocations.permanentDistrictId
+          : userLocations.convenientDistrictId;
+      const municipalityId =
+        addressType === "permanent"
+          ? userLocations.permanentMunicipalityId
+          : userLocations.convenientMunicipalityId;
+      const wardId =
+        addressType === "permanent"
+          ? userLocations.permanentWardId
+          : userLocations.convenientWardId;
+
+      // Need at least district
+      if (!districtId) {
         setOffices([]);
         return;
       }
@@ -56,9 +77,9 @@ export function OfficeFinderCard({
         setError(null);
 
         const result = await getOfficesForService(serviceSlug, {
-          districtId: location.districtId,
-          municipalityId: location.municipalityId,
-          wardId: location.wardId,
+          districtId,
+          municipalityId,
+          wardId,
         });
 
         // Filter for current step
@@ -74,9 +95,13 @@ export function OfficeFinderCard({
     };
 
     fetchOffices();
-  }, [serviceSlug, stepNumber, location.districtId, location.municipalityId, location.wardId]);
+  }, [serviceSlug, stepNumber, addressType, userLocations]);
 
-  const hasLocation = location.districtId !== undefined;
+  const hasLocation = userLocations && (
+    addressType === "permanent"
+      ? userLocations.permanentDistrictId
+      : userLocations.convenientDistrictId
+  );
 
   return (
     <Card className={`mt-6 border-2 border-primary-blue/20 ${className}`}>
@@ -86,38 +111,28 @@ export function OfficeFinderCard({
             <Building2 className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
-            <h4 className="font-semibold text-foreground mb-1">
-              Find Nearby Offices
-            </h4>
+            <div className="flex items-center gap-2 mb-1">
+              <h4 className="font-semibold text-foreground">
+                Nearby Offices
+              </h4>
+              {addressType === "permanent" && (
+                <div className="flex items-center gap-1 text-xs text-blue-600 bg-blue-100 px-2 py-0.5 rounded">
+                  <Home className="w-3 h-3" />
+                  Permanent Address
+                </div>
+              )}
+            </div>
             <p className="text-sm text-foreground-secondary mb-3">
-              Select your location to find offices where you can complete this step
+              {addressType === "permanent"
+                ? "Showing offices near your permanent address"
+                : "Showing offices near your convenient location"}
             </p>
             <OfficeTypeBadge type={officeType} />
           </div>
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
-        {/* Location Selector */}
-        <div>
-          <label className="text-sm font-medium text-foreground mb-2 block">
-            Select Your Location
-          </label>
-          <LocationSelector
-            value={location}
-            onChange={setLocation}
-            showLabels={false}
-            showReset={true}
-            required="district"
-          />
-          {!hasLocation && (
-            <p className="text-xs text-foreground-muted mt-2 flex items-center gap-1">
-              <AlertCircle className="w-3 h-3" />
-              Please select at least a district to find offices
-            </p>
-          )}
-        </div>
-
+      <div className="p-4">
         {/* Loading State */}
         {loading && (
           <div className="flex items-center justify-center py-8">
@@ -138,12 +153,15 @@ export function OfficeFinderCard({
           </div>
         )}
 
-        {/* No Location Selected */}
+        {/* No Location Set */}
         {!loading && !hasLocation && !error && (
           <div className="text-center py-8 bg-surface rounded-lg">
             <MapPin className="w-10 h-10 text-foreground-muted mx-auto mb-2" />
-            <p className="text-sm text-foreground-secondary">
-              Select a location above to find offices
+            <p className="text-sm text-foreground-secondary mb-1">
+              No {addressType} address set
+            </p>
+            <p className="text-xs text-foreground-muted">
+              Please set your locations to view nearby offices
             </p>
           </div>
         )}
@@ -155,18 +173,18 @@ export function OfficeFinderCard({
               <div className="text-center py-8 bg-surface rounded-lg">
                 <Building2 className="w-10 h-10 text-foreground-muted mx-auto mb-2" />
                 <p className="text-sm text-foreground-secondary mb-1">
-                  No offices found in the selected location
+                  No offices found near your {addressType} address
                 </p>
                 <p className="text-xs text-foreground-muted">
-                  Try selecting a different area or district
+                  Try updating your locations or contact support
                 </p>
               </div>
             ) : (
               <>
                 {/* Results Count */}
-                <div className="flex items-center justify-between pb-2 border-b border-border">
+                <div className="flex items-center justify-between pb-2 border-b border-border mb-3">
                   <p className="text-sm font-medium text-foreground">
-                    Found {offices.length} {offices.length === 1 ? "office" : "offices"}
+                    {offices.length} {offices.length === 1 ? "office" : "offices"} near you
                   </p>
                 </div>
 

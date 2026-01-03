@@ -502,6 +502,71 @@ export function formatDuration(duration: string): string {
   return duration;
 }
 
+// ==================== User API Functions ====================
+
+export interface UserLocations {
+  id: string;
+  permanentProvinceId?: number;
+  permanentDistrictId?: number;
+  permanentMunicipalityId?: number;
+  permanentWardId?: number;
+  convenientProvinceId?: number;
+  convenientDistrictId?: number;
+  convenientMunicipalityId?: number;
+  convenientWardId?: number;
+}
+
+export interface UserLocationsWithDetails extends UserLocations {
+  permanent: {
+    province?: Province;
+    district?: District;
+    municipality?: Municipality;
+    ward?: Ward;
+  };
+  convenient: {
+    province?: Province;
+    district?: District;
+    municipality?: Municipality;
+    ward?: Ward;
+  };
+}
+
+export interface UpdateUserLocationsDto {
+  permanentProvinceId?: number;
+  permanentDistrictId?: number;
+  permanentMunicipalityId?: number;
+  permanentWardId?: number;
+  convenientProvinceId?: number;
+  convenientDistrictId?: number;
+  convenientMunicipalityId?: number;
+  convenientWardId?: number;
+}
+
+/**
+ * Get user locations with full details
+ */
+export async function getUserLocations(
+  userId: string
+): Promise<UserLocationsWithDetails> {
+  return fetchAPI<UserLocationsWithDetails>(`/users/${userId}/locations`, {
+    revalidate: 0, // Don't cache user data
+  });
+}
+
+/**
+ * Update user locations
+ */
+export async function updateUserLocations(
+  userId: string,
+  locations: UpdateUserLocationsDto
+): Promise<UserLocations> {
+  return fetchAPI<UserLocations>(`/users/${userId}/locations`, {
+    method: "PUT",
+    body: JSON.stringify(locations),
+    revalidate: 0,
+  });
+}
+
 // ==================== Re-export types ====================
 
 export type {

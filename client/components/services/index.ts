@@ -6,3 +6,4 @@
 export { StepTimeline } from "./StepTimeline";
 export { ServiceSidebar } from "./ServiceSidebar";
 export { OfficeFinderCard } from "./OfficeFinderCard";
+export { LocationSetupModal } from "./LocationSetupModal";

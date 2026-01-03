@@ -423,9 +423,19 @@ model User {
   name  String?
   email String? @unique
 
-  // Location codes (encoded: P-DD-MMM-WWWW)
-  permanentLocationCode String? // e.g., "3-25-217-0001" (Bagmati-Kathmandu-KTM Metro-Ward 1)
-  temporaryLocationCode String? // e.g., "3-26-218-0005" (Current residence)
+  // Permanent Address (for official documents like citizenship, passport)
+  permanentProvinceId      Int?
+  permanentDistrictId      Int?
+  permanentMunicipalityId  Int?
+  permanentWardId          Int?
+  permanentLocationCode    String? // Legacy field for backward compatibility
+
+  // Convenient Address (for general services, local offices)
+  convenientProvinceId     Int?
+  convenientDistrictId     Int?
+  convenientMunicipalityId Int?
+  convenientWardId         Int?
+  convenientLocationCode   String? // Legacy field for backward compatibility
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -433,6 +443,8 @@ model User {
 
   @@index([phone])
   @@index([email])
-  @@index([permanentLocationCode]) // For location-based queries
-  @@index([temporaryLocationCode])
+  @@index([permanentLocationCode])
+  @@index([convenientLocationCode])
+  @@index([permanentDistrictId])
+  @@index([convenientDistrictId])
 }

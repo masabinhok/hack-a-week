@@ -22,14 +22,16 @@ import { Button } from "@/components/ui/button";
 import type { ServiceStep, StepDocument, StepFee, StepTime, StepAuthority } from "@/lib/types";
 import { formatNPR } from "@/lib/utils";
 import { OfficeFinderCard } from "./OfficeFinderCard";
+import type { UpdateUserLocationsDto } from "@/lib/api";
 
 interface StepTimelineProps {
   steps: ServiceStep[];
   serviceSlug?: string;
+  userLocations?: UpdateUserLocationsDto | null;
   className?: string;
 }
 
-export function StepTimeline({ steps, serviceSlug, className = "" }: StepTimelineProps) {
+export function StepTimeline({ steps, serviceSlug, userLocations, className = "" }: StepTimelineProps) {
   const [expandedSteps, setExpandedSteps] = useState<string[]>(
     steps.length > 0 ? [steps[0].id] : []
   );
@@ -208,11 +210,17 @@ export function StepTimeline({ steps, serviceSlug, className = "" }: StepTimelin
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                         <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
+
+                      {/* Office Finder - Show if serviceSlug is provided and step has officeType */}
+                      {serviceSlug && step.officeType && (
                         <OfficeFinderCard
-                          serviceSlug={serviceSlug!}
+                          serviceSlug={serviceSlug}
                           stepNumber={step.step}
                           officeType={step.officeType}
+                          userLocations={userLocations}
+                          addressType="convenient" // TODO: Determine from step metadata
                         />
+                      )}
                     </div>
                   )}
                 </Card>
