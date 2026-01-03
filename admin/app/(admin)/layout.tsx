@@ -12,10 +12,14 @@ export default function AdminLayout({
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
+      <div className="flex h-screen items-center justify-center bg-gradient-to-br from-nepal-blue-900 via-nepal-blue-800 to-nepal-crimson-900">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <div className="relative">
+            <div className="absolute inset-0 bg-white/20 rounded-full blur-xl"></div>
+            <div className="relative animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto"></div>
+          </div>
+          <p className="mt-6 text-white text-lg font-semibold">Loading Admin Panel...</p>
+          <p className="mt-2 text-white/70 text-sm">Preparing your dashboard</p>
         </div>
       </div>
     );
@@ -26,10 +30,19 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gradient-to-br from-gray-50 via-blue-50/30 to-gray-100">
       <AdminSidebar />
-      <main className="flex-1 overflow-y-auto">
-        {children}
+      <main className="flex-1 overflow-y-auto relative">
+        {/* Subtle Background Pattern */}
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(0, 56, 147) 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }}></div>
+        </div>
+        <div className="relative z-10">
+          {children}
+        </div>
       </main>
     </div>
   );

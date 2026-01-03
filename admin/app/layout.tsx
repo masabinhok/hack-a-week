@@ -7,12 +7,13 @@ const merriweather = Merriweather({
   weight: ['300', '400', '700'],
   subsets: ['latin'],
   variable: '--font-merriweather',
+  display: 'swap',
 })
 
-
 export const metadata: Metadata = {
-  title: "Setu Admin - Government Services Portal",
-  description: "Admin panel for managing government services",
+  title: "Setu Admin - Premium Government Services Dashboard",
+  description: "Advanced administration panel for managing Nepal government services, offices, and categories",
+  keywords: ['Setu', 'Nepal', 'Government', 'Admin', 'Dashboard', 'Services'],
 };
 
 export default function RootLayout({
@@ -22,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${merriweather.className} antialiased`}
-      >
+      <body className={`${merriweather.className} antialiased`}>
         <AuthProvider>
           {children}
         </AuthProvider>
