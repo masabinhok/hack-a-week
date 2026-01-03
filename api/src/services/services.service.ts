@@ -62,6 +62,72 @@ export class ServicesService {
     };
   }
 
+/**
+ * Get full service tree with nested children
+ * Includes all relations: categories, steps, documents, fees, etc.
+ */
+  async getServiceTree(){
+    const childInclude = {
+      categories: {
+        include: {
+          category: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              description: true,
+            },
+          },
+        },
+      },
+      serviceSteps: {
+        include: {
+          documentsRequired: true,
+          totalFees: true,
+          timeRequired: true,
+          workingHours: true,
+          responsibleAuthorities: true,
+          complaintAuthorities: true,
+        },
+        orderBy: { step: 'asc' as const },
+      },
+      detailedProc: true,
+      metadata: true,
+      _count: {
+        select: {
+          children: true,
+          serviceSteps: true,
+        },
+      },
+    } as const;
+
+    const serviceTree = await this.prisma.service.findFirst({
+      where: {
+        parentId: null,
+        level: 0,
+      },
+      include: {
+        ...childInclude,
+        children: {
+          include: {
+            ...childInclude,
+            children: {
+              include: {
+                ...childInclude,
+                children: {
+                  include: childInclude,
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    
+    return serviceTree;
+  }
+
+
   /**
    * Get service by slug with immediate children
    * For parent services: returns children list

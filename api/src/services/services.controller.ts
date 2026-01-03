@@ -18,6 +18,14 @@ export class ServicesController {
   }
 
   /**
+   * GET /services/tree
+   */
+  @Get('tree')
+  async getServiceTree(){
+    return this.servicesService.getServiceTree();
+  }
+
+  /**
    * GET /api/v1/services/search?q=keyword
    * Search services by keyword
    */
