@@ -1,0 +1,479 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import AdminHeader from '@/components/AdminHeader';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { api, ServiceDetail, PRIORITY_OPTIONS, OFFICE_TYPES } from '@/lib/api';
+import { formatDate, cn } from '@/lib/utils';
+
+export default function ServiceDetailPage() {
+  const params = useParams();
+  const router = useRouter();
+  const [service, setService] = useState<ServiceDetail | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (params.id) {
+      fetchService(params.id as string);
+    }
+  }, [params.id]);
+
+  const fetchService = async (id: string) => {
+    setLoading(true);
+    try {
+      const data = await api.getService(id);
+      setService(data);
+    } catch (err: any) {
+      setError(err.message || 'Failed to load service');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!service) return;
+    setDeleting(true);
+    try {
+      await api.deleteService(service.id);
+      router.push('/services');
+    } catch (err: any) {
+      alert(err.message || 'Failed to delete service');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const getPriorityBadge = (priority?: string) => {
+    const option = PRIORITY_OPTIONS.find((p) => p.value === priority);
+    if (!option) return <Badge variant="secondary">Not set</Badge>;
+    return <span className={cn('gov-badge', option.color)}>{option.label}</span>;
+  };
+
+  const getOfficeTypeLabel = (type: string) => {
+    return OFFICE_TYPES.find((o) => o.value === type)?.label || type;
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <svg className="animate-spin h-12 w-12 text-blue-600" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (error || !service) {
+    return (
+      <div className="p-8">
+        <Card className="text-center py-12">
+          <CardContent>
+            <svg className="w-12 h-12 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Service Not Found</h3>
+            <p className="text-gray-500 mb-4">{error || 'The requested service could not be found.'}</p>
+            <Link href="/services">
+              <Button>Back to Services</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <AdminHeader
+        title={service.name}
+        description={service.description || 'Government service details'}
+        actions={
+          <div className="flex gap-3">
+            <Link href={`/services/${service.id}/edit`}>
+              <Button variant="outline">
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                Edit
+              </Button>
+            </Link>
+            <Button variant="destructive" onClick={() => setDeleteDialog(true)}>
+              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+              Delete
+            </Button>
+          </div>
+        }
+      />
+
+      <div className="p-8 space-y-6">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Link href="/services" className="hover:text-blue-600">Services</Link>
+          <span>→</span>
+          {service.parent && (
+            <>
+              <Link href={`/services/${service.parent.id}`} className="hover:text-blue-600">
+                {service.parent.name}
+              </Link>
+              <span>→</span>
+            </>
+          )}
+          <span className="text-gray-900 font-medium">{service.name}</span>
+        </div>
+
+        {/* Basic Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Service Information</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Service ID</label>
+                  <p className="text-gray-900 font-mono">{service.serviceId}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Slug</label>
+                  <p className="text-gray-900 font-mono">{service.slug}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Level</label>
+                  <p><Badge variant="outline">Level {service.level}</Badge></p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Priority</label>
+                  <p>{getPriorityBadge(service.priority)}</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Online Enabled</label>
+                  <p>
+                    {service.isOnlineEnabled ? (
+                      <Badge variant="success">Yes</Badge>
+                    ) : (
+                      <Badge variant="secondary">No</Badge>
+                    )}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Validity Period</label>
+                  <p className="text-gray-900">{service.validityPeriod || 'Not specified'}</p>
+                </div>
+              </div>
+
+              {service.description && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Description</label>
+                  <p className="text-gray-900 mt-1">{service.description}</p>
+                </div>
+              )}
+
+              {service.eligibility && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Eligibility</label>
+                  <p className="text-gray-900 mt-1">{service.eligibility}</p>
+                </div>
+              )}
+
+              {service.onlinePortalUrl && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Online Portal</label>
+                  <a
+                    href={service.onlinePortalUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline block mt-1"
+                  >
+                    {service.onlinePortalUrl}
+                  </a>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Categories & Stats */}
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {service.categories && service.categories.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {service.categories.map((cat) => (
+                      <Badge key={cat.id} variant="default">
+                        {cat.name}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-sm">No categories assigned</p>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Statistics</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">Children</span>
+                  <span className="font-semibold">{service.childrenCount}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-gray-500">Steps</span>
+                  <span className="font-semibold">{service.stepsCount}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {service.metadata && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Metadata</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-sm">
+                  {service.metadata.version && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Version</span>
+                      <span>{service.metadata.version}</span>
+                    </div>
+                  )}
+                  {service.metadata.dataSource && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Source</span>
+                      <span>{service.metadata.dataSource}</span>
+                    </div>
+                  )}
+                  {service.metadata.verifiedBy && (
+                    <div className="flex justify-between">
+                      <span className="text-gray-500">Verified By</span>
+                      <span>{service.metadata.verifiedBy}</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Children Services */}
+        {service.children && service.children.length > 0 && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <CardTitle>Child Services ({service.children.length})</CardTitle>
+              <Link href={`/services/new?parentId=${service.id}`}>
+                <Button variant="outline" size="sm">
+                  Add Child
+                </Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {service.children.map((child) => (
+                  <Link key={child.id} href={`/services/${child.id}`}>
+                    <div className="p-4 border border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50/50 transition-all">
+                      <h4 className="font-medium text-gray-900">{child.name}</h4>
+                      <p className="text-sm text-gray-500 mt-1">{child.slug}</p>
+                      <div className="flex gap-2 mt-2">
+                        <Badge variant="outline" className="text-xs">
+                          Level {child.level}
+                        </Badge>
+                        {(child as any)._count?.children > 0 && (
+                          <Badge variant="secondary" className="text-xs">
+                            {(child as any)._count.children} children
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Service Steps */}
+        {service.serviceSteps && service.serviceSteps.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Service Steps ({service.serviceSteps.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {service.serviceSteps.map((step, index) => (
+                  <div
+                    key={step.id}
+                    className="border border-gray-200 rounded-lg p-5 hover:border-gray-300 transition-colors"
+                  >
+                    <div className="flex items-start gap-4">
+                      {/* Step Number */}
+                      <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-lg shrink-0">
+                        {step.step}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{step.stepTitle}</h4>
+                            <p className="text-sm text-gray-600 mt-1">{step.stepDescription}</p>
+                          </div>
+                          <div className="flex gap-2 shrink-0">
+                            {step.isOnline && <Badge variant="success">Online</Badge>}
+                            {step.requiresAppointment && <Badge variant="warning">Appointment Required</Badge>}
+                          </div>
+                        </div>
+
+                        {/* Office Types */}
+                        {step.officeTypes.length > 0 && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Office Types</label>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {step.officeTypes.map((type) => (
+                                <Badge key={type} variant="outline" className="text-xs">
+                                  {getOfficeTypeLabel(type)}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Documents */}
+                        {step.documentsRequired.length > 0 && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                              Documents Required ({step.documentsRequired.length})
+                            </label>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                              {step.documentsRequired.map((doc) => (
+                                <div key={doc.id} className="flex items-center gap-2 text-sm">
+                                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                  </svg>
+                                  <span className="text-gray-700">{doc.name}</span>
+                                  {doc.isMandatory && <Badge variant="danger" className="text-xs">Required</Badge>}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Fees */}
+                        {step.totalFees.length > 0 && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                              Fees ({step.totalFees.length})
+                            </label>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {step.totalFees.map((fee) => (
+                                <div key={fee.id} className="flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-full text-sm">
+                                  <span className="text-amber-800">{fee.feeTitle}</span>
+                                  <span className="font-semibold text-amber-900">
+                                    {fee.currency} {fee.feeAmount}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Time */}
+                        {step.timeRequired && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Time Required</label>
+                            <p className="text-sm text-gray-700 mt-1">
+                              {step.timeRequired.averageTime} (Min: {step.timeRequired.minimumTime}, Max: {step.timeRequired.maximumTime})
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Detailed Procedure */}
+        {service.detailedProc && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Detailed Procedure</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="text-sm font-medium text-gray-500">Overview</label>
+                <p className="text-gray-900 mt-1">{service.detailedProc.overview}</p>
+              </div>
+
+              {service.detailedProc.stepByStepGuide.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Step-by-Step Guide</label>
+                  <ol className="list-decimal list-inside mt-2 space-y-1">
+                    {service.detailedProc.stepByStepGuide.map((step, i) => (
+                      <li key={i} className="text-gray-700">{step}</li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {service.detailedProc.importantNotes.length > 0 && (
+                <div>
+                  <label className="text-sm font-medium text-gray-500">Important Notes</label>
+                  <ul className="list-disc list-inside mt-2 space-y-1">
+                    {service.detailedProc.importantNotes.map((note, i) => (
+                      <li key={i} className="text-gray-700">{note}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Delete Dialog */}
+      <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Service</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete &ldquo;{service.name}&rdquo;? This action cannot be undone.
+              {service.childrenCount > 0 && (
+                <span className="block mt-2 text-red-600 font-medium">
+                  Warning: This service has {service.childrenCount} child services that must be deleted first.
+                </span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              isLoading={deleting}
+              disabled={service.childrenCount > 0}
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}

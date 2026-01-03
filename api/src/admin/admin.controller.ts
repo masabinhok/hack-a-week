@@ -17,7 +17,10 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { COOKIE_CONFIG } from '../common/constants/cookie.config';
 import type { Response } from 'express';
+import { AuthGuard } from '../common/guards/auth.guard';
 
+
+@UseGuards(AuthGuard)
 @Controller('admin')
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
