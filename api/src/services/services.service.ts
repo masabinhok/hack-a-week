@@ -478,4 +478,50 @@ export class ServicesService {
       query,
     };
   }
+
+  /**
+   * Create a service from JSON data with nested relations
+   * Supports creating service with steps, documents, fees, authorities, etc.
+   */
+  async createServiceFromJson(data: any) {
+    try {
+      const service = await this.prisma.service.create({
+        data,
+        include: {
+          categories: {
+            include: {
+              category: true,
+            },
+          },
+          serviceSteps: {
+            include: {
+              documentsRequired: true,
+              totalFees: true,
+              timeRequired: true,
+              workingHours: true,
+              responsibleAuthorities: true,
+              complaintAuthorities: true,
+            },
+            orderBy: { step: 'asc' },
+          },
+          detailedProc: true,
+          metadata: true,
+          _count: {
+            select: {
+              children: true,
+              serviceSteps: true,
+            },
+          },
+        },
+      });
+
+      return {
+        success: true,
+        message: 'Service created successfully',
+        data: service,
+      };
+    } catch (error) {
+      throw new Error(`Failed to create service: ${error.message}`);
+    }
+  }
 }

@@ -1,5 +1,6 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ServicesService } from './services.service';
+import { CreateServiceFromJsonDto } from './dto/create-service-from-json.dto';
 
 @Controller({
   path: 'services',
@@ -59,5 +60,15 @@ export class ServicesController {
   @Get(':slug/breadcrumb')
   findBreadcrumb(@Param('slug') slug: string) {
     return this.servicesService.findBreadcrumbBySlug(slug);
+  }
+
+  /**
+   * POST /api/v1/services/create-from-json
+   * Create a service with all nested relations from JSON data
+   * Includes: categories, steps, documents, fees, authorities, working hours, detailed procedure, metadata
+   */
+  @Post('create-from-json')
+  createServiceFromJson(@Body() createServiceDto: CreateServiceFromJsonDto) {
+    return this.servicesService.createServiceFromJson(createServiceDto);
   }
 }
