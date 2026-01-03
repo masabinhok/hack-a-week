@@ -111,6 +111,50 @@ class ApiClient {
   async getCategories() {
     return this.request<Category[]>('/admin/services/categories');
   }
+
+  // Offices CRUD
+  async getOffices(params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+    type?: string;
+    categoryId?: string;
+    isActive?: boolean;
+  }) {
+    return this.request<OfficesResponse>('/admin/offices', { params: params as any });
+  }
+
+  async getOffice(id: string) {
+    return this.request<OfficeDetail>(`/admin/offices/${id}`);
+  }
+
+  async createOffice(data: CreateOfficeData) {
+    return this.request<{ message: string; data: OfficeDetail }>('/admin/offices', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateOffice(id: string, data: Partial<CreateOfficeData>) {
+    return this.request<{ message: string; data: OfficeDetail }>(`/admin/offices/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteOffice(id: string) {
+    return this.request<{ message: string }>(`/admin/offices/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getOfficeStats() {
+    return this.request<OfficeStats>('/admin/offices/stats');
+  }
+
+  async getOfficeCategories() {
+    return this.request<OfficeCategory[]>('/admin/offices/categories');
+  }
 }
 
 export const api = new ApiClient(API_BASE_URL);
@@ -254,6 +298,99 @@ export interface ServicesResponse {
     page: number;
     limit: number;
     totalPages: number;
+  };
+}
+
+// Office Types
+export interface Office {
+  id: string;
+  officeId: string;
+  categoryId: string;
+  name: string;
+  nameNepali?: string;
+  type: string;
+  address: string;
+  addressNepali?: string;
+  contact?: string;
+  alternateContact?: string;
+  email?: string;
+  website?: string;
+  photoUrls: string[];
+  facilities: string[];
+  nearestLandmark?: string;
+  publicTransport?: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category?: OfficeCategory;
+  location?: OfficeLocation;
+}
+
+export interface OfficeCategory {
+  id: string;
+  name: string;
+  description?: string;
+}
+
+export interface OfficeLocation {
+  wardId?: number;
+  wardNumber?: number;
+  municipalityId?: number;
+  municipalityName?: string;
+  districtId?: number;
+  districtName?: string;
+  provinceId?: number;
+  provinceName?: string;
+  level: 'ward' | 'municipality' | 'district' | 'province';
+}
+
+export interface OfficeDetail extends Office {
+  ratings?: {
+    averageRating: number;
+    totalReviews: number;
+  };
+}
+
+export interface OfficesResponse {
+  data: Office[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface OfficeStats {
+  totalOffices: number;
+  activeOffices: number;
+  inactiveOffices: number;
+  byType: { type: string; count: number }[];
+  byCategory: { categoryId: string; categoryName: string; count: number }[];
+}
+
+export interface CreateOfficeData {
+  officeId: string;
+  categoryId: string;
+  name: string;
+  nameNepali?: string;
+  type: string;
+  address: string;
+  addressNepali?: string;
+  contact?: string;
+  alternateContact?: string;
+  email?: string;
+  website?: string;
+  photoUrls?: string[];
+  facilities?: string[];
+  nearestLandmark?: string;
+  publicTransport?: string;
+  isActive?: boolean;
+  location?: {
+    wardId?: number;
+    municipalityId?: number;
+    districtId?: number;
+    provinceId?: number;
   };
 }
 

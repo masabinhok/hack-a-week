@@ -1,0 +1,500 @@
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../../prisma/prisma.service';
+import { CreateOfficeDto, UpdateOfficeDto, AdminOfficeQueryDto } from '../dto/create-office.dto';
+
+@Injectable()
+export class AdminOfficesService {
+  constructor(private readonly prisma: PrismaService) {}
+
+  /**
+   * Get all offices with pagination and filters
+   */
+  async findAll(params: AdminOfficeQueryDto) {
+    const { page = 1, limit = 20, search, type, categoryId, isActive } = params;
+    const skip = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { nameNepali: { contains: search, mode: 'insensitive' } },
+        { officeId: { contains: search, mode: 'insensitive' } },
+        { address: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (type) {
+      where.type = type;
+    }
+
+    if (categoryId) {
+      where.categoryId = categoryId;
+    }
+
+    if (isActive !== undefined) {
+      where.isActive = isActive;
+    }
+
+    const [offices, total] = await Promise.all([
+      this.prisma.office.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          category: true,
+          wardOffices: {
+            include: {
+              ward: {
+                include: {
+                  municipality: {
+                    include: {
+                      district: {
+                        include: {
+                          province: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+          municipalityOffices: {
+            include: {
+              municipality: {
+                include: {
+                  district: {
+                    include: {
+                      province: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+          districtOffices: {
+            include: {
+              district: {
+                include: {
+                  province: true,
+                },
+              },
+            },
+          },
+          provinceOffices: {
+            include: {
+              province: true,
+            },
+          },
+        },
+        orderBy: [{ type: 'asc' }, { name: 'asc' }],
+      }),
+      this.prisma.office.count({ where }),
+    ]);
+
+    // Transform location data for easier use
+    const transformedOffices = offices.map((office) => ({
+      ...office,
+      location: this.extractLocation(office),
+    }));
+
+    return {
+      data: transformedOffices,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  /**
+   * Get a single office by ID with all details
+   */
+  async findOne(id: string) {
+    const office = await this.prisma.office.findUnique({
+      where: { id },
+      include: {
+        category: true,
+        ratings: true,
+        wardOffices: {
+          include: {
+            ward: {
+              include: {
+                municipality: {
+                  include: {
+                    district: {
+                      include: {
+                        province: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        municipalityOffices: {
+          include: {
+            municipality: {
+              include: {
+                district: {
+                  include: {
+                    province: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        districtOffices: {
+          include: {
+            district: {
+              include: {
+                province: true,
+              },
+            },
+          },
+        },
+        provinceOffices: {
+          include: {
+            province: true,
+          },
+        },
+      },
+    });
+
+    if (!office) {
+      throw new NotFoundException(`Office with ID ${id} not found`);
+    }
+
+    return {
+      ...office,
+      location: this.extractLocation(office),
+    };
+  }
+
+  /**
+   * Get statistics for dashboard
+   */
+  async getStats() {
+    const [
+      totalOffices,
+      activeOffices,
+      officesByType,
+      officesByCategory,
+    ] = await Promise.all([
+      this.prisma.office.count(),
+      this.prisma.office.count({ where: { isActive: true } }),
+      this.prisma.office.groupBy({
+        by: ['type'],
+        _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
+      }),
+      this.prisma.office.groupBy({
+        by: ['categoryId'],
+        _count: { id: true },
+      }),
+    ]);
+
+    // Get category names
+    const categoryIds = officesByCategory.map((c) => c.categoryId);
+    const categories = await this.prisma.officeCategory.findMany({
+      where: { id: { in: categoryIds } },
+      select: { id: true, name: true },
+    });
+    const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
+
+    return {
+      totalOffices,
+      activeOffices,
+      inactiveOffices: totalOffices - activeOffices,
+      byType: officesByType.map((t) => ({
+        type: t.type,
+        count: t._count.id,
+      })),
+      byCategory: officesByCategory.map((c) => ({
+        categoryId: c.categoryId,
+        categoryName: categoryMap.get(c.categoryId) || 'Unknown',
+        count: c._count.id,
+      })),
+    };
+  }
+
+  /**
+   * Get all office categories for dropdown
+   */
+  async getCategories() {
+    return this.prisma.officeCategory.findMany({
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  /**
+   * Create a new office
+   */
+  async create(dto: CreateOfficeDto) {
+    // Check if officeId already exists
+    const existing = await this.prisma.office.findUnique({
+      where: { officeId: dto.officeId },
+    });
+
+    if (existing) {
+      throw new ConflictException(`Office with ID "${dto.officeId}" already exists`);
+    }
+
+    // Verify category exists
+    const category = await this.prisma.officeCategory.findUnique({
+      where: { id: dto.categoryId },
+    });
+
+    if (!category) {
+      throw new BadRequestException(`Category with ID "${dto.categoryId}" not found`);
+    }
+
+    const { location, ...officeData } = dto;
+
+    // Create office and location assignments in a transaction
+    const office = await this.prisma.$transaction(async (tx) => {
+      // Create the office
+      const newOffice = await tx.office.create({
+        data: {
+          ...officeData,
+          photoUrls: officeData.photoUrls || [],
+          facilities: officeData.facilities || [],
+        },
+        include: {
+          category: true,
+        },
+      });
+
+      // Create location assignments based on the provided location
+      if (location) {
+        if (location.wardId) {
+          await tx.wardOffice.create({
+            data: {
+              officeId: newOffice.id,
+              wardId: location.wardId,
+            },
+          });
+        }
+
+        if (location.municipalityId) {
+          await tx.municipalityOffice.create({
+            data: {
+              officeId: newOffice.id,
+              municipalityId: location.municipalityId,
+            },
+          });
+        }
+
+        if (location.districtId) {
+          await tx.districtOffice.create({
+            data: {
+              officeId: newOffice.id,
+              districtId: location.districtId,
+            },
+          });
+        }
+
+        if (location.provinceId) {
+          await tx.provinceOffice.create({
+            data: {
+              officeId: newOffice.id,
+              provinceId: location.provinceId,
+            },
+          });
+        }
+      }
+
+      return newOffice;
+    });
+
+    return {
+      message: 'Office created successfully',
+      data: office,
+    };
+  }
+
+  /**
+   * Update an existing office
+   */
+  async update(id: string, dto: UpdateOfficeDto) {
+    // Check if office exists
+    const existing = await this.prisma.office.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Office with ID ${id} not found`);
+    }
+
+    // Check if new officeId conflicts with another office
+    if (dto.officeId && dto.officeId !== existing.officeId) {
+      const conflicting = await this.prisma.office.findUnique({
+        where: { officeId: dto.officeId },
+      });
+
+      if (conflicting) {
+        throw new ConflictException(`Office with ID "${dto.officeId}" already exists`);
+      }
+    }
+
+    // Verify category if being updated
+    if (dto.categoryId) {
+      const category = await this.prisma.officeCategory.findUnique({
+        where: { id: dto.categoryId },
+      });
+
+      if (!category) {
+        throw new BadRequestException(`Category with ID "${dto.categoryId}" not found`);
+      }
+    }
+
+    const { location, ...officeData } = dto;
+
+    // Update office and location assignments in a transaction
+    const office = await this.prisma.$transaction(async (tx) => {
+      // Update the office
+      const updatedOffice = await tx.office.update({
+        where: { id },
+        data: officeData,
+        include: {
+          category: true,
+        },
+      });
+
+      // Update location assignments if provided
+      if (location) {
+        // Remove existing location assignments
+        await tx.wardOffice.deleteMany({ where: { officeId: id } });
+        await tx.municipalityOffice.deleteMany({ where: { officeId: id } });
+        await tx.districtOffice.deleteMany({ where: { officeId: id } });
+        await tx.provinceOffice.deleteMany({ where: { officeId: id } });
+
+        // Create new location assignments
+        if (location.wardId) {
+          await tx.wardOffice.create({
+            data: {
+              officeId: id,
+              wardId: location.wardId,
+            },
+          });
+        }
+
+        if (location.municipalityId) {
+          await tx.municipalityOffice.create({
+            data: {
+              officeId: id,
+              municipalityId: location.municipalityId,
+            },
+          });
+        }
+
+        if (location.districtId) {
+          await tx.districtOffice.create({
+            data: {
+              officeId: id,
+              districtId: location.districtId,
+            },
+          });
+        }
+
+        if (location.provinceId) {
+          await tx.provinceOffice.create({
+            data: {
+              officeId: id,
+              provinceId: location.provinceId,
+            },
+          });
+        }
+      }
+
+      return updatedOffice;
+    });
+
+    return {
+      message: 'Office updated successfully',
+      data: office,
+    };
+  }
+
+  /**
+   * Delete an office
+   */
+  async delete(id: string) {
+    const existing = await this.prisma.office.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Office with ID ${id} not found`);
+    }
+
+    await this.prisma.office.delete({
+      where: { id },
+    });
+
+    return {
+      message: 'Office deleted successfully',
+    };
+  }
+
+  /**
+   * Helper: Extract location details from office relations
+   */
+  private extractLocation(office: any) {
+    // Try to get the most specific location first
+    if (office.wardOffices?.[0]) {
+      const ward = office.wardOffices[0].ward;
+      return {
+        wardId: ward.id,
+        wardNumber: ward.wardNumber,
+        municipalityId: ward.municipality.id,
+        municipalityName: ward.municipality.name,
+        districtId: ward.municipality.district.id,
+        districtName: ward.municipality.district.name,
+        provinceId: ward.municipality.district.province.id,
+        provinceName: ward.municipality.district.province.name,
+        level: 'ward',
+      };
+    }
+
+    if (office.municipalityOffices?.[0]) {
+      const municipality = office.municipalityOffices[0].municipality;
+      return {
+        municipalityId: municipality.id,
+        municipalityName: municipality.name,
+        districtId: municipality.district.id,
+        districtName: municipality.district.name,
+        provinceId: municipality.district.province.id,
+        provinceName: municipality.district.province.name,
+        level: 'municipality',
+      };
+    }
+
+    if (office.districtOffices?.[0]) {
+      const district = office.districtOffices[0].district;
+      return {
+        districtId: district.id,
+        districtName: district.name,
+        provinceId: district.province.id,
+        provinceName: district.province.name,
+        level: 'district',
+      };
+    }
+
+    if (office.provinceOffices?.[0]) {
+      const province = office.provinceOffices[0].province;
+      return {
+        provinceId: province.id,
+        provinceName: province.name,
+        level: 'province',
+      };
+    }
+
+    return null;
+  }
+}
