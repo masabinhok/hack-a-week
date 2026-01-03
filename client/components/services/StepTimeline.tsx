@@ -32,8 +32,23 @@ interface StepTimelineProps {
 }
 
 export function StepTimeline({ steps, serviceSlug, userLocations, className = "" }: StepTimelineProps) {
+  // Normalize steps to ensure officeTypes is always an array
+  const normalizedSteps = steps.map(step => {
+    // Handle both officeType (string) and officeTypes (array) fields
+    const officeTypes = Array.isArray((step as any).officeTypes) 
+      ? (step as any).officeTypes 
+      : (step as any).officeType 
+        ? [( step as any).officeType] 
+        : [];
+    
+    return {
+      ...step,
+      officeTypes
+    };
+  });
+
   const [expandedSteps, setExpandedSteps] = useState<string[]>(
-    steps.length > 0 ? [steps[0].id] : []
+    normalizedSteps.length > 0 ? [normalizedSteps[0].id] : []
   );
 
   const toggleStep = (stepId: string) => {
@@ -45,14 +60,14 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
   };
 
   const expandAll = () => {
-    setExpandedSteps(steps.map((s) => s.id));
+    setExpandedSteps(normalizedSteps.map((s) => s.id));
   };
 
   const collapseAll = () => {
     setExpandedSteps([]);
   };
 
-  if (!steps || steps.length === 0) {
+  if (!normalizedSteps || normalizedSteps.length === 0) {
     return (
       <div className="text-center py-12 bg-surface rounded-2xl">
         <AlertCircle className="w-12 h-12 text-foreground-muted mx-auto mb-4" />
@@ -84,7 +99,7 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
 
         {/* Steps */}
         <div className="space-y-6">
-          {steps.map((step, index) => {
+          {normalizedSteps.map((step, index) => {
             const isExpanded = expandedSteps.includes(step.id);
 
             return (
@@ -216,7 +231,6 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                         <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
-
                       {/* Office Finder - Show if serviceSlug is provided and step has officeTypes */}
                       {serviceSlug && step.officeTypes && step.officeTypes.length > 0 && (
                         <OfficeFinderCard
