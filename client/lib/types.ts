@@ -327,6 +327,7 @@ export interface Office {
   contact?: string;
   email?: string;
   website?: string;
+  mapUrl?: string;
   facilities: string[];
   nearestLandmark?: string;
   publicTransport?: string;

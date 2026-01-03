@@ -347,6 +347,7 @@ model Office {
   nameNepali       String?
   type             OfficeType
   address          String
+  mapUrl          String?
   addressNepali    String?
   contact          String?
   alternateContact String?

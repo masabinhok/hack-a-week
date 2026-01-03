@@ -257,6 +257,16 @@ export default function OfficesPage() {
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-600">
                         {getLocationString(office)}
+                        {office.mapUrl && (
+                          <a
+                            href={office.mapUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block text-xs text-blue-600 hover:underline mt-1"
+                          >
+                            View on Map →
+                          </a>
+                        )}
                       </td>
                       <td className="px-4 py-4 text-sm">
                         {office.contact && (

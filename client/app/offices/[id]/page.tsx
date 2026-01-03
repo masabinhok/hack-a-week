@@ -189,7 +189,19 @@ export default async function OfficeDetailPage({ params }: PageProps) {
 
                 {/* Map Actions */}
                 <div className="flex gap-3">
-                  {(office.latitude && office.longitude) && (
+                  {office.mapUrl && (
+                    <Button asChild>
+                      <a
+                        href={office.mapUrl.includes('embed') ? office.mapUrl.replace('/embed', '/place') : office.mapUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Navigation className="w-4 h-4 mr-2" />
+                        Get Directions
+                      </a>
+                    </Button>
+                  )}
+                  {!office.mapUrl && (office.latitude && office.longitude) && (
                     <Button asChild>
                       <a
                         href={getGoogleMapsUrl(office.latitude.toString(), office.longitude)}
@@ -206,6 +218,21 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                     Copy Address
                   </Button>
                 </div>
+
+                {/* Embedded Map */}
+                {office.mapUrl && office.mapUrl.includes('embed') && (
+                  <div className="mt-4 rounded-lg overflow-hidden border border-border">
+                    <iframe
+                      src={office.mapUrl}
+                      width="100%"
+                      height="250"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 

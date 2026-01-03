@@ -97,6 +97,10 @@ export class CreateOfficeDto {
   @IsOptional()
   website?: string;
 
+  @IsString()
+  @IsOptional()
+  mapUrl?: string;
+
   @IsArray()
   @IsString({ each: true })
   @IsOptional()

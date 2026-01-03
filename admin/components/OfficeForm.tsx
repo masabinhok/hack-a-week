@@ -53,6 +53,7 @@ export default function OfficeForm({ office }: OfficeFormProps) {
     alternateContact: office?.alternateContact || '',
     email: office?.email || '',
     website: office?.website || '',
+    mapUrl: office?.mapUrl || '',
     photoUrls: office?.photoUrls || [],
     facilities: office?.facilities || [],
     nearestLandmark: office?.nearestLandmark || '',
@@ -568,6 +569,22 @@ export default function OfficeForm({ office }: OfficeFormProps) {
                 onChange={(e) => handleChange('website', e.target.value)}
                 placeholder="e.g., https://dao-kathmandu.gov.np"
               />
+            </div>
+
+            {/* Map URL */}
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Map Location URL
+              </label>
+              <Input
+                type="url"
+                value={formData.mapUrl || ''}
+                onChange={(e) => handleChange('mapUrl', e.target.value)}
+                placeholder="e.g., https://maps.google.com/maps?q=27.7172,85.3240 or Google Maps embed URL"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Paste a Google Maps link or embed URL for this office location
+              </p>
             </div>
           </div>
         </CardContent>

@@ -181,7 +181,7 @@ export default function OfficeDetailPage() {
           <CardHeader>
             <CardTitle>Location</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <dt className="text-sm font-medium text-gray-500">Administrative Location</dt>
@@ -207,6 +207,41 @@ export default function OfficeDetailPage() {
                 </div>
               )}
             </dl>
+
+            {/* Map Embed */}
+            {office.mapUrl && (
+              <div className="mt-4">
+                <dt className="text-sm font-medium text-gray-500 mb-2">Map Location</dt>
+                <div className="rounded-lg overflow-hidden border border-gray-200">
+                  {office.mapUrl.includes('embed') ? (
+                    <iframe
+                      src={office.mapUrl}
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                    />
+                  ) : (
+                    <a
+                      href={office.mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center h-32 bg-gray-50 hover:bg-gray-100 transition-colors"
+                    >
+                      <div className="text-center">
+                        <svg className="w-8 h-8 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="text-blue-600 hover:underline">View on Google Maps</span>
+                      </div>
+                    </a>
+                  )}
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

@@ -253,6 +253,18 @@ export function OfficeFinderCard({
                             </a>
                           </div>
                         )}
+
+                        {office.mapUrl && (
+                          <a
+                            href={office.mapUrl.includes('embed') ? office.mapUrl.replace('/embed', '/place') : office.mapUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 text-primary-blue hover:underline"
+                          >
+                            <ExternalLink className="w-4 h-4 shrink-0" />
+                            <span>View on Map</span>
+                          </a>
+                        )}
                       </div>
 
                       {/* View Details Button */}

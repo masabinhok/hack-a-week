@@ -315,6 +315,7 @@ export interface Office {
   alternateContact?: string;
   email?: string;
   website?: string;
+  mapUrl?: string;
   photoUrls: string[];
   facilities: string[];
   nearestLandmark?: string;
@@ -381,6 +382,7 @@ export interface CreateOfficeData {
   alternateContact?: string;
   email?: string;
   website?: string;
+  mapUrl?: string;
   photoUrls?: string[];
   facilities?: string[];
   nearestLandmark?: string;
