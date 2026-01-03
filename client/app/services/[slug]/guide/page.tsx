@@ -276,7 +276,7 @@ export default async function ServiceGuidePage({ params }: PageProps) {
             </h2>
             
             {service.steps && service.steps.length > 0 ? (
-              <StepTimeline steps={service.steps} />
+              <StepTimeline steps={service.steps} serviceSlug={slug} />
             ) : (
               <div className="text-center py-12 bg-surface rounded-2xl">
                 <AlertCircle className="w-12 h-12 text-foreground-muted mx-auto mb-4" />

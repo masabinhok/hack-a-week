@@ -21,13 +21,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ServiceStep, StepDocument, StepFee, StepTime, StepAuthority } from "@/lib/types";
 import { formatNPR } from "@/lib/utils";
+import { OfficeFinderCard } from "./OfficeFinderCard";
 
 interface StepTimelineProps {
   steps: ServiceStep[];
+  serviceSlug?: string;
   className?: string;
 }
 
-export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
+export function StepTimeline({ steps, serviceSlug, className = "" }: StepTimelineProps) {
   const [expandedSteps, setExpandedSteps] = useState<string[]>(
     steps.length > 0 ? [steps[0].id] : []
   );
@@ -206,6 +208,11 @@ export function StepTimeline({ steps, className = "" }: StepTimelineProps) {
                       {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                         <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
+                        <OfficeFinderCard
+                          serviceSlug={serviceSlug!}
+                          stepNumber={step.step}
+                          officeType={step.officeType}
+                        />
                     </div>
                   )}
                 </Card>
