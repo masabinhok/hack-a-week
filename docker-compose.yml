@@ -22,6 +22,47 @@ services:
         limits:
           memory: 2g
           cpus: '1.5'
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: project-api
+    restart: unless-stopped
+    ports:
+      - "3001:3000"
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      NODE_ENV: production
+      PORT: 3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: sh -c "npx prisma migrate deploy && npm run start:prod"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: project-client
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://api:3000
+      NODE_ENV: production
+    depends_on:
+      - api
+    networks:
+      - app-network
 
 volumes:
   pgdata:
+
+networks:
+  app-network:
+    driver: bridge
