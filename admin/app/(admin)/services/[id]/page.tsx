@@ -29,8 +29,10 @@ export default function ServiceDetailPage() {
   const fetchService = async (id: string) => {
     setLoading(true);
     try {
-      const data = await api.getService(id);
-      setService(data);
+      const response = await api.getService(id);
+      // API wraps response in { data: ... }
+      const serviceData = (response as any).data || response;
+      setService(serviceData);
     } catch (err: any) {
       setError(err.message || 'Failed to load service');
     } finally {
@@ -356,14 +358,33 @@ export default function ServiceDetailPage() {
                             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                               Documents Required ({step.documentsRequired.length})
                             </label>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
+                            <div className="space-y-2 mt-2">
                               {step.documentsRequired.map((doc) => (
-                                <div key={doc.id} className="flex items-center gap-2 text-sm">
-                                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                  </svg>
-                                  <span className="text-gray-700">{doc.name}</span>
-                                  {doc.isMandatory && <Badge variant="danger" className="text-xs">Required</Badge>}
+                                <div key={doc.id} className="bg-gray-50 border border-gray-200 rounded p-3">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-2">
+                                        <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        <span className="font-medium text-gray-900">{doc.name}</span>
+                                      </div>
+                                      {doc.nameNepali && (
+                                        <p className="text-xs text-gray-600 mt-1 ml-6">{doc.nameNepali}</p>
+                                      )}
+                                      <div className="flex flex-wrap gap-2 mt-2 ml-6">
+                                        <Badge variant={doc.isMandatory ? 'danger' : 'default'} className="text-xs">
+                                          {doc.isMandatory ? 'Mandatory' : 'Optional'}
+                                        </Badge>
+                                        <Badge variant="outline" className="text-xs">{doc.type}</Badge>
+                                        {doc.quantity && <Badge variant="outline" className="text-xs">Qty: {doc.quantity}</Badge>}
+                                        {doc.format && <Badge variant="outline" className="text-xs">{doc.format}</Badge>}
+                                      </div>
+                                      {doc.notes && (
+                                        <p className="text-xs text-gray-600 mt-2 ml-6">{doc.notes}</p>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -376,13 +397,29 @@ export default function ServiceDetailPage() {
                             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                               Fees ({step.totalFees.length})
                             </label>
-                            <div className="flex flex-wrap gap-2 mt-2">
+                            <div className="space-y-2 mt-2">
                               {step.totalFees.map((fee) => (
-                                <div key={fee.id} className="flex items-center gap-2 bg-amber-50 px-3 py-1 rounded-full text-sm">
-                                  <span className="text-amber-800">{fee.feeTitle}</span>
-                                  <span className="font-semibold text-amber-900">
-                                    {fee.currency} {fee.feeAmount}
-                                  </span>
+                                <div key={fee.id} className="bg-amber-50 border border-amber-200 rounded p-3">
+                                  <div className="flex items-start justify-between">
+                                    <div className="flex-1">
+                                      <div className="font-medium text-amber-900">{fee.feeTitle}</div>
+                                      {fee.feeTitleNepali && (
+                                        <div className="text-xs text-amber-700 mt-1">{fee.feeTitleNepali}</div>
+                                      )}
+                                      <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-lg font-bold text-amber-900">
+                                          {fee.currency} {fee.feeAmount}
+                                        </span>
+                                        <Badge variant="outline" className="text-xs">{fee.feeType}</Badge>
+                                        {fee.isRefundable && (
+                                          <Badge variant="success" className="text-xs">Refundable</Badge>
+                                        )}
+                                      </div>
+                                      {fee.notes && (
+                                        <p className="text-xs text-amber-800 mt-2">{fee.notes}</p>
+                                      )}
+                                    </div>
+                                  </div>
                                 </div>
                               ))}
                             </div>
@@ -396,6 +433,57 @@ export default function ServiceDetailPage() {
                             <p className="text-sm text-gray-700 mt-1">
                               {step.timeRequired.averageTime} (Min: {step.timeRequired.minimumTime}, Max: {step.timeRequired.maximumTime})
                             </p>
+                            {step.timeRequired.remarks && (
+                              <p className="text-xs text-gray-600 mt-1">{step.timeRequired.remarks}</p>
+                            )}
+                            {step.timeRequired.expeditedAvailable && (
+                              <Badge variant="default" className="text-xs mt-1">Expedited Available</Badge>
+                            )}
+                          </div>
+                        )}
+
+                        {/* Working Hours */}
+                        {step.workingHours && step.workingHours.length > 0 && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Working Hours</label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                              {step.workingHours.map((wh) => (
+                                <div key={wh.day} className="text-xs bg-gray-50 px-2 py-1 rounded">
+                                  <span className="font-medium text-gray-700">{wh.day}:</span>
+                                  <span className="text-gray-600 ml-1">{wh.openClose}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Responsible Authorities */}
+                        {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
+                          <div className="mt-3">
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                              Responsible Authorities ({step.responsibleAuthorities.length})
+                            </label>
+                            <div className="space-y-2 mt-2">
+                              {step.responsibleAuthorities.map((auth) => (
+                                <div key={auth.id} className="bg-blue-50 border border-blue-100 rounded p-2">
+                                  <div className="text-sm font-medium text-blue-900">{auth.position}</div>
+                                  {auth.positionNepali && (
+                                    <div className="text-xs text-blue-700">{auth.positionNepali}</div>
+                                  )}
+                                  {auth.department && (
+                                    <div className="text-xs text-gray-600 mt-1">Dept: {auth.department}</div>
+                                  )}
+                                  <div className="flex gap-3 mt-1">
+                                    {auth.contactNumber && (
+                                      <span className="text-xs text-gray-600">📞 {auth.contactNumber}</span>
+                                    )}
+                                    {auth.email && (
+                                      <span className="text-xs text-gray-600">✉️ {auth.email}</span>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
                       </div>
