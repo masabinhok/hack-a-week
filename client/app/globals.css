@@ -141,7 +141,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-serif;
   }
 
   /* Typography - using @apply for Tailwind utility integration */
