@@ -16,7 +16,7 @@ interface ServiceStepData {
   stepTitleNepali?: string;
   stepDescription: string;
   stepDescriptionNepali?: string;
-  officeType: OfficeType;
+  officeTypes: OfficeType[];
   requiresAppointment: boolean;
 }
 
@@ -70,7 +70,7 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
     const stepData = {
       stepTitle: step.stepTitle,
       stepDescription: step.stepDescription,
-      officeType: step.officeType,
+      officeTypes: step.officeTypes,
       requiresAppointment: step.requiresAppointment,
     };
 

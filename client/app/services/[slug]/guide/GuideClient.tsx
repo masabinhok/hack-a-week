@@ -36,6 +36,9 @@ export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
 
+  // console.log(service)
+
+
   // Check for stored locations on mount
   useEffect(() => {
     const stored = localStorage.getItem("userLocations");

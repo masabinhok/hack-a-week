@@ -158,7 +158,7 @@ export interface ServiceStep {
   stepTitleNepali?: string;
   stepDescription?: string;
   stepDescriptionNepali?: string;
-  officeType: OfficeType;
+  officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
   requiresAppointment: boolean;
   isActive: boolean;
   documentsRequired: StepDocument[];
@@ -191,7 +191,6 @@ export type OfficeType =
   | "INLAND_REVENUE_OFFICE" // IRD - PAN/VAT registration, tax filing
   // Social Services
   | "LABOUR_OFFICE"; // Foreign employment, work permits, labor disputes
-  "OTHER"; // Other types not categorized above
 
 export interface StepDocument {
   id: number;
@@ -375,7 +374,7 @@ export interface OfficeWorkingHours {
 
 export interface OfficeForService {
   stepNumber: number;
-  officeType: OfficeType;
+  officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
   offices: Office[];
 }
 

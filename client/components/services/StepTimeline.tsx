@@ -154,6 +154,12 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                               {step.timeRequired.averageTime}
                             </Badge>
                           )}
+                          {step.officeTypes && step.officeTypes.length > 0 && (
+                            <Badge key="offices" variant="secondary" className="text-xs">
+                              <Building2 className="w-3 h-3 mr-1" />
+                              {step.officeTypes.length} office {step.officeTypes.length === 1 ? "type" : "types"}
+                            </Badge>
+                          )}
                           {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
                             <Badge key="authority" variant="secondary" className="text-xs">
                               <Building2 className="w-3 h-3 mr-1" />
@@ -211,12 +217,12 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                         <AuthorityInfo authority={step.responsibleAuthorities[0]} />
                       )}
 
-                      {/* Office Finder - Show if serviceSlug is provided and step has officeType */}
-                      {serviceSlug && step.officeType && (
+                      {/* Office Finder - Show if serviceSlug is provided and step has officeTypes */}
+                      {serviceSlug && step.officeTypes && step.officeTypes.length > 0 && (
                         <OfficeFinderCard
                           serviceSlug={serviceSlug}
                           stepNumber={step.step}
-                          officeType={step.officeType}
+                          officeTypes={step.officeTypes}
                           userLocations={userLocations}
                           addressType="convenient" // TODO: Determine from step metadata
                         />

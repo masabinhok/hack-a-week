@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ServiceGuidePage({ params }: PageProps) {
   const { slug } = await params;
-
+  
   let service = null;
   try {
     service = await getServiceGuide(slug);
@@ -63,5 +63,9 @@ export default async function ServiceGuidePage({ params }: PageProps) {
     { label: "Guide", href: `/services/${slug}/guide` },
   ];
 
-  return <GuideClient service={service} slug={slug} breadcrumbs={breadcrumbs} />;
+  // Serialize the service data to ensure proper transfer to client component
+  const serializedService = JSON.parse(JSON.stringify(service));
+  console.log(serializedService)
+
+  return <GuideClient service={serializedService} slug={slug} breadcrumbs={breadcrumbs} />;
 }

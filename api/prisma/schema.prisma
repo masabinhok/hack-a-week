@@ -214,15 +214,15 @@ model ServiceMetadata {
 
 // ---------------  STEP (inside service)  ---------------
 model ServiceStep {
-  id                  String     @id @default(cuid())
+  id                  String       @id @default(cuid())
   serviceId           String
   step                Int
   stepTitle           String
   stepDescription     String
-  officeType          OfficeType
-  requiresAppointment Boolean    @default(false)
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
+  officeTypes         OfficeType[] // Changed from single officeType to array
+  requiresAppointment Boolean      @default(false)
+  createdAt           DateTime     @default(now())
+  updatedAt           DateTime     @updatedAt
 
   service           Service        @relation(fields: [serviceId], references: [id], onDelete: Cascade)
   documentsRequired StepDocument[]
@@ -235,7 +235,6 @@ model ServiceStep {
 
   @@unique([serviceId, step])
   @@index([serviceId])
-  @@index([officeType])
 }
 
 // ---------------  DOCUMENT (per step)  ---------------

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Office, OfficeType as PrismaOfficeType } from 'src/generated/prisma/client'
 import { 
   FindOfficesByLocationDto, 
   FindOfficesByTypeDto, 
@@ -500,7 +501,7 @@ export class OfficesService {
 
   /**
    * Get offices relevant to a service's steps based on user location
-   * Returns offices grouped by step number, matching the officeType required for each step
+   * Returns offices grouped by step number, matching the officeTypes required for each step
    */
   async findForService(slug: string, dto: FindOfficesForServiceDto) {
     const { wardId, municipalityId, districtId, provinceId } = dto;
@@ -511,8 +512,9 @@ export class OfficesService {
       include: {
         serviceSteps: {
           select: {
+            id: true,
             step: true,
-            officeType: true,
+            officeTypes: true, // Changed from officeType to officeTypes
           },
           orderBy: { step: 'asc' },
         },
@@ -527,8 +529,17 @@ export class OfficesService {
       return [];
     }
 
-    // Get unique office types needed for this service
-    const officeTypes = [...new Set(service.serviceSteps.map((s) => s.officeType))];
+    // Workaround for Prisma adapter-pg bug with enum arrays
+    // Fetch officeTypes separately using raw SQL
+    const stepIds = service.serviceSteps.map(s => s.id);
+    const officeTypesResult = await this.prisma.$queryRaw<{ id: string; officeTypes: string[] }[]>`
+      SELECT id, "officeTypes"::text[] as "officeTypes" FROM "ServiceStep" WHERE id = ANY(${stepIds})
+    `;
+    const officeTypesMap = new Map(officeTypesResult.map(r => [r.id, r.officeTypes || []]));
+
+    // Get unique office types needed for this service - flatten the array since each step can have multiple types
+    const allOfficeTypes = service.serviceSteps.flatMap((s) => officeTypesMap.get(s.id) || []);
+    const officeTypes = [...new Set(allOfficeTypes)] as PrismaOfficeType[];
 
     // Build location filter for offices
     const locationFilter: any[] = [];
@@ -555,30 +566,33 @@ export class OfficesService {
         category: true,
       },
       orderBy: [{ type: 'asc' }, { name: 'asc' }],
-    });
+    }) as (Office & { category: { name: string; description: string | null } | null })[];
 
     // Group offices by step
-    const result = service.serviceSteps.map((step) => ({
-      stepNumber: step.step,
-      officeType: step.officeType,
-      offices: offices
-        .filter((o) => o.type === step.officeType)
-        .map((o) => ({
-          id: o.id,
-          officeId: o.officeId,
-          name: o.name,
-          nameNepali: o.nameNepali,
-          type: o.type,
-          address: o.address,
-          addressNepali: o.addressNepali,
-          contact: o.contact,
-          email: o.email,
-          website: o.website,
-          category: o.category
-            ? { name: o.category.name, description: o.category.description }
-            : null,
-        })),
-    }));
+    const result = service.serviceSteps.map((step) => {
+      const stepOfficeTypes = officeTypesMap.get(step.id) || [];
+      return {
+        stepNumber: step.step,
+        officeTypes: stepOfficeTypes, // Use raw SQL result
+        offices: offices
+          .filter((o) => stepOfficeTypes.includes(o.type)) // Match any of the office types
+          .map((o) => ({
+            id: o.id,
+            officeId: o.officeId,
+            name: o.name,
+            nameNepali: o.nameNepali,
+            type: o.type,
+            address: o.address,
+            addressNepali: o.addressNepali,
+            contact: o.contact,
+            email: o.email,
+            website: o.website,
+            category: o.category
+              ? { name: o.category.name, description: o.category.description }
+              : null,
+          })),
+      };
+    });
 
     return result;
   }

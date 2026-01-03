@@ -26,7 +26,7 @@ import {
 interface OfficeFinderCardProps {
   serviceSlug: string;
   stepNumber: number;
-  officeType: OfficeType;
+  officeTypes: OfficeType[]; // Changed from single officeType to array
   addressType?: "permanent" | "convenient"; // Which address to use
   userLocations?: UpdateUserLocationsDto | null;
   className?: string;
@@ -35,11 +35,12 @@ interface OfficeFinderCardProps {
 export function OfficeFinderCard({
   serviceSlug,
   stepNumber,
-  officeType,
+  officeTypes,
   addressType = "convenient", // Default to convenient address
   userLocations,
   className = "",
 }: OfficeFinderCardProps) {
+
   const [offices, setOffices] = useState<Office[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -127,7 +128,12 @@ export function OfficeFinderCard({
                 ? "Showing offices near your permanent address"
                 : "Showing offices near your convenient location"}
             </p>
-            <OfficeTypeBadge type={officeType} />
+            {/* Show badges for all office types */}
+            <div className="flex flex-wrap gap-2">
+              {officeTypes.map((type) => (
+                <OfficeTypeBadge key={type} type={type} />
+              ))}
+            </div>
           </div>
         </div>
       </div>
