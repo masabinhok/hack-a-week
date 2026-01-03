@@ -178,7 +178,7 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
                     >
                       <div className="font-semibold text-gray-900">{province.name}</div>
                       {province.nameNepali&& (
-                        <div className="text-sm text-gray-600">{province.nameNep}</div>
+                        <div className="text-sm text-gray-600">{province.nameNepali}</div>
                       )}
                     </button>
                   ))}
@@ -200,8 +200,8 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
                       className="text-left p-4 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all"
                     >
                       <div className="font-semibold text-gray-900">{district.name}</div>
-                      {district.nameNep && (
-                        <div className="text-sm text-gray-600">{district.nameNep}</div>
+                      {district.nameNepali && (
+                        <div className="text-sm text-gray-600">{district.nameNepali}</div>
                       )}
                     </button>
                   ))}
@@ -228,8 +228,8 @@ export default function LocationSelector({ onClose, officeType }: LocationSelect
                           {municipality.type}
                         </span>
                       </div>
-                      {municipality.nameNep && (
-                        <div className="text-sm text-gray-600">{municipality.nameNep}</div>
+                      {municipality.nameNepali && (
+                        <div className="text-sm text-gray-600">{municipality.nameNepali}</div>
                       )}
                     </button>
                   ))}

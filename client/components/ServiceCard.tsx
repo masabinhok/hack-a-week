@@ -20,7 +20,7 @@ const categoryIcons: Record<string, string> = {
 };
 
 export default function ServiceCard({ service }: ServiceCardProps) {
-  const icon = categoryIcons[service.category] || '📋';
+  const icon = categoryIcons[service.categories?.[0]?.name || ''] || '📋';
 
   return (
     <Link href={`/${service.slug}`}>
@@ -29,7 +29,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         <div className="flex items-center justify-between mb-4">
           <span className="text-4xl">{icon}</span>
           <span className="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">
-            {service.category}
+            {service.categories?.[0]?.name || 'Service'}
           </span>
         </div>
 
@@ -47,7 +47,7 @@ export default function ServiceCard({ service }: ServiceCardProps) {
         <div className="flex items-center justify-between pt-4 border-t border-gray-100">
           <div className="flex items-center text-gray-500 text-sm">
             <FileText className="w-4 h-4 mr-2" />
-            <span>{service.subServices?.length || 0} sub-services</span>
+            <span>{service.childrenCount || 0} sub-services</span>
           </div>
           <div className="flex items-center text-blue-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
             <span>View Details</span>

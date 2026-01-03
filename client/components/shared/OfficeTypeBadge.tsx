@@ -8,12 +8,9 @@ import {
   Building2,
   Landmark,
   Map,
-  Compass,
   Plane,
   Car,
   Banknote,
-  Scale,
-  Shield,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -27,14 +24,16 @@ interface OfficeTypeBadgeProps {
   className?: string;
 }
 
-const OFFICE_CONFIG: Record<
-  OfficeType,
-  {
-    label: string;
-    labelNepali: string;
-    icon: LucideIcon;
-    className: string;
-  }
+const OFFICE_CONFIG: Partial<
+  Record<
+    OfficeType,
+    {
+      label: string;
+      labelNepali: string;
+      icon: LucideIcon;
+      className: string;
+    }
+  >
 > = {
   WARD_OFFICE: {
     label: "Ward Office",
@@ -42,28 +41,34 @@ const OFFICE_CONFIG: Record<
     icon: Building,
     className: "bg-blue-100 text-blue-700 border-blue-200",
   },
-  MUNICIPALITY: {
+  MUNICIPALITY_OFFICE: {
     label: "Municipality",
     labelNepali: "नगरपालिका",
     icon: Building2,
     className: "bg-purple-100 text-purple-700 border-purple-200",
   },
-  DISTRICT_ADMIN_OFFICE: {
+  RURAL_MUNICIPALITY_OFFICE: {
+    label: "Rural Municipality",
+    labelNepali: "गाउँपालिका",
+    icon: Building2,
+    className: "bg-purple-100 text-purple-700 border-purple-200",
+  },
+  DISTRICT_ADMINISTRATION_OFFICE: {
     label: "District Admin Office",
     labelNepali: "जिल्ला प्रशासन",
     icon: Landmark,
     className: "bg-indigo-100 text-indigo-700 border-indigo-200",
   },
-  LAND_REVENUE: {
+  LAND_REVENUE_OFFICE: {
     label: "Land Revenue",
     labelNepali: "मालपोत",
     icon: Map,
     className: "bg-amber-100 text-amber-700 border-amber-200",
   },
-  SURVEY_OFFICE: {
-    label: "Survey Office",
-    labelNepali: "नापी",
-    icon: Compass,
+  DISTRICT_EDUCATION_OFFICE: {
+    label: "Education Office",
+    labelNepali: "शिक्षा",
+    icon: Building,
     className: "bg-green-100 text-green-700 border-green-200",
   },
   PASSPORT_OFFICE: {
@@ -72,36 +77,55 @@ const OFFICE_CONFIG: Record<
     icon: Plane,
     className: "bg-red-100 text-red-700 border-red-200",
   },
-  TRANSPORT_OFFICE: {
+  IMMIGRATION_OFFICE: {
+    label: "Immigration Office",
+    labelNepali: "अध्यागमन",
+    icon: Plane,
+    className: "bg-red-100 text-red-700 border-red-200",
+  },
+  TRANSPORT_MANAGEMENT_OFFICE: {
     label: "Transport Office",
     labelNepali: "यातायात",
     icon: Car,
     className: "bg-cyan-100 text-cyan-700 border-cyan-200",
   },
-  BANK: {
-    label: "Bank",
-    labelNepali: "बैंक",
-    icon: Banknote,
+  DRIVING_LICENSE_OFFICE: {
+    label: "License Office",
+    labelNepali: "सवारी चालक",
+    icon: Car,
+    className: "bg-cyan-100 text-cyan-700 border-cyan-200",
+  },
+  OFFICE_OF_COMPANY_REGISTRAR: {
+    label: "Company Registrar",
+    labelNepali: "कम्पनी रजिष्ट्रार",
+    icon: Building2,
     className: "bg-emerald-100 text-emerald-700 border-emerald-200",
   },
-  COURT: {
-    label: "Court",
-    labelNepali: "अदालत",
-    icon: Scale,
-    className: "bg-gray-100 text-gray-700 border-gray-200",
+  COTTAGE_SMALL_INDUSTRY_OFFICE: {
+    label: "Industry Office",
+    labelNepali: "उद्योग",
+    icon: Building2,
+    className: "bg-emerald-100 text-emerald-700 border-emerald-200",
   },
-  POLICE: {
-    label: "Police Station",
-    labelNepali: "प्रहरी",
-    icon: Shield,
+  INLAND_REVENUE_OFFICE: {
+    label: "Revenue Office",
+    labelNepali: "राजस्व",
+    icon: Banknote,
+    className: "bg-amber-100 text-amber-700 border-amber-200",
+  },
+  LABOUR_OFFICE: {
+    label: "Labour Office",
+    labelNepali: "श्रम",
+    icon: Building,
     className: "bg-slate-100 text-slate-700 border-slate-200",
   },
-  OTHER: {
-    label: "Other Office",
-    labelNepali: "अन्य",
-    icon: Building,
-    className: "bg-gray-100 text-gray-600 border-gray-200",
-  },
+};
+
+const DEFAULT_OFFICE_CONFIG = {
+  label: "Office",
+  labelNepali: "कार्यालय",
+  icon: Building,
+  className: "bg-gray-100 text-gray-600 border-gray-200",
 };
 
 export function OfficeTypeBadge({
@@ -111,7 +135,7 @@ export function OfficeTypeBadge({
   size = "default",
   className,
 }: OfficeTypeBadgeProps) {
-  const config = OFFICE_CONFIG[type] || OFFICE_CONFIG.OTHER;
+  const config = OFFICE_CONFIG[type] || DEFAULT_OFFICE_CONFIG;
   const Icon = config.icon;
 
   return (
