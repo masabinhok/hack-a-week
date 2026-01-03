@@ -52,7 +52,7 @@ npm run start:dev
 ### API Base URL
 
 ```
-http://localhost:3000/api/v1
+http://localhost:8080/api/v1
 ```
 
 ## 📚 API Endpoints

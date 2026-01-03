@@ -150,7 +150,7 @@ The design system uses Nepal flag colors:
 The frontend connects to a NestJS backend API. Configure the API URL in `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:3000/api/v1
+NEXT_PUBLIC_API_URL=http://localhost:8080/api/v1
 ```
 
 ### Available API Functions
@@ -185,7 +185,7 @@ getOfficesForService(serviceSlug)
 
 - Node.js 18+
 - npm or yarn
-- Backend API running on `localhost:3000`
+- Backend API running on `localhost:8080/api/v1`
 
 ### Installation
 
