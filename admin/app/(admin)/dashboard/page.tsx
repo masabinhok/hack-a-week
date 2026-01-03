@@ -13,8 +13,10 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const data = await api.getServiceStats();
-        setStats(data);
+        const response = await api.getServiceStats();
+        // API wraps response in { data: ... }
+        const statsData = (response as any).data || response;
+        setStats(statsData);
       } catch (error) {
         console.error('Failed to fetch stats:', error);
       } finally {

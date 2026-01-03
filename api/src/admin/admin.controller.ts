@@ -32,24 +32,24 @@ export class AdminController {
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.adminService.login(dto);
+    const result = await this.adminService.login(dto);
 
     // Set cookies
     res.cookie(
       COOKIE_CONFIG.ACCESS_TOKEN.name,
-      tokens.accessToken,
+      result.tokens.accessToken,
       COOKIE_CONFIG.ACCESS_TOKEN.options,
     );
     res.cookie(
       COOKIE_CONFIG.REFRESH_TOKEN.name,
-      tokens.refreshToken,
+      result.tokens.refreshToken,
       COOKIE_CONFIG.REFRESH_TOKEN.options,
     );
 
     return {
       message: 'Login successful',
-      user: {
-        username: dto.username,
+      data: {
+        user: result.user,
       },
     };
   }

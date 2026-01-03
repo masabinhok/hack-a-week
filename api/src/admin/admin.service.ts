@@ -8,7 +8,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto';
-import { JwtPayload, TokenResponse } from './interfaces/jwt-payload.interface';
+import { JwtPayload, TokenResponse, LoginResponse } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AdminService {
@@ -18,7 +18,7 @@ export class AdminService {
     private config: ConfigService,
   ) {}
 
-  async login(dto: LoginDto): Promise<TokenResponse> {
+  async login(dto: LoginDto): Promise<LoginResponse> {
     // Find user by username
     const user = await this.prisma.user.findUnique({
       where: { username: dto.username },
@@ -48,7 +48,14 @@ export class AdminService {
       data: { refreshToken: hashedRefreshToken },
     });
 
-    return tokens;
+    return {
+      tokens,
+      user: {
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      },
+    };
   }
 
   async logout(userId: string): Promise<void> {

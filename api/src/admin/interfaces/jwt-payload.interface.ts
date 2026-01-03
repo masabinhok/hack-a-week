@@ -8,3 +8,12 @@ export interface TokenResponse {
   accessToken: string;
   refreshToken: string;
 }
+
+export interface LoginResponse {
+  tokens: TokenResponse;
+  user: {
+    id: string;
+    username: string;
+    role: string;
+  };
+}
