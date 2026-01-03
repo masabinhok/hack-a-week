@@ -163,4 +163,29 @@ export class AdminOfficeQueryDto {
   @IsOptional()
   @Type(() => Boolean)
   isActive?: boolean;
+
+  // Location filters
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  provinceId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  districtId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  municipalityId?: number;
+
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Type(() => Number)
+  wardId?: number;
 }

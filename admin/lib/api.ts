@@ -120,6 +120,10 @@ class ApiClient {
     type?: string;
     categoryId?: string;
     isActive?: boolean;
+    provinceId?: number;
+    districtId?: number;
+    municipalityId?: number;
+    wardId?: number;
   }) {
     return this.request<OfficesResponse>('/admin/offices', { params: params as any });
   }

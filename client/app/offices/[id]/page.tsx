@@ -189,7 +189,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
 
                 {/* Map Actions */}
                 <div className="flex gap-3">
-                  {office.mapUrl && (
+                  {office.mapUrl ? (
                     <Button asChild>
                       <a
                         href={office.mapUrl.includes('embed') ? office.mapUrl.replace('/embed', '/place') : office.mapUrl}
@@ -200,16 +200,15 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                         Get Directions
                       </a>
                     </Button>
-                  )}
-                  {!office.mapUrl && (office.latitude && office.longitude) && (
+                  ) : (
                     <Button asChild>
                       <a
-                        href={getGoogleMapsUrl(office.latitude.toString(), office.longitude)}
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress + ', Nepal')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
                         <Navigation className="w-4 h-4 mr-2" />
-                        Get Directions
+                        Find on Map
                       </a>
                     </Button>
                   )}
@@ -219,20 +218,46 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                   </Button>
                 </div>
 
-                {/* Embedded Map */}
-                {office.mapUrl && office.mapUrl.includes('embed') && (
-                  <div className="mt-4 rounded-lg overflow-hidden border border-border">
+                {/* Embedded Map - Always visible */}
+                <div className="mt-4 rounded-xl overflow-hidden border border-border shadow-sm">
+                  {office.mapUrl && (office.mapUrl.includes('embed') || office.mapUrl.includes('maps.google.com/maps?')) ? (
+                    // Google Maps embed URL provided
                     <iframe
-                      src={office.mapUrl}
+                      src={office.mapUrl.includes('embed') ? office.mapUrl : office.mapUrl.replace('maps.google.com/maps?', 'maps.google.com/maps?output=embed&')}
                       width="100%"
-                      height="250"
+                      height="300"
                       style={{ border: 0 }}
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                     />
-                  </div>
-                )}
+                  ) : (
+                    // Use OpenStreetMap as fallback (free, no API key needed)
+                    <>
+                      <iframe
+                        src={`https://www.openstreetmap.org/export/embed.html?bbox=85.2%2C27.6%2C85.4%2C27.8&layer=mapnik&marker=27.7172%2C85.324`}
+                        width="100%"
+                        height="280"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                      />
+                      <div className="p-3 bg-surface border-t border-border flex justify-between items-center">
+                        <span className="text-sm text-foreground-secondary flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          {fullAddress}
+                        </span>
+                        <a
+                          href={office.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress + ', Nepal')}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary-blue hover:underline font-medium"
+                        >
+                          Open in Google Maps →
+                        </a>
+                      </div>
+                    </>
+                  )}
+                </div>
               </CardContent>
             </Card>
 

@@ -10,18 +10,100 @@ export class AdminOfficesService {
    * Get all offices with pagination and filters
    */
   async findAll(params: AdminOfficeQueryDto) {
-    const { page = 1, limit = 20, search, type, categoryId, isActive } = params;
+    const { page = 1, limit = 20, search, type, categoryId, isActive, provinceId, districtId, municipalityId, wardId } = params;
     const skip = (page - 1) * limit;
 
     const where: any = {};
 
+    // Enhanced search - search through office fields AND location names
     if (search) {
-      where.OR = [
-        { name: { contains: search, mode: 'insensitive' } },
-        { nameNepali: { contains: search, mode: 'insensitive' } },
-        { officeId: { contains: search, mode: 'insensitive' } },
-        { address: { contains: search, mode: 'insensitive' } },
-      ];
+      const searchTerms = search.toLowerCase().split(/\s+/).filter(Boolean);
+      
+      // Build search conditions for each term
+      where.AND = searchTerms.map(term => ({
+        OR: [
+          { name: { contains: term, mode: 'insensitive' } },
+          { nameNepali: { contains: term, mode: 'insensitive' } },
+          { officeId: { contains: term, mode: 'insensitive' } },
+          { address: { contains: term, mode: 'insensitive' } },
+          { addressNepali: { contains: term, mode: 'insensitive' } },
+          // Search through ward offices
+          {
+            wardOffices: {
+              some: {
+                ward: {
+                  OR: [
+                    { wardNumber: isNaN(parseInt(term)) ? undefined : parseInt(term) },
+                    {
+                      municipality: {
+                        OR: [
+                          { name: { contains: term, mode: 'insensitive' } },
+                          { nameNep: { contains: term, mode: 'insensitive' } },
+                          {
+                            district: {
+                              OR: [
+                                { name: { contains: term, mode: 'insensitive' } },
+                                { nameNep: { contains: term, mode: 'insensitive' } },
+                              ],
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          // Search through municipality offices
+          {
+            municipalityOffices: {
+              some: {
+                municipality: {
+                  OR: [
+                    { name: { contains: term, mode: 'insensitive' } },
+                    { nameNep: { contains: term, mode: 'insensitive' } },
+                    {
+                      district: {
+                        OR: [
+                          { name: { contains: term, mode: 'insensitive' } },
+                          { nameNep: { contains: term, mode: 'insensitive' } },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            },
+          },
+          // Search through district offices
+          {
+            districtOffices: {
+              some: {
+                district: {
+                  OR: [
+                    { name: { contains: term, mode: 'insensitive' } },
+                    { nameNep: { contains: term, mode: 'insensitive' } },
+                  ],
+                },
+              },
+            },
+          },
+          // Search through province offices
+          {
+            provinceOffices: {
+              some: {
+                province: {
+                  OR: [
+                    { name: { contains: term, mode: 'insensitive' } },
+                    { nameNep: { contains: term, mode: 'insensitive' } },
+                  ],
+                },
+              },
+            },
+          },
+        ],
+      }));
     }
 
     if (type) {
@@ -34,6 +116,29 @@ export class AdminOfficesService {
 
     if (isActive !== undefined) {
       where.isActive = isActive;
+    }
+
+    // Location filters
+    if (wardId) {
+      where.wardOffices = { some: { wardId } };
+    } else if (municipalityId) {
+      where.OR = [
+        { wardOffices: { some: { ward: { municipalityId } } } },
+        { municipalityOffices: { some: { municipalityId } } },
+      ];
+    } else if (districtId) {
+      where.OR = [
+        { wardOffices: { some: { ward: { municipality: { districtId } } } } },
+        { municipalityOffices: { some: { municipality: { districtId } } } },
+        { districtOffices: { some: { districtId } } },
+      ];
+    } else if (provinceId) {
+      where.OR = [
+        { wardOffices: { some: { ward: { municipality: { district: { provinceId } } } } } },
+        { municipalityOffices: { some: { municipality: { district: { provinceId } } } } },
+        { districtOffices: { some: { district: { provinceId } } } },
+        { provinceOffices: { some: { provinceId } } },
+      ];
     }
 
     const [offices, total] = await Promise.all([

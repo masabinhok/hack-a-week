@@ -9,21 +9,39 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { api, Office, OfficesResponse, OfficeCategory, OFFICE_TYPES } from '@/lib/api';
+import { api, Office, OFFICE_TYPES } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
 
 const selectClassName = "flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50";
+
+interface LocationData {
+  provinces: { id: number; name: string }[];
+  districts: { id: number; name: string }[];
+  municipalities: { id: number; name: string }[];
+  wards: { id: number; wardNumber: number }[];
+}
 
 export default function OfficesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [offices, setOffices] = useState<Office[]>([]);
-  const [categories, setCategories] = useState<OfficeCategory[]>([]);
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 20, totalPages: 0 });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(searchParams.get('search') || '');
   const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '');
-  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('categoryId') || '');
+  
+  // Location filters
+  const [locationData, setLocationData] = useState<LocationData>({
+    provinces: [],
+    districts: [],
+    municipalities: [],
+    wards: [],
+  });
+  const [provinceFilter, setProvinceFilter] = useState(searchParams.get('provinceId') || '');
+  const [districtFilter, setDistrictFilter] = useState(searchParams.get('districtId') || '');
+  const [municipalityFilter, setMunicipalityFilter] = useState(searchParams.get('municipalityId') || '');
+  const [wardFilter, setWardFilter] = useState(searchParams.get('wardId') || '');
+  
   const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; office: Office | null }>({
     open: false,
     office: null,
@@ -33,22 +51,85 @@ export default function OfficesPage() {
   const page = parseInt(searchParams.get('page') || '1');
 
   useEffect(() => {
-    fetchCategories();
+    fetchProvinces();
   }, []);
 
   useEffect(() => {
     fetchOffices();
-  }, [page, typeFilter, categoryFilter]);
+  }, [page, typeFilter, provinceFilter, districtFilter, municipalityFilter, wardFilter]);
 
-  const fetchCategories = async () => {
+  // Cascading location fetches
+  useEffect(() => {
+    if (provinceFilter) {
+      fetchDistricts(parseInt(provinceFilter));
+    } else {
+      setLocationData(prev => ({ ...prev, districts: [], municipalities: [], wards: [] }));
+      setDistrictFilter('');
+      setMunicipalityFilter('');
+      setWardFilter('');
+    }
+  }, [provinceFilter]);
+
+  useEffect(() => {
+    if (districtFilter) {
+      fetchMunicipalities(parseInt(districtFilter));
+    } else {
+      setLocationData(prev => ({ ...prev, municipalities: [], wards: [] }));
+      setMunicipalityFilter('');
+      setWardFilter('');
+    }
+  }, [districtFilter]);
+
+  useEffect(() => {
+    if (municipalityFilter) {
+      fetchWards(parseInt(municipalityFilter));
+    } else {
+      setLocationData(prev => ({ ...prev, wards: [] }));
+      setWardFilter('');
+    }
+  }, [municipalityFilter]);
+
+  const fetchProvinces = async () => {
     try {
-      const response = await api.getOfficeCategories();
-      // Handle both direct array and wrapped response
-      const data = Array.isArray(response) ? response : (response as any).data || [];
-      setCategories(data);
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/provinces`);
+      const data = await response.json();
+      const provinces = Array.isArray(data) ? data : data.data || [];
+      setLocationData(prev => ({ ...prev, provinces }));
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
-      setCategories([]);
+      console.error('Failed to fetch provinces:', error);
+    }
+  };
+
+  const fetchDistricts = async (provinceId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/provinces/${provinceId}/districts`);
+      const data = await response.json();
+      const districts = Array.isArray(data) ? data : data.data || [];
+      setLocationData(prev => ({ ...prev, districts, municipalities: [], wards: [] }));
+    } catch (error) {
+      console.error('Failed to fetch districts:', error);
+    }
+  };
+
+  const fetchMunicipalities = async (districtId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/districts/${districtId}/municipalities`);
+      const data = await response.json();
+      const municipalities = Array.isArray(data) ? data : data.data || [];
+      setLocationData(prev => ({ ...prev, municipalities, wards: [] }));
+    } catch (error) {
+      console.error('Failed to fetch municipalities:', error);
+    }
+  };
+
+  const fetchWards = async (municipalityId: number) => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/municipalities/${municipalityId}/wards`);
+      const data = await response.json();
+      const wards = Array.isArray(data) ? data : data.data || [];
+      setLocationData(prev => ({ ...prev, wards }));
+    } catch (error) {
+      console.error('Failed to fetch wards:', error);
     }
   };
 
@@ -60,7 +141,10 @@ export default function OfficesPage() {
         limit: 20,
         search: search || undefined,
         type: typeFilter || undefined,
-        categoryId: categoryFilter || undefined,
+        provinceId: provinceFilter ? parseInt(provinceFilter) : undefined,
+        districtId: districtFilter ? parseInt(districtFilter) : undefined,
+        municipalityId: municipalityFilter ? parseInt(municipalityFilter) : undefined,
+        wardId: wardFilter ? parseInt(wardFilter) : undefined,
       });
       setOffices(response?.data || []);
       setMeta(response?.meta || { total: 0, page: 1, limit: 20, totalPages: 0 });
@@ -113,9 +197,14 @@ export default function OfficesPage() {
   const clearFilters = () => {
     setSearch('');
     setTypeFilter('');
-    setCategoryFilter('');
+    setProvinceFilter('');
+    setDistrictFilter('');
+    setMunicipalityFilter('');
+    setWardFilter('');
     router.push('/offices');
   };
+
+  const hasFilters = search || typeFilter || provinceFilter || districtFilter || municipalityFilter || wardFilter;
 
   return (
     <div>
@@ -137,17 +226,18 @@ export default function OfficesPage() {
       <div className="p-8">
         {/* Search & Filters */}
         <Card className="mb-6">
-          <CardContent className="p-4">
+          <CardContent className="p-4 space-y-4">
+            {/* Search Row */}
             <form onSubmit={handleSearch} className="flex gap-4 flex-wrap">
-              <div className="flex-1 min-w-[200px]">
+              <div className="flex-1 min-w-[300px]">
                 <Input
-                  placeholder="Search offices by name, ID, or address..."
+                  placeholder="Search by name, location (e.g., 'Kathmandu ward 13'), address..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <select
-                className={cn(selectClassName, "w-[220px]")}
+                className={cn(selectClassName, "w-[200px]")}
                 value={typeFilter}
                 onChange={(e) => setTypeFilter(e.target.value)}
               >
@@ -158,30 +248,74 @@ export default function OfficesPage() {
                   </option>
                 ))}
               </select>
-              <select
-                className={cn(selectClassName, "w-[180px]")}
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-              >
-                <option value="">All Categories</option>
-                {Array.isArray(categories) && categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-              </select>
               <Button type="submit" variant="secondary">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
                 Search
               </Button>
-              {(search || typeFilter || categoryFilter) && (
+              {hasFilters && (
                 <Button type="button" variant="outline" onClick={clearFilters}>
-                  Clear
+                  Clear All
                 </Button>
               )}
             </form>
+
+            {/* Location Filters Row */}
+            <div className="flex gap-3 flex-wrap items-center pt-2 border-t border-gray-100">
+              <span className="text-sm text-gray-500 font-medium">Filter by location:</span>
+              <select
+                className={cn(selectClassName, "w-[160px]")}
+                value={provinceFilter}
+                onChange={(e) => setProvinceFilter(e.target.value)}
+              >
+                <option value="">All Provinces</option>
+                {Array.isArray(locationData.provinces) && locationData.provinces.map((province) => (
+                  <option key={province.id} value={province.id}>
+                    {province.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={cn(selectClassName, "w-[160px]")}
+                value={districtFilter}
+                onChange={(e) => setDistrictFilter(e.target.value)}
+                disabled={!provinceFilter}
+              >
+                <option value="">All Districts</option>
+                {Array.isArray(locationData.districts) && locationData.districts.map((district) => (
+                  <option key={district.id} value={district.id}>
+                    {district.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={cn(selectClassName, "w-[180px]")}
+                value={municipalityFilter}
+                onChange={(e) => setMunicipalityFilter(e.target.value)}
+                disabled={!districtFilter}
+              >
+                <option value="">All Municipalities</option>
+                {Array.isArray(locationData.municipalities) && locationData.municipalities.map((municipality) => (
+                  <option key={municipality.id} value={municipality.id}>
+                    {municipality.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                className={cn(selectClassName, "w-[120px]")}
+                value={wardFilter}
+                onChange={(e) => setWardFilter(e.target.value)}
+                disabled={!municipalityFilter}
+              >
+                <option value="">All Wards</option>
+                {Array.isArray(locationData.wards) && locationData.wards.map((ward) => (
+                  <option key={ward.id} value={ward.id}>
+                    Ward {ward.wardNumber}
+                  </option>
+                ))}
+              </select>
+            </div>
           </CardContent>
         </Card>
 

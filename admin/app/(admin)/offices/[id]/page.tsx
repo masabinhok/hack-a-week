@@ -209,39 +209,69 @@ export default function OfficeDetailPage() {
             </dl>
 
             {/* Map Embed */}
-            {office.mapUrl && (
-              <div className="mt-4">
-                <dt className="text-sm font-medium text-gray-500 mb-2">Map Location</dt>
-                <div className="rounded-lg overflow-hidden border border-gray-200">
-                  {office.mapUrl.includes('embed') ? (
+            <div className="mt-4">
+              <dt className="text-sm font-medium text-gray-500 mb-2">Map Location</dt>
+              <div className="rounded-lg overflow-hidden border border-gray-200">
+                {office.mapUrl ? (
+                  // If mapUrl is provided, use it (Google Maps embed or link)
+                  office.mapUrl.includes('embed') || office.mapUrl.includes('maps.google.com/maps?') ? (
                     <iframe
-                      src={office.mapUrl}
+                      src={office.mapUrl.includes('embed') ? office.mapUrl : office.mapUrl.replace('maps.google.com/maps?', 'maps.google.com/maps?output=embed&')}
                       width="100%"
-                      height="300"
+                      height="350"
                       style={{ border: 0 }}
                       allowFullScreen
                       loading="lazy"
                       referrerPolicy="no-referrer-when-downgrade"
                     />
                   ) : (
-                    <a
-                      href={office.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center h-32 bg-gray-50 hover:bg-gray-100 transition-colors"
-                    >
-                      <div className="text-center">
-                        <svg className="w-8 h-8 mx-auto text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        <span className="text-blue-600 hover:underline">View on Google Maps</span>
+                    // Non-embed URL - show OpenStreetMap with link to Google Maps
+                    <>
+                      <iframe
+                        src={`https://www.openstreetmap.org/export/embed.html?bbox=85.2%2C27.6%2C85.4%2C27.8&layer=mapnik&marker=27.7172%2C85.324`}
+                        width="100%"
+                        height="300"
+                        style={{ border: 0 }}
+                        loading="lazy"
+                      />
+                      <div className="p-2 bg-gray-50 border-t flex justify-between items-center">
+                        <span className="text-sm text-gray-600">📍 {office.address}</span>
+                        <a
+                          href={office.mapUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-600 hover:underline"
+                        >
+                          Open in Google Maps →
+                        </a>
                       </div>
-                    </a>
-                  )}
-                </div>
+                    </>
+                  )
+                ) : (
+                  // No mapUrl - show OpenStreetMap search by address
+                  <>
+                    <iframe
+                      src={`https://www.openstreetmap.org/export/embed.html?bbox=85.2%2C27.6%2C85.4%2C27.8&layer=mapnik&marker=27.7172%2C85.324`}
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      loading="lazy"
+                    />
+                    <div className="p-2 bg-gray-50 border-t flex justify-between items-center">
+                      <span className="text-sm text-gray-600">📍 {office.address}</span>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(office.address + (office.location?.districtName ? ', ' + office.location.districtName : '') + ', Nepal')}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:underline"
+                      >
+                        Search on Google Maps →
+                      </a>
+                    </div>
+                  </>
+                )}
               </div>
-            )}
+            </div>
           </CardContent>
         </Card>
 
