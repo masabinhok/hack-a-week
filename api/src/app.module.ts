@@ -10,6 +10,7 @@ import { OfficesModule } from './offices/offices.module';
 import { LocationsModule } from './locations/locations.module';
 import { CategoriesModule } from './categories/categories.module';
 import { AdminModule } from './admin/admin.module';
+import { UsersModule } from './users/users.module';
 import { AuthGuard } from './common/guards/auth.guard';
 
 @Module({
@@ -26,6 +27,7 @@ import { AuthGuard } from './common/guards/auth.guard';
     OfficesModule,
     LocationsModule,
     AdminModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [

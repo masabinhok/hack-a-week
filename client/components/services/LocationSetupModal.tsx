@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LocationSelector } from "@/components/shared";
 import type { LocationValue } from "@/components/shared/LocationSelector";
-import { updateUserLocations, type UpdateUserLocationsDto } from "@/lib/api";
+import {  type UpdateUserLocationsDto } from "@/lib/api";
 import { MapPin, Home, Building2, X, Check, Loader2 } from "lucide-react";
 
 interface LocationSetupModalProps {
@@ -22,7 +22,6 @@ interface LocationSetupModalProps {
 }
 
 export function LocationSetupModal({
-  userId,
   onComplete,
   onSkip,
   initialPermanent = {},

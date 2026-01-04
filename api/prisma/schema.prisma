@@ -165,6 +165,9 @@ model Service {
   // Metadata
   metadata ServiceMetadata?
 
+  // User saved services
+  savedByUsers SavedService[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -425,11 +428,19 @@ enum UserRole {
 }
 
 model User {
-  id    String  @id @default(cuid())
-  username String @unique
-  passwordHash String 
-  role UserRole @default(USER)
+  id           String   @id @default(cuid())
+  username     String?  @unique // Optional for admin users
+  passwordHash String?  // Optional - not used for phone auth
+  role         UserRole @default(USER)
   refreshToken String?
+
+  // Phone-based authentication (primary for citizens)
+  phoneNumber   String?  @unique
+  phoneVerified Boolean  @default(false)
+  email         String?  @unique
+  emailVerified Boolean  @default(false)
+  fullName      String?
+  nationalId    String?  @unique
 
   // Permanent Address (for official documents like citizenship, passport)
   permanentProvinceId      Int?
@@ -445,14 +456,71 @@ model User {
   convenientWardId         Int?
   convenientLocationCode   String? // Legacy field for backward compatibility
 
+  // Tracking
+  savedServices  SavedService[]
+  contributions  UserContribution[]
+
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([username])
+  @@index([phoneNumber])
   @@index([permanentLocationCode])
   @@index([convenientLocationCode])
   @@index([permanentDistrictId])
   @@index([convenientDistrictId])
+}
+
+// OTP verification storage
+model OtpVerification {
+  id          String   @id @default(cuid())
+  phoneNumber String
+  otp         String
+  expiresAt   DateTime
+  attempts    Int      @default(0)
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([phoneNumber])
+  @@index([expiresAt])
+}
+
+// User saved services for tracking progress
+model SavedService {
+  id        String   @id @default(cuid())
+  userId    String
+  serviceId String
+  progress  Json?    // Track application progress
+  notes     String?
+  status    String   @default("saved") // saved, in-progress, completed
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, serviceId])
+  @@index([userId])
+  @@index([serviceId])
+}
+
+// User contributions for crowdsourcing data improvements
+model UserContribution {
+  id        String  @id @default(cuid())
+  userId    String
+  serviceId String?
+  officeId  String?
+  type      String  // 'feedback', 'correction', 'suggestion'
+  content   String
+  status    String  @default("pending") // pending/reviewed/approved/rejected
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
 }
 

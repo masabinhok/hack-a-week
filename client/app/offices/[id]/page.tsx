@@ -22,7 +22,6 @@ import {
   Navigation,
   Copy,
 } from "lucide-react";
-import { getGoogleMapsUrl } from "@/lib/utils";
 
 interface PageProps {
   params: Promise<{ id: string }>;

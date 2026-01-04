@@ -67,22 +67,22 @@ export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
     setShowLocationModal(true);
   };
 
-  // Calculate total estimated time if available
-  const totalMinTime = service.steps?.reduce((acc, step) => {
-    if (step.timeRequired?.minimumTime) {
-      const match = step.timeRequired.minimumTime.match(/(\d+)/);
-      return acc + (match ? parseInt(match[1]) : 0);
-    }
-    return acc;
-  }, 0);
+  // // Calculate total estimated time if available
+  // const totalMinTime = service.steps?.reduce((acc, step) => {
+  //   if (step.timeRequired?.minimumTime) {
+  //     const match = step.timeRequired.minimumTime.match(/(\d+)/);
+  //     return acc + (match ? parseInt(match[1]) : 0);
+  //   }
+  //   return acc;
+  // }, 0);
 
-  const totalMaxTime = service.steps?.reduce((acc, step) => {
-    if (step.timeRequired?.maximumTime) {
-      const match = step.timeRequired.maximumTime.match(/(\d+)/);
-      return acc + (match ? parseInt(match[1]) : 0);
-    }
-    return acc;
-  }, 0);
+  // const totalMaxTime = service.steps?.reduce((acc, step) => {
+  //   if (step.timeRequired?.maximumTime) {
+  //     const match = step.timeRequired.maximumTime.match(/(\d+)/);
+  //     return acc + (match ? parseInt(match[1]) : 0);
+  //   }
+  //   return acc;
+  // }, 0);
 
   // Calculate total fees
   const totalFees = service.steps?.reduce((acc, step) => {
@@ -217,7 +217,7 @@ export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
                 </div>
               </div>
 
-              {(totalMinTime || totalMaxTime) && (
+              {/* {(totalMinTime || totalMaxTime) && (
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
                     <Clock className="w-5 h-5 text-purple-600" />
@@ -235,7 +235,7 @@ export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
                     </p>
                   </div>
                 </div>
-              )}
+              )} */}
 
               {totalFees > 0 && (
                 <div className="flex items-center gap-2 text-sm">

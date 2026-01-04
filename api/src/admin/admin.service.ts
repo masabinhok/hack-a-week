@@ -28,6 +28,11 @@ export class AdminService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Verify password - Admin users must have both username and password
+    if (!user.passwordHash || !user.username) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
+
     // Verify password
     const passwordMatches = await bcrypt.compare(
       dto.password,
@@ -75,7 +80,7 @@ export class AdminService {
       where: { id: userId },
     });
 
-    if (!user || !user.refreshToken) {
+    if (!user || !user.refreshToken || !user.username) {
       throw new UnauthorizedException('Access denied');
     }
 

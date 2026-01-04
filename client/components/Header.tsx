@@ -18,9 +18,14 @@ import {
   Grid3X3,
   Info,
   HelpCircle,
+  User,
+  LogIn,
+  Bookmark,
+  LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 const NAV_ITEMS = [
   { label: "Home", labelNepali: "गृहपृष्ठ", href: "/", icon: Grid3X3 },
@@ -36,7 +41,9 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [language, setLanguage] = useState<"en" | "ne">("en");
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuth();
 
   // Handle scroll effect
   useEffect(() => {
@@ -176,6 +183,83 @@ export default function Header() {
                 </span>
               </Button>
 
+              {/* User Menu / Login Button */}
+              {isAuthenticated ? (
+                <div className="relative">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className={cn(
+                      "hidden sm:flex items-center gap-1.5 rounded-lg font-medium",
+                      isScrolled
+                        ? "text-foreground-secondary hover:text-foreground hover:bg-background-secondary"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    <User className="h-4 w-4" />
+                    <span className="text-sm max-w-[100px] truncate">
+                      {user?.fullName || user?.phoneNumber?.slice(-4)}
+                    </span>
+                  </Button>
+                  
+                  {/* User Dropdown Menu */}
+                  {isUserMenuOpen && (
+                    <>
+                      <div
+                        className="fixed inset-0 z-40"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      />
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-border py-1 z-50">
+                        <Link
+                          href="/profile"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-background-secondary"
+                        >
+                          <User className="h-4 w-4" />
+                          Profile
+                        </Link>
+                        <Link
+                          href="/my-services"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="flex items-center gap-2 px-3 py-2 text-sm hover:bg-background-secondary"
+                        >
+                          <Bookmark className="h-4 w-4" />
+                          My Services
+                        </Link>
+                        <hr className="my-1 border-border" />
+                        <button
+                          onClick={() => {
+                            setIsUserMenuOpen(false);
+                            logout();
+                          }}
+                          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-error hover:bg-error/10"
+                        >
+                          <LogOut className="h-4 w-4" />
+                          Logout
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <Link href="/login" className="hidden sm:block">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={cn(
+                      "flex items-center gap-1.5 rounded-lg font-medium",
+                      isScrolled
+                        ? "text-foreground-secondary hover:text-foreground hover:bg-background-secondary"
+                        : "text-white/80 hover:text-white hover:bg-white/10"
+                    )}
+                  >
+                    <LogIn className="h-4 w-4" />
+                    <span className="text-sm">Login</span>
+                  </Button>
+                </Link>
+              )}
+
               {/* Mobile Menu Button */}
               <Button
                 variant="ghost"
@@ -238,6 +322,49 @@ export default function Header() {
                 </Link>
               );
             })}
+          </div>
+
+          {/* User Section in Mobile Menu */}
+          <div className="border-t border-border mt-4 pt-4 space-y-1">
+            {isAuthenticated ? (
+              <>
+                <Link
+                  href="/profile"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground-secondary hover:bg-background-secondary hover:text-foreground transition-colors"
+                >
+                  <User className="h-5 w-5" />
+                  <span className="font-medium">Profile</span>
+                </Link>
+                <Link
+                  href="/my-services"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-foreground-secondary hover:bg-background-secondary hover:text-foreground transition-colors"
+                >
+                  <Bookmark className="h-5 w-5" />
+                  <span className="font-medium">My Services</span>
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    logout();
+                  }}
+                  className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-error hover:bg-error/10 transition-colors"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="font-medium">Logout</span>
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 rounded-lg text-nepal-blue hover:bg-nepal-blue/10 transition-colors"
+              >
+                <LogIn className="h-5 w-5" />
+                <span className="font-medium">Login / Register</span>
+              </Link>
+            )}
           </div>
 
           <div className="border-t border-border mt-4 pt-4">
