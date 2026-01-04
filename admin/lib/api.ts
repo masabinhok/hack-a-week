@@ -133,7 +133,7 @@ class ApiClient {
   }
 
   async createOffice(data: CreateOfficeData) {
-    return this.request<{ message: string; data: OfficeDetail }>('/admin/offices', {
+    return this.request<CreateOfficeResponse>('/admin/offices', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -152,6 +152,12 @@ class ApiClient {
     });
   }
 
+  async resetOfficeAdminPassword(officeId: string) {
+    return this.request<ResetPasswordResponse>(`/admin/offices/${officeId}/reset-password`, {
+      method: 'POST',
+    });
+  }
+
   async getOfficeStats() {
     return this.request<OfficeStats>('/admin/offices/stats');
   }
@@ -167,8 +173,17 @@ export const api = new ApiClient(API_BASE_URL);
 export interface User {
   id: string;
   username: string;
-  role: 'ADMIN' | 'USER';
+  role: 'ADMIN' | 'OFFICE_ADMIN' | 'USER';
   isActive: boolean;
+  // Office admin's managed office (only for OFFICE_ADMIN role)
+  managedOffice?: {
+    id: string;
+    officeId: string;
+    name: string;
+    nameNepali?: string;
+    type: string;
+    address: string;
+  };
 }
 
 export interface Category {
@@ -544,3 +559,22 @@ export const WEEKDAYS = [
   { value: 'FRIDAY', label: 'Friday' },
   { value: 'SATURDAY', label: 'Saturday' },
 ];
+
+// Office Admin Credentials Response Types
+export interface OfficeAdminCredentials {
+  username: string;
+  password: string;
+}
+
+export interface CreateOfficeResponse {
+  message: string;
+  data: OfficeDetail;
+  officeAdminCredentials: OfficeAdminCredentials;
+  createdBy?: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
+  credentials: OfficeAdminCredentials;
+  resetBy?: string;
+}

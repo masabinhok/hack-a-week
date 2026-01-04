@@ -84,7 +84,7 @@ enum WeekDay {
 }
 
 enum LocationType {
-  PERMANENT  // Step requires permanent address location
+  PERMANENT // Step requires permanent address location
   CONVENIENT // Step can use convenient/current location (default)
 }
 
@@ -231,7 +231,7 @@ model ServiceStep {
   locationType        LocationType @default(CONVENIENT) // Which address type to use for finding offices
   requiresAppointment Boolean      @default(false)
   isOnline            Boolean      @default(false) // NEW: If true, this step is completed online
-  onlineFormUrl       String?      // NEW: URL to online form/portal for this step
+  onlineFormUrl       String? // NEW: URL to online form/portal for this step
   createdAt           DateTime     @default(now())
   updatedAt           DateTime     @updatedAt
 
@@ -356,7 +356,7 @@ model Office {
   nameNepali       String?
   type             OfficeType
   address          String
-  mapUrl          String?
+  mapUrl           String?
   addressNepali    String?
   contact          String?
   alternateContact String?
@@ -369,6 +369,10 @@ model Office {
   isActive         Boolean    @default(true)
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
+
+  // Office Admin relation - the user who manages this office
+  officeAdminId String? @unique
+  officeAdmin   User?   @relation("OfficeAdmin", fields: [officeAdminId], references: [id])
 
   wardOffices         WardOffice[]
   municipalityOffices MunicipalityOffice[]
@@ -430,30 +434,31 @@ model OfficeRating {
 
 enum UserRole {
   ADMIN
+  OFFICE_ADMIN
   USER
 }
 
 model User {
   id           String   @id @default(cuid())
   username     String?  @unique // Optional for admin users
-  passwordHash String?  // Optional - not used for phone auth
+  passwordHash String? // Optional - not used for phone auth
   role         UserRole @default(USER)
   refreshToken String?
 
   // Phone-based authentication (primary for citizens)
-  phoneNumber   String?  @unique
-  phoneVerified Boolean  @default(false)
-  email         String?  @unique
-  emailVerified Boolean  @default(false)
+  phoneNumber   String? @unique
+  phoneVerified Boolean @default(false)
+  email         String? @unique
+  emailVerified Boolean @default(false)
   fullName      String?
-  nationalId    String?  @unique
+  nationalId    String? @unique
 
   // Permanent Address (for official documents like citizenship, passport)
-  permanentProvinceId      Int?
-  permanentDistrictId      Int?
-  permanentMunicipalityId  Int?
-  permanentWardId          Int?
-  permanentLocationCode    String? // Legacy field for backward compatibility
+  permanentProvinceId     Int?
+  permanentDistrictId     Int?
+  permanentMunicipalityId Int?
+  permanentWardId         Int?
+  permanentLocationCode   String? // Legacy field for backward compatibility
 
   // Convenient Address (for general services, local offices)
   convenientProvinceId     Int?
@@ -462,9 +467,12 @@ model User {
   convenientWardId         Int?
   convenientLocationCode   String? // Legacy field for backward compatibility
 
+  // Office Admin relation - each office admin manages one office
+  managedOffice Office? @relation("OfficeAdmin")
+
   // Tracking
-  savedServices  SavedService[]
-  contributions  UserContribution[]
+  savedServices SavedService[]
+  contributions UserContribution[]
 
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
@@ -494,14 +502,14 @@ model OtpVerification {
 
 // User saved services for tracking progress
 model SavedService {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   userId    String
   serviceId String
-  progress  Json?    // Track application progress
+  progress  Json? // Track application progress
   notes     String?
-  status    String   @default("saved") // saved, in-progress, completed
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  service   Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  status    String  @default("saved") // saved, in-progress, completed
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  service   Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -517,7 +525,7 @@ model UserContribution {
   userId    String
   serviceId String?
   officeId  String?
-  type      String  // 'feedback', 'correction', 'suggestion'
+  type      String // 'feedback', 'correction', 'suggestion'
   content   String
   status    String  @default("pending") // pending/reviewed/approved/rejected
 
@@ -529,4 +537,3 @@ model UserContribution {
   @@index([userId])
   @@index([status])
 }
-

@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateOfficeDto, UpdateOfficeDto, AdminOfficeQueryDto } from '../dto/create-office.dto';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AdminOfficesService {
@@ -216,6 +218,88 @@ export class AdminOfficesService {
   }
 
   /**
+   * Get office(s) managed by a specific office admin
+   */
+  async findByOfficeAdmin(userId: string) {
+    const office = await this.prisma.office.findFirst({
+      where: { officeAdminId: userId },
+      include: {
+        category: true,
+        ratings: true,
+        officeAdmin: {
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            role: true,
+          },
+        },
+        wardOffices: {
+          include: {
+            ward: {
+              include: {
+                municipality: {
+                  include: {
+                    district: {
+                      include: {
+                        province: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        municipalityOffices: {
+          include: {
+            municipality: {
+              include: {
+                district: {
+                  include: {
+                    province: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        districtOffices: {
+          include: {
+            district: {
+              include: {
+                province: true,
+              },
+            },
+          },
+        },
+        provinceOffices: {
+          include: {
+            province: true,
+          },
+        },
+      },
+    });
+
+    if (!office) {
+      throw new NotFoundException('No office found for this admin user');
+    }
+
+    return {
+      data: [{
+        ...office,
+        location: this.extractLocation(office),
+      }],
+      meta: {
+        total: 1,
+        page: 1,
+        limit: 1,
+        totalPages: 1,
+      },
+    };
+  }
+
+  /**
    * Get a single office by ID with all details
    */
   async findOne(id: string) {
@@ -338,7 +422,7 @@ export class AdminOfficesService {
   }
 
   /**
-   * Create a new office
+   * Create a new office with auto-generated office admin credentials
    */
   async create(dto: CreateOfficeDto) {
     // Check if officeId already exists
@@ -361,17 +445,42 @@ export class AdminOfficesService {
 
     const { location, ...officeData } = dto;
 
-    // Create office and location assignments in a transaction
-    const office = await this.prisma.$transaction(async (tx) => {
-      // Create the office
+    // Generate office admin credentials
+    const generatedUsername = this.generateOfficeAdminUsername(dto.officeId);
+    const generatedPassword = this.generateSecurePassword();
+    const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+
+    // Create office, office admin user, and location assignments in a transaction
+    const result = await this.prisma.$transaction(async (tx) => {
+      // Create the office admin user
+      const officeAdmin = await tx.user.create({
+        data: {
+          username: generatedUsername,
+          passwordHash: hashedPassword,
+          role: 'OFFICE_ADMIN',
+          isActive: true,
+          fullName: `Admin - ${dto.name}`,
+        },
+      });
+
+      // Create the office with the office admin linked
       const newOffice = await tx.office.create({
         data: {
           ...officeData,
           photoUrls: officeData.photoUrls || [],
           facilities: officeData.facilities || [],
+          officeAdminId: officeAdmin.id,
         },
         include: {
           category: true,
+          officeAdmin: {
+            select: {
+              id: true,
+              username: true,
+              fullName: true,
+              role: true,
+            },
+          },
         },
       });
 
@@ -414,12 +523,79 @@ export class AdminOfficesService {
         }
       }
 
-      return newOffice;
+      return {
+        office: newOffice,
+        officeAdminCredentials: {
+          username: generatedUsername,
+          password: generatedPassword, // Only returned once during creation
+        },
+      };
     });
 
     return {
-      message: 'Office created successfully',
-      data: office,
+      message: 'Office created successfully with office admin credentials',
+      data: result.office,
+      officeAdminCredentials: result.officeAdminCredentials,
+    };
+  }
+
+  /**
+   * Generate a username for office admin based on office ID
+   */
+  private generateOfficeAdminUsername(officeId: string): string {
+    // Clean the office ID to make it username-friendly
+    const cleanId = officeId.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    return `office_${cleanId}`;
+  }
+
+  /**
+   * Generate a secure random password
+   */
+  private generateSecurePassword(length: number = 12): string {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    const bytes = crypto.randomBytes(length);
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      password += chars[bytes[i] % chars.length];
+    }
+    return password;
+  }
+
+  /**
+   * Reset office admin password (admin only)
+   */
+  async resetOfficeAdminPassword(officeId: string) {
+    const office = await this.prisma.office.findUnique({
+      where: { id: officeId },
+      include: {
+        officeAdmin: {
+          select: { id: true, username: true },
+        },
+      },
+    });
+
+    if (!office) {
+      throw new NotFoundException(`Office with ID ${officeId} not found`);
+    }
+
+    if (!office.officeAdmin) {
+      throw new BadRequestException('This office does not have an assigned office admin');
+    }
+
+    const newPassword = this.generateSecurePassword();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await this.prisma.user.update({
+      where: { id: office.officeAdmin.id },
+      data: { passwordHash: hashedPassword },
+    });
+
+    return {
+      message: 'Office admin password reset successfully',
+      credentials: {
+        username: office.officeAdmin.username,
+        password: newPassword,
+      },
     };
   }
 
