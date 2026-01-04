@@ -1,186 +1,124 @@
-# Setu - Nepal Government Services Platform
+# Setu - Government Service Navigator
 
-> Simplifying access to government services for Nepali citizens through a comprehensive digital service directory and location-based office finder.
+A digital platform that simplifies access to government services in Nepal by providing citizens with comprehensive, step-by-step guidance for essential processes like National ID registration, business incorporation, and citizenship certificates.
 
+## Overview
 
-## 📁 Project Structure
+Setu consolidates critical information including required documents, fees, timelines, office locations, and responsible authorities into an organized, searchable database. By eliminating confusion and reducing the need for multiple office visits, the platform empowers citizens to navigate bureaucratic procedures confidently and efficiently by providing exact details of the offices they need to visit.
+
+## Technical Architecture
+
+### Backend
+- NestJS REST API
+- PostgreSQL database with Prisma ORM
+- Modular architecture for services, offices, and locations
+
+### Frontend
+- Next.js client application for public users
+- Separate Next.js admin panel for content management
+- Responsive design for mobile and desktop access
+
+### Infrastructure
+- Docker containerization for development.
+## Project Structure
 
 ```
 setu/
-├── api/                          # NestJS Backend
+├── api/                    # NestJS Backend
 │   ├── src/
-│   │   ├── modules/
-│   │   │   ├── services/         # Service-related endpoints
-│   │   │   ├── offices/          # Office-related endpoints
-│   │   │   ├── locations/        # Location hierarchy endpoints
-│   │   │   └── users/            # User management (future)
-│   │   ├── generated/
-│   │   │   └── prisma/           # Generated Prisma Client
-│   │   └── main.ts
-│   ├── prisma/
-│   │   ├── schema.prisma         # Database schema
-│   │   ├── migrations/           # Database migrations
-│   │   └── seed.ts               # Seed data scripts
-│   ├── Dockerfile
-│   └── package.json
-│
-├── client/                       # Next.js Frontend
-│   ├── app/
-│   │   ├── (routes)/
-│   │   │   ├── services/         # Service browsing pages
-│   │   │   ├── service/[slug]/   # Individual service page
-│   │   │   ├── guide/[id]/       # Detailed guide page
-│   │   │   └── offices/          # Office finder page
-│   │   ├── components/           # Reusable components
-│   │   └── layout.tsx
-│   ├── Dockerfile
-│   └── package.json
-│
-├── docker-compose.yml            # Multi-container orchestration
-├── .env                          # Environment variables
-├── .gitignore
-└── README.md
+│   │   ├── modules/       # API modules
+│   │   └── generated/     # Prisma client
+│   └── prisma/            # Schema and migrations
+├── client/                # Next.js Public Frontend
+└── admin/                 # Next.js Admin Panel
 ```
 
-***
+## Current Status
 
-## 🗺️ Roadmap
+This is an MVP (Minimum Viable Product) developed during the Hack-a-week hackathon. The platform demonstrates core functionality for service discovery and office location guidance.
 
-### Phase 1: MVP - Core Functionality (Current)
-- [x] Database schema design
-- [x] Docker setup for development environment
-- [ ] Seed hierarchical location data (provinces, districts, municipalities, wards)
-- [ ] Seed sample services, sub-services, and procedural steps
-- [ ] NestJS API development
-  - [ ] Service browsing endpoints
-  - [ ] Sub-service detail endpoints
-  - [ ] Location-based office query endpoints
-- [ ] Next.js frontend development
-  - [ ] Service listing and navigation
-  - [ ] Step-by-step guide display
-  - [ ] Office finder with location selection
-- [ ] Basic responsive UI/UX
+### Key Features
+- Hierarchical service organization with step-by-step procedures
+- Location-based office finder (province, district, municipality, ward)
+- Service detail pages with required documents and fee information
+- Administrative interface for content management
 
-### Phase 2: Enhanced Features 
-- [ ] User authentication (phone/email)
-- [ ] User location preferences (save home location)
-- [ ] Service bookmarking system
-- [ ] Search functionality (service/office search)
-- [ ] Advanced filtering (by category, priority, online availability)
-- [ ] Office ratings and reviews
-- [ ] Multi-language support (Nepali/English toggle)
-
-### Phase 3: Community & Admin 
-- [ ] Admin panel for service management
-- [ ] Office staff dashboard (update working hours, contact info)
-- [ ] User feedback and review moderation
-- [ ] Service update notifications
-- [ ] Analytics dashboard (popular services, office traffic)
-- [ ] Public API for third-party integrations
-
-### Phase 4: Advanced Features 
-- [ ] SMS notifications for service updates
-- [ ] Integration with government online portals
-- [ ] Document checklist generator (printable)
-- [ ] Estimated wait times at offices
-- [ ] Appointment booking system
-- [ ] Mobile applications (iOS/Android)
-- [ ] Chatbot for service recommendations
-
-***
-
-## Getting Started
+## Development Setup
 
 ### Prerequisites
-- Node.js 18+ and npm/yarn
+- Node.js 18+
 - Docker and Docker Compose
-- PostgreSQL 16+ (via Docker)
+- PostgreSQL 16+
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/masabinhok/hack-a-week.git
-   cd setu
-   ```
-
-2. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your database credentials
-   ```
-
-3. **Start Docker containers**
-   ```bash
-   docker compose up -d
-   ```
-
-4. **Install dependencies**
-   ```bash
-   # Backend
-   cd api
-   npm install
-
-   cp .env.example .env
-   # Edit .env with your backend envs
-   
-   # Frontend
-   cd ../client
-   npm install
-
-   cp .env.example .env
-   # Edit .env with your frontend envs
-   ```
-
-5. **Run database migrations and seed**
-   ```bash
-   cd api
-   npx prisma migrate dev --name init
-   npx prisma db seed
-   ```
-
-6. **Start development servers**
-   ```bash
-   # Backend (runs on http://localhost:8080/api/v1)
-   cd api
-   npm run start:dev
-   
-   # Frontend (runs on http://localhost:3000)
-   cd client
-   npm run dev
-   ```
-
-### Docker Development Workflow
+### Quick Start
 
 ```bash
-# Start all services
+# Clone repository
+git clone https://github.com/masabinhok/hack-a-week.git
+cd setu
+
+# Start Docker containers
 docker compose up -d
 
-# View logs
-docker compose logs -f
+# Backend setup
+cd api
+npm install
+cp .env.example .env
+npx prisma migrate dev
+npx prisma db seed
 
-# Stop all services
-docker compose down
+# Frontend setup
+cd ../client
+npm install
+cp .env.example .env
+npm run dev
 
-# Reset database
-docker compose down -v
-npx prisma migrate reset
+# Admin panel setup
+cd ../admin
+npm install
+cp .env.example .env
+npm run dev
 ```
+
+## Data Management Strategy
+
+Government service data collection presents significant challenges. Our approach:
+
+1. Associate an admin user with each government office in the database
+2. Provide office administrators with credentials to update their information
+3. Enable offices to manage service details, including nested procedural steps
+4. Decentralize data maintenance to ensure accuracy and timeliness
+
+## Future Enhancements
+
+### Short-term Improvements
+- Add kotha number (file reference number) details for each service step
+- Redesign database schema to handle edge cases and complex service hierarchies
+- Improve data quality validation and consistency checks
+
+### Long-term Vision
+- Integration with existing government online portals
+- SMS notifications for service updates and requirements
+- Multi-language support (Nepali and English)
+- Mobile applications for iOS and Android
+- Appointment booking system for government offices
+- Document checklist generator for printable guides
+
+## Vision Statement
+
+This project represents the seed of an idea that could transform how Nepali citizens interact with government services. With proper mentorship from professionals experienced in e-governance, this platform has the potential to significantly reduce bureaucratic barriers and improve access to essential services across Nepal.
+
+## Team
+
+**Hack-a-week Hackathon Project**
+
+- Sabin Shrestha ([@masabinhok](https://github.com/masabinhok))
+- Rhythm Adhikari ([@rhythmadhikari](https://github.com/rhythmadhikari))
+
+## License
+
+MIT License
 
 ***
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🏆 Hackathon
-
-**Setu** was created for **Hack-a-week** hackathon.
-
-**Team:**
-- [Sabin Shrestha (@masabinhok)](https://github.com/masabinhok)
-- [Rhythm Adhikari](https://github.com/rhythmadhikari) <!-- Add Rhythm's GitHub if available -->
-
----
-
-**Made with ❤️ for Nepal** 🇳🇵
+Made for Nepal
