@@ -283,7 +283,7 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                           stepNumber={step.step}
                           officeTypes={step.officeTypes}
                           userLocations={userLocations}
-                          addressType="convenient" // TODO: Determine from step metadata
+                          addressType={step.locationType === "PERMANENT" ? "permanent" : "convenient"}
                         />
                       )}
                     </div>

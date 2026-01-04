@@ -5,7 +5,7 @@
  * 
  * @module prisma/seeders/08-service-steps.seed
  */
-import { PrismaClient, OfficeType } from 'src/generated/prisma/client';
+import { PrismaClient, OfficeType, LocationType } from 'src/generated/prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,6 +17,7 @@ interface ServiceStepData {
   stepDescription: string;
   stepDescriptionNepali?: string;
   officeTypes: OfficeType[];
+  locationType?: LocationType;
   requiresAppointment: boolean;
   isOnline?: boolean;
   onlineFormUrl?: string;
@@ -73,6 +74,7 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
       stepTitle: step.stepTitle,
       stepDescription: step.stepDescription,
       officeTypes: step.officeTypes,
+      locationType: step.locationType || 'CONVENIENT',
       requiresAppointment: step.requiresAppointment,
       isOnline: step.isOnline || false,
       onlineFormUrl: step.onlineFormUrl || null,

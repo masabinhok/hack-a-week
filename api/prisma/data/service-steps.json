@@ -1,266 +1,248 @@
 [
     {
-        "serviceSlug":  "citizenship-by-descent",
-        "step":  1,
-        "stepTitle":  "Get Recommendation from Ward Office",
-        "stepTitleNepali":  "वडा कार्यालयबाट सिफारिस प्राप्त गर्नुहोस्",
-        "stepDescription":  "Visit your local ward office to obtain a recommendation letter (सिफारिस पत्र) for citizenship application. The ward secretary will verify your residence and family details.",
-        "stepDescriptionNepali":  "नागरिकता आवेदनको लागि सिफारिस पत्र प्राप्त गर्न आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्। वडा सचिवले तपाईंको बसोबास र पारिवारिक विवरणहरू प्रमाणित गर्नेछन्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "citizenship-by-descent",
+        "step": 1,
+        "stepTitle": "Get Recommendation from Ward Office",
+        "stepTitleNepali": "वडा कार्यालयबाट सिफारिस प्राप्त गर्नुहोस्",
+        "stepDescription": "Visit your local ward office to obtain a recommendation letter (सिफारिस पत्र) for citizenship application. The ward secretary will verify your residence and family details.",
+        "stepDescriptionNepali": "नागरिकता आवेदनको लागि सिफारिस पत्र प्राप्त गर्न आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्। वडा सचिवले तपाईंको बसोबास र पारिवारिक विवरणहरू प्रमाणित गर्नेछन्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "citizenship-by-descent",
-        "step":  2,
-        "stepTitle":  "Submit Application at DAO",
-        "stepTitleNepali":  "जिल्ला प्रशासन कार्यालयमा आवेदन दिनुहोस्",
-        "stepDescription":  "Visit the District Administration Office with all required documents. Fill out the citizenship application form (Form 1 - नागरिकता फाराम नं. १) and submit with documents for verification.",
-        "stepDescriptionNepali":  "सबै आवश्यक कागजातहरू लिएर जिल्ला प्रशासन कार्यालयमा जानुहोस्। नागरिकता आवेदन फाराम (फाराम नं. १) भरेर प्रमाणीकरणको लागि कागजातहरू पेश गर्नुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "DISTRICT_ADMINISTRATION_OFFICE"
-                        ]
+        "serviceSlug": "citizenship-by-descent",
+        "step": 2,
+        "stepTitle": "Submit Application at DAO",
+        "stepTitleNepali": "जिल्ला प्रशासन कार्यालयमा आवेदन दिनुहोस्",
+        "stepDescription": "Visit the District Administration Office with all required documents. Fill out the citizenship application form (Form 1 - नागरिकता फाराम नं. १) and submit with documents for verification.",
+        "stepDescriptionNepali": "सबै आवश्यक कागजातहरू लिएर जिल्ला प्रशासन कार्यालयमा जानुहोस्। नागरिकता आवेदन फाराम (फाराम नं. १) भरेर प्रमाणीकरणको लागि कागजातहरू पेश गर्नुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
-        "serviceSlug":  "citizenship-by-descent",
-        "step":  3,
-        "stepTitle":  "Biometric Enrollment \u0026 Photo",
-        "stepTitleNepali":  "बायोमेट्रिक दर्ता र फोटो",
-        "stepDescription":  "After document verification, provide biometric data (fingerprints) and have your photo taken for the citizenship certificate.",
-        "stepDescriptionNepali":  "कागजात प्रमाणीकरण पछि, बायोमेट्रिक डाटा (औंलाका छाप) दिनुहोस् र नागरिकता प्रमाणपत्रको लागि फोटो खिचाउनुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "DISTRICT_ADMINISTRATION_OFFICE"
-                        ]
+        "serviceSlug": "citizenship-by-descent",
+        "step": 3,
+        "stepTitle": "Biometric Enrollment & Photo",
+        "stepTitleNepali": "बायोमेट्रिक दर्ता र फोटो",
+        "stepDescription": "After document verification, provide biometric data (fingerprints) and have your photo taken for the citizenship certificate.",
+        "stepDescriptionNepali": "कागजात प्रमाणीकरण पछि, बायोमेट्रिक डाटा (औंलाका छाप) दिनुहोस् र नागरिकता प्रमाणपत्रको लागि फोटो खिचाउनुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
-        "serviceSlug":  "citizenship-by-descent",
-        "step":  4,
-        "stepTitle":  "Collect Citizenship Certificate",
-        "stepTitleNepali":  "नागरिकता प्रमाणपत्र संकलन गर्नुहोस्",
-        "stepDescription":  "Return to the DAO after the processing period (typically 7-15 working days) with your acknowledgment receipt to collect your citizenship certificate.",
-        "stepDescriptionNepali":  "प्रशोधन अवधि (सामान्यतया ७-१५ कार्य दिन) पछि आफ्नो रसिद लिएर नागरिकता प्रमाणपत्र संकलन गर्न जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "DISTRICT_ADMINISTRATION_OFFICE"
-                        ]
+        "serviceSlug": "citizenship-by-descent",
+        "step": 4,
+        "stepTitle": "Collect Citizenship Certificate",
+        "stepTitleNepali": "नागरिकता प्रमाणपत्र संकलन गर्नुहोस्",
+        "stepDescription": "Return to the DAO after the processing period (typically 7-15 working days) with your acknowledgment receipt to collect your citizenship certificate.",
+        "stepDescriptionNepali": "प्रशोधन अवधि (सामान्यतया ७-१५ कार्य दिन) पछि आफ्नो रसिद लिएर नागरिकता प्रमाणपत्र संकलन गर्न जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
-        "serviceSlug":  "birth-registration",
-        "step":  1,
-        "stepTitle":  "Visit Ward Office",
-        "stepTitleNepali":  "वडा कार्यालयमा जानुहोस्",
-        "stepDescription":  "Visit your local ward office within 35 days of birth for free registration, or later with applicable late fee. Bring all required documents including hospital birth certificate if available.",
-        "stepDescriptionNepali":  "निःशुल्क दर्ताको लागि जन्मको ३५ दिनभित्र आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्, वा पछि लागू विलम्ब शुल्क सहित। उपलब्ध भएमा अस्पताल जन्म प्रमाणपत्र सहित सबै आवश्यक कागजातहरू ल्याउनुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "birth-registration",
+        "step": 1,
+        "stepTitle": "Visit Ward Office",
+        "stepTitleNepali": "वडा कार्यालयमा जानुहोस्",
+        "stepDescription": "Visit your local ward office within 35 days of birth for free registration, or later with applicable late fee. Bring all required documents including hospital birth certificate if available.",
+        "stepDescriptionNepali": "निःशुल्क दर्ताको लागि जन्मको ३५ दिनभित्र आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्, वा पछि लागू विलम्ब शुल्क सहित। उपलब्ध भएमा अस्पताल जन्म प्रमाणपत्र सहित सबै आवश्यक कागजातहरू ल्याउनुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "birth-registration",
-        "step":  2,
-        "stepTitle":  "Fill Registration Form",
-        "stepTitleNepali":  "दर्ता फाराम भर्नुहोस्",
-        "stepDescription":  "Fill out the birth registration form with child\u0027s details, parents\u0027 information, date, time, and place of birth. Ward secretary will assist if needed.",
-        "stepDescriptionNepali":  "बच्चाको विवरण, अभिभावकको जानकारी, जन्म मिति, समय र स्थान सहित जन्म दर्ता फाराम भर्नुहोस्। आवश्यक भएमा वडा सचिवले सहयोग गर्नेछन्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "birth-registration",
+        "step": 2,
+        "stepTitle": "Fill Registration Form",
+        "stepTitleNepali": "दर्ता फाराम भर्नुहोस्",
+        "stepDescription": "Fill out the birth registration form with child's details, parents' information, date, time, and place of birth. Ward secretary will assist if needed.",
+        "stepDescriptionNepali": "बच्चाको विवरण, अभिभावकको जानकारी, जन्म मिति, समय र स्थान सहित जन्म दर्ता फाराम भर्नुहोस्। आवश्यक भएमा वडा सचिवले सहयोग गर्नेछन्।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "birth-registration",
-        "step":  3,
-        "stepTitle":  "Receive Birth Certificate",
-        "stepTitleNepali":  "जन्म प्रमाणपत्र प्राप्त गर्नुहोस्",
-        "stepDescription":  "After verification, receive the birth registration certificate (जन्म दर्ता प्रमाणपत्र). This is typically issued same day for timely registrations.",
-        "stepDescriptionNepali":  "प्रमाणीकरण पछि, जन्म दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। समयमै दर्ता गरिएकोमा यो सामान्यतया त्यही दिन जारी गरिन्छ।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "birth-registration",
+        "step": 3,
+        "stepTitle": "Receive Birth Certificate",
+        "stepTitleNepali": "जन्म प्रमाणपत्र प्राप्त गर्नुहोस्",
+        "stepDescription": "After verification, receive the birth registration certificate (जन्म दर्ता प्रमाणपत्र). This is typically issued same day for timely registrations.",
+        "stepDescriptionNepali": "प्रमाणीकरण पछि, जन्म दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। समयमै दर्ता गरिएकोमा यो सामान्यतया त्यही दिन जारी गरिन्छ।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "death-registration",
-        "step":  1,
-        "stepTitle":  "Visit Ward Office",
-        "stepTitleNepali":  "वडा कार्यालयमा जानुहोस्",
-        "stepDescription":  "Visit the ward office of the deceased\u0027s permanent or temporary residence within 35 days of death (free), or later with late fee.",
-        "stepDescriptionNepali":  "मृत्यु भएको ३५ दिनभित्र (निःशुल्क) वा पछि विलम्ब शुल्क सहित मृतकको स्थायी वा अस्थायी बसोबासको वडा कार्यालयमा जानुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "death-registration",
+        "step": 1,
+        "stepTitle": "Visit Ward Office",
+        "stepTitleNepali": "वडा कार्यालयमा जानुहोस्",
+        "stepDescription": "Visit the ward office of the deceased's permanent or temporary residence within 35 days of death (free), or later with late fee.",
+        "stepDescriptionNepali": "मृत्यु भएको ३५ दिनभित्र (निःशुल्क) वा पछि विलम्ब शुल्क सहित मृतकको स्थायी वा अस्थायी बसोबासको वडा कार्यालयमा जानुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "death-registration",
-        "step":  2,
-        "stepTitle":  "Submit Required Documents",
-        "stepTitleNepali":  "आवश्यक कागजातहरू पेश गर्नुहोस्",
-        "stepDescription":  "Submit death registration form with deceased\u0027s citizenship, informant\u0027s citizenship, and medical certificate if death occurred in hospital. For unnatural deaths, police report is required.",
-        "stepDescriptionNepali":  "मृत्यु दर्ता फाराम मृतकको नागरिकता, सूचना दिने व्यक्तिको नागरिकता, र अस्पतालमा मृत्यु भएको खण्डमा चिकित्सा प्रमाणपत्र सहित पेश गर्नुहोस्। अप्राकृतिक मृत्युको लागि प्रहरी प्रतिवेदन आवश्यक छ।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "death-registration",
+        "step": 2,
+        "stepTitle": "Submit Required Documents",
+        "stepTitleNepali": "आवश्यक कागजातहरू पेश गर्नुहोस्",
+        "stepDescription": "Submit death registration form with deceased's citizenship, informant's citizenship, and medical certificate if death occurred in hospital. For unnatural deaths, police report is required.",
+        "stepDescriptionNepali": "मृत्यु दर्ता फाराम मृतकको नागरिकता, सूचना दिने व्यक्तिको नागरिकता, र अस्पतालमा मृत्यु भएको खण्डमा चिकित्सा प्रमाणपत्र सहित पेश गर्नुहोस्। अप्राकृतिक मृत्युको लागि प्रहरी प्रतिवेदन आवश्यक छ।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "death-registration",
-        "step":  3,
-        "stepTitle":  "Receive Death Certificate",
-        "stepTitleNepali":  "मृत्यु प्रमाणपत्र प्राप्त गर्नुहोस्",
-        "stepDescription":  "After verification, receive the death registration certificate. This document is essential for property transfer, insurance claims, and pension settlement.",
-        "stepDescriptionNepali":  "प्रमाणीकरण पछि, मृत्यु दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो कागजात सम्पत्ति हस्तान्तरण, बीमा दावी र पेन्सन बन्दोबस्तको लागि आवश्यक छ।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "death-registration",
+        "step": 3,
+        "stepTitle": "Receive Death Certificate",
+        "stepTitleNepali": "मृत्यु प्रमाणपत्र प्राप्त गर्नुहोस्",
+        "stepDescription": "After verification, receive the death registration certificate. This document is essential for property transfer, insurance claims, and pension settlement.",
+        "stepDescriptionNepali": "प्रमाणीकरण पछि, मृत्यु दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो कागजात सम्पत्ति हस्तान्तरण, बीमा दावी र पेन्सन बन्दोबस्तको लागि आवश्यक छ।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "marriage-registration",
-        "step":  1,
-        "stepTitle":  "Visit Ward Office Together",
-        "stepTitleNepali":  "वडा कार्यालयमा सँगै जानुहोस्",
-        "stepDescription":  "Both bride and groom must visit the ward office of either party\u0027s residence within 35 days of marriage. Witnesses are also required.",
-        "stepDescriptionNepali":  "विवाहको ३५ दिनभित्र दुलही र दुलहा दुवै पक्षको बसोबासको वडा कार्यालयमा सँगै जानुपर्छ। साक्षीहरू पनि आवश्यक छन्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "marriage-registration",
+        "step": 1,
+        "stepTitle": "Visit Ward Office Together",
+        "stepTitleNepali": "वडा कार्यालयमा सँगै जानुहोस्",
+        "stepDescription": "Both bride and groom must visit the ward office of either party's residence within 35 days of marriage. Witnesses are also required.",
+        "stepDescriptionNepali": "विवाहको ३५ दिनभित्र दुलही र दुलहा दुवै पक्षको बसोबासको वडा कार्यालयमा सँगै जानुपर्छ। साक्षीहरू पनि आवश्यक छन्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "marriage-registration",
-        "step":  2,
-        "stepTitle":  "Submit Documents \u0026 Form",
-        "stepTitleNepali":  "कागजातहरू र फाराम पेश गर्नुहोस्",
-        "stepDescription":  "Submit completed marriage registration form with citizenship certificates of both parties, passport photos, and witness statements. Both parties must sign the form.",
-        "stepDescriptionNepali":  "दुवै पक्षको नागरिकता प्रमाणपत्र, पासपोर्ट साइजको फोटो र साक्षीको बयान सहित पूरा भरिएको विवाह दर्ता फाराम पेश गर्नुहोस्। दुवै पक्षले फारामामा हस्ताक्षर गर्नुपर्छ।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "marriage-registration",
+        "step": 2,
+        "stepTitle": "Submit Documents & Form",
+        "stepTitleNepali": "कागजातहरू र फाराम पेश गर्नुहोस्",
+        "stepDescription": "Submit completed marriage registration form with citizenship certificates of both parties, passport photos, and witness statements. Both parties must sign the form.",
+        "stepDescriptionNepali": "दुवै पक्षको नागरिकता प्रमाणपत्र, पासपोर्ट साइजको फोटो र साक्षीको बयान सहित पूरा भरिएको विवाह दर्ता फाराम पेश गर्नुहोस्। दुवै पक्षले फारामामा हस्ताक्षर गर्नुपर्छ।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "marriage-registration",
-        "step":  3,
-        "stepTitle":  "Receive Marriage Certificate",
-        "stepTitleNepali":  "विवाह प्रमाणपत्र प्राप्त गर्नुहोस्",
-        "stepDescription":  "After verification and approval, receive the marriage certificate (विवाह दर्ता प्रमाणपत्र). This is typically issued within 1-3 working days.",
-        "stepDescriptionNepali":  "प्रमाणीकरण र स्वीकृति पछि, विवाह दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो सामान्यतया १-३ कार्य दिनभित्र जारी गरिन्छ।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "marriage-registration",
+        "step": 3,
+        "stepTitle": "Receive Marriage Certificate",
+        "stepTitleNepali": "विवाह प्रमाणपत्र प्राप्त गर्नुहोस्",
+        "stepDescription": "After verification and approval, receive the marriage certificate (विवाह दर्ता प्रमाणपत्र). This is typically issued within 1-3 working days.",
+        "stepDescriptionNepali": "प्रमाणीकरण र स्वीकृति पछि, विवाह दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो सामान्यतया १-३ कार्य दिनभित्र जारी गरिन्छ।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "new-passport-application",
-        "step":  1,
-        "stepTitle":  "Fill Online Application",
-        "stepTitleNepali":  "अनलाइन आवेदन भर्नुहोस्",
-        "stepDescription":  "Visit nepalpassport.gov.np, create an account, and fill out the passport application form. Upload a recent passport-size photo and select your preferred appointment date and passport office.",
-        "stepDescriptionNepali":  "nepalpassport.gov.np मा जानुहोस्, खाता बनाउनुहोस्, र राहदानी आवेदन फाराम भर्नुहोस्। हालको पासपोर्ट साइजको फोटो अपलोड गर्नुहोस् र आफ्नो मनपर्ने भेटघाट मिति र राहदानी कार्यालय छान्नुहोस्।",
-        "requiresAppointment":  true,
+        "serviceSlug": "new-passport-application",
+        "step": 1,
+        "stepTitle": "Fill Online Application",
+        "stepTitleNepali": "अनलाइन आवेदन भर्नुहोस्",
+        "stepDescription": "Visit nepalpassport.gov.np, create an account, and fill out the passport application form. Upload a recent passport-size photo and select your preferred appointment date and passport office.",
+        "stepDescriptionNepali": "nepalpassport.gov.np मा जानुहोस्, खाता बनाउनुहोस्, र राहदानी आवेदन फाराम भर्नुहोस्। हालको पासपोर्ट साइजको फोटो अपलोड गर्नुहोस् र आफ्नो मनपर्ने भेटघाट मिति र राहदानी कार्यालय छान्नुहोस्।",
+        "requiresAppointment": true,
         "isOnline": true,
         "onlineFormUrl": "https://nepalpassport.gov.np",
-        "officeTypes":  []
+        "locationType": "CONVENIENT",
+        "officeTypes": []
     },
     {
-        "serviceSlug":  "new-passport-application",
-        "step":  2,
-        "stepTitle":  "Pay Passport Fee",
-        "stepTitleNepali":  "राहदानी शुल्क तिर्नुहोस्",
-        "stepDescription":  "Pay the passport fee online via eSewa, Khalti, or bank transfer. For regular service, fee is NPR 5,000 for 34 pages or NPR 7,000 for 66 pages. Express service costs additional NPR 10,000.",
-        "stepDescriptionNepali":  "eSewa, Khalti, वा बैंक ट्रान्सफर मार्फत अनलाइन राहदानी शुल्क तिर्नुहोस्। नियमित सेवाको लागि, शुल्क ३४ पृष्ठको लागि रु ५,००० वा ६६ पृष्ठको लागि रु ७,००० हो। द्रुत सेवाको लागि थप रु १०,००० लाग्छ।",
-        "requiresAppointment":  false,
+        "serviceSlug": "new-passport-application",
+        "step": 2,
+        "stepTitle": "Pay Passport Fee",
+        "stepTitleNepali": "राहदानी शुल्क तिर्नुहोस्",
+        "stepDescription": "Pay the passport fee online via eSewa, Khalti, or bank transfer. For regular service, fee is NPR 5,000 for 34 pages or NPR 7,000 for 66 pages. Express service costs additional NPR 10,000.",
+        "stepDescriptionNepali": "eSewa, Khalti, वा बैंक ट्रान्सफर मार्फत अनलाइन राहदानी शुल्क तिर्नुहोस्। नियमित सेवाको लागि, शुल्क ३४ पृष्ठको लागि रु ५,००० वा ६६ पृष्ठको लागि रु ७,००० हो। द्रुत सेवाको लागि थप रु १०,००० लाग्छ।",
+        "requiresAppointment": false,
         "isOnline": true,
         "onlineFormUrl": "https://nepalpassport.gov.np/payment",
-        "officeTypes":  []
+        "locationType": "CONVENIENT",
+        "officeTypes": []
     },
     {
-        "serviceSlug":  "new-passport-application",
-        "step":  3,
-        "stepTitle":  "Visit Passport Office",
-        "stepTitleNepali":  "राहदानी कार्यालयमा जानुहोस्",
-        "stepDescription":  "Visit the selected passport office on your appointment date. Bring original citizenship, payment receipt, and application printout. Biometric data and photo will be captured.",
-        "stepDescriptionNepali":  "आफ्नो भेटघाटको मितिमा छनौट गरिएको राहदानी कार्यालयमा जानुहोस्। मूल नागरिकता, भुक्तानी रसिद र आवेदन प्रिन्टआउट ल्याउनुहोस्। बायोमेट्रिक डाटा र फोटो खिचिनेछ।",
-        "requiresAppointment":  true,
-        "officeTypes":  [
-                            "PASSPORT_OFFICE"
-                        ]
+        "serviceSlug": "new-passport-application",
+        "step": 3,
+        "stepTitle": "Visit Passport Office",
+        "stepTitleNepali": "राहदानी कार्यालयमा जानुहोस्",
+        "stepDescription": "Visit the selected passport office on your appointment date. Bring original citizenship, payment receipt, and application printout. Biometric data and photo will be captured.",
+        "stepDescriptionNepali": "आफ्नो भेटघाटको मितिमा छनौट गरिएको राहदानी कार्यालयमा जानुहोस्। मूल नागरिकता, भुक्तानी रसिद र आवेदन प्रिन्टआउट ल्याउनुहोस्। बायोमेट्रिक डाटा र फोटो खिचिनेछ।",
+        "requiresAppointment": true,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["PASSPORT_OFFICE"]
     },
     {
-        "serviceSlug":  "new-passport-application",
-        "step":  4,
-        "stepTitle":  "Collect Passport",
-        "stepTitleNepali":  "राहदानी संकलन गर्नुहोस्",
-        "stepDescription":  "Collect your passport from the same office after processing. Regular service takes 15-30 days, express service takes 2-5 days. Bring your acknowledgment receipt.",
-        "stepDescriptionNepali":  "प्रशोधन पछि त्यही कार्यालयबाट आफ्नो राहदानी संकलन गर्नुहोस्। नियमित सेवा १५-३० दिन लाग्छ, द्रुत सेवा २-५ दिन लाग्छ। आफ्नो स्वीकृति रसिद ल्याउनुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "PASSPORT_OFFICE"
-                        ]
+        "serviceSlug": "new-passport-application",
+        "step": 4,
+        "stepTitle": "Collect Passport",
+        "stepTitleNepali": "राहदानी संकलन गर्नुहोस्",
+        "stepDescription": "Collect your passport from the same office after processing. Regular service takes 15-30 days, express service takes 2-5 days. Bring your acknowledgment receipt.",
+        "stepDescriptionNepali": "प्रशोधन पछि त्यही कार्यालयबाट आफ्नो राहदानी संकलन गर्नुहोस्। नियमित सेवा १५-३० दिन लाग्छ, द्रुत सेवा २-५ दिन लाग्छ। आफ्नो स्वीकृति रसिद ल्याउनुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["PASSPORT_OFFICE"]
     },
     {
-        "serviceSlug":  "duplicate-citizenship-certificate",
-        "step":  1,
-        "stepTitle":  "File Police Report",
-        "stepTitleNepali":  "प्रहरी प्रतिवेदन दर्ता गर्नुहोस्",
-        "stepDescription":  "If citizenship was lost or stolen, file a First Information Report (FIR) at the nearest police station. Obtain a copy of the FIR for your application.",
-        "stepDescriptionNepali":  "नागरिकता हराएको वा चोरी भएको खण्डमा, नजिकैको प्रहरी चौकीमा प्रथम सूचना प्रतिवेदन (एफआईआर) दर्ता गर्नुहोस्। आफ्नो आवेदनको लागि एफआईआरको प्रतिलिपि प्राप्त गर्नुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "duplicate-citizenship-certificate",
+        "step": 1,
+        "stepTitle": "File Police Report",
+        "stepTitleNepali": "प्रहरी प्रतिवेदन दर्ता गर्नुहोस्",
+        "stepDescription": "If citizenship was lost or stolen, file a First Information Report (FIR) at the nearest police station. Obtain a copy of the FIR for your application.",
+        "stepDescriptionNepali": "नागरिकता हराएको वा चोरी भएको खण्डमा, नजिकैको प्रहरी चौकीमा प्रथम सूचना प्रतिवेदन (एफआईआर) दर्ता गर्नुहोस्। आफ्नो आवेदनको लागि एफआईआरको प्रतिलिपि प्राप्त गर्नुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "duplicate-citizenship-certificate",
-        "step":  2,
-        "stepTitle":  "Publish in Newspaper",
-        "stepTitleNepali":  "समाचारपत्रमा प्रकाशन गर्नुहोस्",
-        "stepDescription":  "Publish a notice in a national daily newspaper declaring your citizenship lost and invalid. Keep the original newspaper and a clear clipping.",
-        "stepDescriptionNepali":  "राष्ट्रिय दैनिक समाचारपत्रमा आफ्नो नागरिकता हराएको र अमान्य भएको घोषणा गर्दै सूचना प्रकाशित गर्नुहोस्। मूल समाचारपत्र र स्पष्ट कतर्नी राख्नुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "duplicate-citizenship-certificate",
+        "step": 2,
+        "stepTitle": "Publish in Newspaper",
+        "stepTitleNepali": "समाचारपत्रमा प्रकाशन गर्नुहोस्",
+        "stepDescription": "Publish a notice in a national daily newspaper declaring your citizenship lost and invalid. Keep the original newspaper and a clear clipping.",
+        "stepDescriptionNepali": "राष्ट्रिय दैनिक समाचारपत्रमा आफ्नो नागरिकता हराएको र अमान्य भएको घोषणा गर्दै सूचना प्रकाशित गर्नुहोस्। मूल समाचारपत्र र स्पष्ट कतर्नी राख्नुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "CONVENIENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "duplicate-citizenship-certificate",
-        "step":  3,
-        "stepTitle":  "Get Ward Recommendation",
-        "stepTitleNepali":  "वडा सिफारिस प्राप्त गर्नुहोस्",
-        "stepDescription":  "Visit your local ward office with the police report and newspaper clipping to obtain a recommendation letter for duplicate citizenship.",
-        "stepDescriptionNepali":  "प्रतिलिपि नागरिकताको लागि सिफारिस पत्र प्राप्त गर्न प्रहरी प्रतिवेदन र समाचारपत्र कतर्नी सहित आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "WARD_OFFICE"
-                        ]
+        "serviceSlug": "duplicate-citizenship-certificate",
+        "step": 3,
+        "stepTitle": "Get Ward Recommendation",
+        "stepTitleNepali": "वडा सिफारिस प्राप्त गर्नुहोस्",
+        "stepDescription": "Visit your local ward office with the police report and newspaper clipping to obtain a recommendation letter for duplicate citizenship.",
+        "stepDescriptionNepali": "प्रतिलिपि नागरिकताको लागि सिफारिस पत्र प्राप्त गर्न प्रहरी प्रतिवेदन र समाचारपत्र कतर्नी सहित आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["WARD_OFFICE"]
     },
     {
-        "serviceSlug":  "duplicate-citizenship-certificate",
-        "step":  4,
-        "stepTitle":  "Apply at DAO",
-        "stepTitleNepali":  "जिल्ला प्रशासन कार्यालयमा आवेदन दिनुहोस्",
-        "stepDescription":  "Visit the DAO where your original citizenship was issued (or current residence DAO). Submit application with all documents and pay the duplicate fee of NPR 400.",
-        "stepDescriptionNepali":  "आफ्नो मूल नागरिकता जारी भएको (वा हालको बसोबास) जिल्ला प्रशासन कार्यालयमा जानुहोस्। सबै कागजातहरू सहित आवेदन पेश गर्नुहोस् र रु ४०० प्रतिलिपि शुल्क तिर्नुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "DISTRICT_ADMINISTRATION_OFFICE"
-                        ]
+        "serviceSlug": "duplicate-citizenship-certificate",
+        "step": 4,
+        "stepTitle": "Apply at DAO",
+        "stepTitleNepali": "जिल्ला प्रशासन कार्यालयमा आवेदन दिनुहोस्",
+        "stepDescription": "Visit the DAO where your original citizenship was issued (or current residence DAO). Submit application with all documents and pay the duplicate fee of NPR 400.",
+        "stepDescriptionNepali": "आफ्नो मूल नागरिकता जारी भएको (वा हालको बसोबास) जिल्ला प्रशासन कार्यालयमा जानुहोस्। सबै कागजातहरू सहित आवेदन पेश गर्नुहोस् र रु ४०० प्रतिलिपि शुल्क तिर्नुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
-        "serviceSlug":  "duplicate-citizenship-certificate",
-        "step":  5,
-        "stepTitle":  "Collect Duplicate Certificate",
-        "stepTitleNepali":  "प्रतिलिपि प्रमाणपत्र संकलन गर्नुहोस्",
-        "stepDescription":  "Return to the DAO after verification (7-21 days) to collect your duplicate citizenship certificate.",
-        "stepDescriptionNepali":  "आफ्नो प्रतिलिपि नागरिकता प्रमाणपत्र संकलन गर्न प्रमाणीकरण (७-२१ दिन) पछि जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
-        "requiresAppointment":  false,
-        "officeTypes":  [
-                            "DISTRICT_ADMINISTRATION_OFFICE"
-                        ]
+        "serviceSlug": "duplicate-citizenship-certificate",
+        "step": 5,
+        "stepTitle": "Collect Duplicate Certificate",
+        "stepTitleNepali": "प्रतिलिपि प्रमाणपत्र संकलन गर्नुहोस्",
+        "stepDescription": "Return to the DAO after verification (7-21 days) to collect your duplicate citizenship certificate.",
+        "stepDescriptionNepali": "आफ्नो प्रतिलिपि नागरिकता प्रमाणपत्र संकलन गर्न प्रमाणीकरण (७-२१ दिन) पछि जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
+        "requiresAppointment": false,
+        "locationType": "PERMANENT",
+        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
     }
 ]

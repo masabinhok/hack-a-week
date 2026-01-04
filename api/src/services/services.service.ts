@@ -306,6 +306,7 @@ export class ServicesService {
         stepDescription: step.stepDescription,
         stepDescriptionNepali: null,
         officeTypes: officeTypesMap.get(step.id) || [], // Use raw SQL result
+        locationType: step.locationType,
         requiresAppointment: step.requiresAppointment,
         isOnline: step.isOnline,
         onlineFormUrl: step.onlineFormUrl,

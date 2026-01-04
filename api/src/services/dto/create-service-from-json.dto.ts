@@ -11,7 +11,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Priority, OfficeType, DocType, Currency, FeeType, WeekDay } from 'src/generated/prisma/client';
+import { Priority, OfficeType, DocType, Currency, FeeType, WeekDay, LocationType } from 'src/generated/prisma/client';
 
 // ========== Category DTOs (ordered by dependency) ==========
 export class CategoryWhereDto {
@@ -246,6 +246,10 @@ export class CreateServiceStepDto {
   @IsArray()
   @IsEnum(OfficeType, { each: true })
   officeTypes: OfficeType[];
+
+  @IsOptional()
+  @IsEnum(LocationType)
+  locationType?: LocationType;
 
   @IsBoolean()
   requiresAppointment: boolean;

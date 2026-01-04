@@ -149,6 +149,9 @@ export interface ServiceBreadcrumb {
 
 // ==================== Service Step Types ====================
 
+// LocationType aligned with backend Prisma enum
+export type LocationType = "PERMANENT" | "CONVENIENT";
+
 export interface ServiceStep {
   id: string;
   stepId: string;
@@ -159,6 +162,7 @@ export interface ServiceStep {
   stepDescription?: string;
   stepDescriptionNepali?: string;
   officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
+  locationType?: LocationType; // Which address type to use for finding offices
   requiresAppointment: boolean;
   isOnline?: boolean; // NEW: If true, this step is completed online
   onlineFormUrl?: string; // NEW: URL to online form/portal for this step
