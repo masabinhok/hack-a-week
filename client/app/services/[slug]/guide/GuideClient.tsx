@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { ServiceWithGuide } from "@/lib/types";
 import type { UpdateUserLocationsDto } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Globe,
   Share2,
@@ -32,31 +33,57 @@ interface GuideClientProps {
 }
 
 export function GuideClient({ service, slug, breadcrumbs }: GuideClientProps) {
+  const { user, isAuthenticated } = useAuth();
   const [userLocations, setUserLocations] = useState<UpdateUserLocationsDto | null>(null);
   const [showLocationModal, setShowLocationModal] = useState(false);
   const [locationChecked, setLocationChecked] = useState(false);
 
-  // console.log(service)
-
-
-  // Check for stored locations on mount
+  // Load locations from user profile or localStorage
   useEffect(() => {
-    const stored = localStorage.getItem("userLocations");
-    if (stored) {
-      try {
-        const locations = JSON.parse(stored);
+    if (isAuthenticated && user) {
+      // Load from user profile for authenticated users
+      const locations: UpdateUserLocationsDto = {
+        permanentProvinceId: user.permanentProvinceId ?? undefined,
+        permanentDistrictId: user.permanentDistrictId ?? undefined,
+        permanentMunicipalityId: user.permanentMunicipalityId ?? undefined,
+        permanentWardId: user.permanentWardId ?? undefined,
+        convenientProvinceId: user.convenientProvinceId ?? undefined,
+        convenientDistrictId: user.convenientDistrictId ?? undefined,
+        convenientMunicipalityId: user.convenientMunicipalityId ?? undefined,
+        convenientWardId: user.convenientWardId ?? undefined,
+      };
+      
+      // Check if user has set any locations
+      const hasLocations = locations.permanentDistrictId || locations.convenientDistrictId;
+      
+      if (hasLocations) {
         setUserLocations(locations);
-      } catch (err) {
-        console.error("Failed to parse stored locations:", err);
+      }
+      setLocationChecked(true);
+      
+      // Show modal if no locations are set
+      if (!hasLocations) {
+        setShowLocationModal(true);
+      }
+    } else {
+      // Fallback to localStorage for non-authenticated users
+      const stored = localStorage.getItem("userLocations");
+      if (stored) {
+        try {
+          const locations = JSON.parse(stored);
+          setUserLocations(locations);
+        } catch (err) {
+          console.error("Failed to parse stored locations:", err);
+        }
+      }
+      setLocationChecked(true);
+
+      // Show modal if no locations are set
+      if (!stored) {
+        setShowLocationModal(true);
       }
     }
-    setLocationChecked(true);
-
-    // Show modal if no locations are set
-    if (!stored) {
-      setShowLocationModal(true);
-    }
-  }, []);
+  }, [isAuthenticated, user]);
 
   const handleLocationComplete = (locations: UpdateUserLocationsDto) => {
     setUserLocations(locations);

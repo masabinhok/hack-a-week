@@ -12,6 +12,8 @@ import { LocationSelector } from "@/components/shared";
 import type { LocationValue } from "@/components/shared/LocationSelector";
 import {  type UpdateUserLocationsDto } from "@/lib/api";
 import { MapPin, Home, Building2, X, Check, Loader2 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { updateProfile } from "@/lib/auth";
 
 interface LocationSetupModalProps {
   userId: string;
@@ -27,6 +29,7 @@ export function LocationSetupModal({
   initialPermanent = {},
   initialConvenient = {},
 }: LocationSetupModalProps) {
+  const { isAuthenticated, refreshUser } = useAuth();
   const [step, setStep] = useState<"permanent" | "convenient" | "confirm">("permanent");
   const [permanent, setPermanent] = useState<LocationValue>(initialPermanent);
   const [convenient, setConvenient] = useState<LocationValue>(initialConvenient);
@@ -49,18 +52,19 @@ export function LocationSetupModal({
         convenientWardId: convenient.wardId,
       };
 
-      // Save to localStorage for immediate access
-      localStorage.setItem("userLocations", JSON.stringify(dto));
-      
-      // Also store the full location objects for easy access
-      localStorage.setItem("userLocationDetails", JSON.stringify({
-        permanent,
-        convenient,
-      }));
-      
-      // TODO: When auth is implemented, save to database with real user ID
-      // For now, using localStorage only
-      // await updateUserLocations(userId, dto);
+      if (isAuthenticated) {
+        // Save to database for authenticated users
+        await updateProfile(dto);
+        // Refresh user data to get updated profile
+        await refreshUser();
+      } else {
+        // Fallback to localStorage for non-authenticated users
+        localStorage.setItem("userLocations", JSON.stringify(dto));
+        localStorage.setItem("userLocationDetails", JSON.stringify({
+          permanent,
+          convenient,
+        }));
+      }
       
       onComplete(dto);
     } catch (err) {
