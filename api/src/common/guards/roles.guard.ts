@@ -12,6 +12,7 @@ import { ROLES_KEY } from '../decorators/roles.decorator';
 export enum UserRole {
   USER = 'USER',
   ADMIN = 'ADMIN',
+  OFFICE_ADMIN = 'OFFICE_ADMIN',
 }
 
 @Injectable()

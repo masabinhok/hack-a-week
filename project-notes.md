@@ -17,5 +17,29 @@
 
 
 # QUICK NOTES
-1. service ma estimated time rakhne ki?
-2. office ma location data rakhne ki 4 otai???
+1. Kotha steps
+2. office associated with their officeAdmin credentials dinxam
+3. bilingual
+4. local ai model service mapping, 
+5. service -> office many to many, each office can claim they provide certain services, if some service has office specific changes, they can add them as an optional attribute, 
+<!--  service
+officeSpecificChange OfficeSpecificChange 
+ -->
+
+ <!--  
+ officeSpecificChange
+ officeId
+ serviceId
+ changes: {
+    field:kfjdlsafj
+    changeSabin
+ }
+-->
+  <!--  we reflect these changes according to user locations. -->
+6. add one optional field for daily office notices, 
+7. office category and officeType redundant, use officeCategory.
+8. user feedback/report ???????
+9. nearby offices not limited to his specific ward, location
+
+<!-- darlagdo feature -->
+1. location anusar distance liyera nearby office locate garne

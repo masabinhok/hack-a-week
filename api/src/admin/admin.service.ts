@@ -125,6 +125,17 @@ export class AdminService {
         convenientDistrictId: true,
         convenientMunicipalityId: true,
         convenientWardId: true,
+        // Include managed office for OFFICE_ADMIN users
+        managedOffice: {
+          select: {
+            id: true,
+            officeId: true,
+            name: true,
+            nameNepali: true,
+            type: true,
+            address: true,
+          },
+        },
       },
     });
 

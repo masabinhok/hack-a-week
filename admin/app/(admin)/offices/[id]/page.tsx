@@ -7,17 +7,26 @@ import AdminHeader from '@/components/AdminHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { api, OfficeDetail, OFFICE_TYPES } from '@/lib/api';
+import { api, OfficeDetail, OFFICE_TYPES, OfficeAdminCredentials } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
+import { useAuth } from '@/lib/auth';
 
 export default function OfficeDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { isAdmin, isOfficeAdmin } = useAuth();
   const [office, setOffice] = useState<OfficeDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  
+  // Reset password state
+  const [resetPasswordDialog, setResetPasswordDialog] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
+  const [newCredentials, setNewCredentials] = useState<OfficeAdminCredentials | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   const officeId = params.id as string;
 
@@ -50,6 +59,30 @@ export default function OfficeDetailPage() {
     } finally {
       setDeleting(false);
     }
+  };
+
+  const handleResetPassword = async () => {
+    setResettingPassword(true);
+    try {
+      const result = await api.resetOfficeAdminPassword(officeId);
+      setNewCredentials(result.credentials);
+    } catch (error: any) {
+      alert(error.message || 'Failed to reset password');
+      setResetPasswordDialog(false);
+    } finally {
+      setResettingPassword(false);
+    }
+  };
+
+  const handleCopy = async (text: string, field: string) => {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  };
+
+  const handleCloseResetDialog = () => {
+    setResetPasswordDialog(false);
+    setNewCredentials(null);
   };
 
   const getTypeBadge = (type: string) => {
@@ -114,15 +147,28 @@ export default function OfficeDetailPage() {
                 Edit
               </Button>
             </Link>
-            <Button
-              variant="destructive"
-              onClick={() => setDeleteDialog(true)}
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-              </svg>
-              Delete
-            </Button>
+            {isAdmin && (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => setResetPasswordDialog(true)}
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                  </svg>
+                  Reset Password
+                </Button>
+                <Button
+                  variant="destructive"
+                  onClick={() => setDeleteDialog(true)}
+                >
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Delete
+                </Button>
+              </>
+            )}
           </div>
         }
       />
@@ -380,6 +426,126 @@ export default function OfficeDetailPage() {
             >
               {deleting ? 'Deleting...' : 'Delete'}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Reset Password Dialog */}
+      <Dialog open={resetPasswordDialog} onOpenChange={(open) => !open && handleCloseResetDialog()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {newCredentials ? (
+                <span className="flex items-center gap-2 text-green-600">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Password Reset Successfully
+                </span>
+              ) : (
+                'Reset Office Admin Password'
+              )}
+            </DialogTitle>
+            <DialogDescription>
+              {newCredentials
+                ? 'New credentials have been generated. Please save them - the password will only be shown once.'
+                : `This will generate a new password for the office admin of "${office.name}". The old password will no longer work.`}
+            </DialogDescription>
+          </DialogHeader>
+
+          {newCredentials ? (
+            <div className="space-y-4 py-4">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                <div className="flex items-start gap-2">
+                  <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <p className="text-sm text-amber-800">
+                    <strong>Important:</strong> Copy these credentials now. The password cannot be recovered after closing this dialog.
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newCredentials.username}
+                      readOnly
+                      className="font-mono bg-gray-50"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleCopy(newCredentials.username, 'username')}
+                    >
+                      {copiedField === 'username' ? (
+                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={newCredentials.password}
+                      readOnly
+                      className="font-mono bg-gray-50"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleCopy(newCredentials.password, 'password')}
+                    >
+                      {copiedField === 'password' ? (
+                        <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          <DialogFooter>
+            {newCredentials ? (
+              <Button onClick={handleCloseResetDialog} className="w-full">
+                I&apos;ve Saved the Credentials
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={handleCloseResetDialog}
+                  disabled={resettingPassword}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleResetPassword}
+                  disabled={resettingPassword}
+                >
+                  {resettingPassword ? 'Resetting...' : 'Reset Password'}
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
