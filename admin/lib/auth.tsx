@@ -3,15 +3,27 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
+interface ManagedOffice {
+  id: string;
+  officeId: string;
+  name: string;
+  nameNepali?: string;
+  type: string;
+  address: string;
+}
+
 interface User {
   id: string;
   username: string;
-  role: string;
+  role: 'ADMIN' | 'OFFICE_ADMIN' | 'USER';
+  managedOffice?: ManagedOffice;
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
+  isOfficeAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -25,6 +37,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+
+  const isAdmin = user?.role === 'ADMIN';
+  const isOfficeAdmin = user?.role === 'OFFICE_ADMIN';
 
   useEffect(() => {
     checkAuth();
@@ -87,7 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin, isOfficeAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

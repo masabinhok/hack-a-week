@@ -2,11 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { api, ServiceStats } from '@/lib/api';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { api, ServiceStats, Office, OFFICE_TYPES } from '@/lib/api';
+import { useAuth } from '@/lib/auth';
+import { cn } from '@/lib/utils';
 
-export default function DashboardPage() {
+// Admin Dashboard Component
+function AdminDashboard() {
   const [stats, setStats] = useState<ServiceStats | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -91,14 +97,6 @@ export default function DashboardPage() {
         description="Real-time overview of your government services platform"
         actions={
           <div className="flex items-center gap-3">
-            <button className="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors shadow-sm">
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-                Export
-              </div>
-            </button>
             <Link href="/services/new">
               <button className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r from-nepal-blue-900 to-nepal-blue-800 rounded-lg hover:shadow-lg transition-all">
                 <div className="flex items-center gap-2">
@@ -331,4 +329,263 @@ export default function DashboardPage() {
       </div>
     </div>
   );
+}
+
+// Office Admin Dashboard Component
+function OfficeAdminDashboard() {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [office, setOffice] = useState<Office | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOffice = async () => {
+      try {
+        const response = await api.getOffices();
+        const offices = response?.data || [];
+        if (offices.length > 0) {
+          setOffice(offices[0]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch office:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOffice();
+  }, []);
+
+  const getTypeBadge = (type: string) => {
+    const option = OFFICE_TYPES.find((t) => t.value === type);
+    return option?.label || type;
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <svg className="animate-spin h-12 w-12 text-nepal-blue-600 mx-auto mb-4" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          <p className="text-gray-600">Loading your office...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!office) {
+    return (
+      <div className="min-h-screen">
+        <AdminHeader
+          title="No Office Assigned"
+          description="You don't have an office assigned to your account"
+        />
+        <div className="p-8">
+          <Card>
+            <CardContent className="py-12 text-center">
+              <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Office Found</h3>
+              <p className="text-gray-500">Please contact the system administrator to assign an office to your account.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen">
+      <AdminHeader
+        title="My Office Dashboard"
+        description={`Welcome back, ${user?.username || 'Office Admin'}`}
+      />
+
+      <div className="p-8 space-y-8">
+        {/* Office Info Card */}
+        <Card className="bg-gradient-to-br from-nepal-blue-900 to-nepal-blue-800 text-white overflow-hidden border-0">
+          <CardContent className="p-8">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">{office.name}</h2>
+                    {office.nameNepali && (
+                      <p className="text-blue-200">{office.nameNepali}</p>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <p className="text-blue-200 text-sm mb-1">Office Type</p>
+                    <p className="font-semibold">{getTypeBadge(office.type)}</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <p className="text-blue-200 text-sm mb-1">Status</p>
+                    <Badge className={cn(
+                      'mt-1',
+                      office.isActive 
+                        ? 'bg-green-500/20 text-green-200 border-green-400/30' 
+                        : 'bg-red-500/20 text-red-200 border-red-400/30'
+                    )}>
+                      {office.isActive ? 'Active' : 'Inactive'}
+                    </Badge>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <p className="text-blue-200 text-sm mb-1">Address</p>
+                    <p className="font-semibold">{office.address}</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                    <p className="text-blue-200 text-sm mb-1">Contact</p>
+                    <p className="font-semibold">{office.contact || 'Not set'}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick Actions for Office Admin */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                </div>
+                Edit Office Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Update your office information including contact details, address, facilities, and more.
+              </p>
+              <Button onClick={() => router.push(`/offices/${office.id}/edit`)}>
+                Edit Office
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                View Office Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                View complete information about your office including location, ratings, and facilities.
+              </p>
+              <Button variant="outline" onClick={() => router.push(`/offices/${office.id}`)}>
+                View Details
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Office Details Summary */}
+        <Card className="bg-white rounded-xl border border-gray-200 shadow-sm">
+          <CardHeader className="border-b border-gray-100">
+            <CardTitle>Office Information</CardTitle>
+          </CardHeader>
+          <CardContent className="p-6">
+            <dl className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Office ID</dt>
+                <dd className="mt-1 text-sm text-gray-900 font-mono">{office.officeId}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Email</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {office.email ? (
+                    <a href={`mailto:${office.email}`} className="text-blue-600 hover:underline">
+                      {office.email}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">Not set</span>
+                  )}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Website</dt>
+                <dd className="mt-1 text-sm text-gray-900">
+                  {office.website ? (
+                    <a href={office.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {office.website}
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">Not set</span>
+                  )}
+                </dd>
+              </div>
+              {office.location && (
+                <div className="md:col-span-2 lg:col-span-3">
+                  <dt className="text-sm font-medium text-gray-500">Location</dt>
+                  <dd className="mt-1 text-sm text-gray-900">
+                    {[
+                      office.location.wardNumber && `Ward ${office.location.wardNumber}`,
+                      office.location.municipalityName,
+                      office.location.districtName,
+                      office.location.provinceName,
+                    ]
+                      .filter(Boolean)
+                      .join(', ') || 'Not specified'}
+                  </dd>
+                </div>
+              )}
+              {office.facilities && office.facilities.length > 0 && (
+                <div className="md:col-span-2 lg:col-span-3">
+                  <dt className="text-sm font-medium text-gray-500 mb-2">Facilities</dt>
+                  <dd className="flex flex-wrap gap-2">
+                    {office.facilities.map((facility, index) => (
+                      <Badge key={index} variant="secondary">
+                        {facility}
+                      </Badge>
+                    ))}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+// Main Dashboard Page
+export default function DashboardPage() {
+  const { isAdmin, isOfficeAdmin, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <svg className="animate-spin h-12 w-12 text-nepal-blue-600" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+      </div>
+    );
+  }
+
+  if (isOfficeAdmin) {
+    return <OfficeAdminDashboard />;
+  }
+
+  return <AdminDashboard />;
 }
