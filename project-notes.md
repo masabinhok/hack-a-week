@@ -55,7 +55,10 @@ officeSpecificChange OfficeSpecificChange
 1. superAdmin -> monitors officeAdmin, create global services, create offices
 2. officeAdmin -> update/ own office, crud own service -> request for review -> see list of global service and claim the ones they provide!, 
 
-
+<!-- services -->'
+1. officeAdmin le ni afule claim gareko service, wa garna lageko service ko full details herna paunu paryooo
+2. superadmin le verify garna ko lagi entire service detail herna paunu paryoo, 
+ -->
 
 
 

@@ -26,12 +26,12 @@ export default function OfficeServicesPage() {
   
   // Available services state
   const [availableServices, setAvailableServices] = useState<AvailableService[]>([]);
-  const [availableMeta, setAvailableMeta] = useState({ total: 0, page: 1, limit: 20, totalPages: 0 });
+  const [availableMeta, setAvailableMeta] = useState(() => ({ total: 0, page: 1, limit: 20, totalPages: 0 }));
   const [searchQuery, setSearchQuery] = useState('');
   
   // Claimed services state
   const [claimedServices, setClaimedServices] = useState<OfficeService[]>([]);
-  const [claimedMeta, setClaimedMeta] = useState({ total: 0, page: 1, limit: 20, totalPages: 0 });
+  const [claimedMeta, setClaimedMeta] = useState(() => ({ total: 0, page: 1, limit: 20, totalPages: 0 }));
   
   const [loading, setLoading] = useState(true);
   const [officeId, setOfficeId] = useState<string | null>(null);
@@ -60,36 +60,36 @@ export default function OfficeServicesPage() {
     setLoading(true);
     try {
       const response = await api.getAvailableServicesForOffice(officeId, {
-        page: availableMeta.page,
+        page: availableMeta?.page ?? 1,
         limit: 20,
         search: searchQuery || undefined,
       });
       setAvailableServices(response.data);
-      setAvailableMeta(response.meta);
+      setAvailableMeta(response.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 });
     } catch (error) {
       console.error('Failed to fetch available services:', error);
     } finally {
       setLoading(false);
     }
-  }, [officeId, availableMeta.page, searchQuery]);
+  }, [officeId, availableMeta?.page, searchQuery]);
 
   const fetchClaimedServices = useCallback(async () => {
     if (!officeId) return;
     setLoading(true);
     try {
       const response = await api.getOfficeServices(officeId, {
-        page: claimedMeta.page,
+        page: claimedMeta?.page ?? 1,
         limit: 20,
         status: 'CLAIMED',
       });
       setClaimedServices(response.data);
-      setClaimedMeta(response.meta);
+      setClaimedMeta(response.meta ?? { total: 0, page: 1, limit: 20, totalPages: 0 });
     } catch (error) {
       console.error('Failed to fetch claimed services:', error);
     } finally {
       setLoading(false);
     }
-  }, [officeId, claimedMeta.page]);
+  }, [officeId, claimedMeta?.page]);
 
   useEffect(() => {
     if (officeId) {
