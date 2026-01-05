@@ -15,49 +15,50 @@ model = SentenceTransformer(
 
 services = [
     {
-        "service_name": "वंशज नागरिकता प्रमाणपत्र",
-        "service_description": "बाबु वा आमाको नागरिकताको आधारमा वंशजको रूपमा नेपाली नागरिकता प्रमाणपत्र प्राप्त गर्ने सेवा।"
+        "service_name": "Citizenship Certificate by Descent",
+        "service_description": "Service to obtain a Nepali citizenship certificate as a descendant based on the citizenship of the father or mother."
     },
     {
-        "service_name": "वैवाहिक अंगीकृत नागरिकता प्रमाणपत्र",
-        "service_description": "नेपाली नागरिकसँग विवाह गरेका विदेशी महिलाले वैवाहिक आधारमा नेपाली नागरिकता प्राप्त गर्ने सेवा।"
+        "service_name": "Marital-Based Citizenship Certificate",
+        "service_description": "Service for foreign women married to Nepali citizens to obtain Nepali citizenship on a marital basis."
     },
     {
-        "service_name": "नागरिकता प्रमाणपत्रको प्रतिलिपि",
-        "service_description": "हराएको, बिग्रिएको वा विवरण सच्याउनुपर्ने नागरिकता प्रमाणपत्रको प्रतिलिपि निकाल्ने सेवा।"
+        "service_name": "Duplicate Citizenship Certificate",
+        "service_description": "Service to issue a duplicate of a lost, damaged, or incorrect Nepali citizenship certificate."
     },
     {
-        "service_name": "गैर-आवासीय नेपाली नागरिकता प्रमाणपत्र",
-        "service_description": "विदेशमा बसोबास गर्ने नेपाली मूलका व्यक्तिका लागि गैर-आवासीय नेपाली नागरिकता प्राप्त गर्ने सेवा।"
+        "service_name": "Non-Resident Nepali Citizenship Certificate",
+        "service_description": "Service for individuals of Nepali origin living abroad to obtain non-resident Nepali citizenship."
     },
     {
-        "service_name": "नयाँ विद्युतीय राहदानी",
-        "service_description": "पहिलो पटक नेपाली विद्युतीय राहदानी (पासपोर्ट) जारी गराउने सेवा।"
+        "service_name": "New Electronic Passport",
+        "service_description": "Service to issue a Nepali electronic passport for the first time."
     },
     {
-        "service_name": "राहदानी नवीकरण",
-        "service_description": "म्याद सकिएको, हराएको वा विवरण सच्याउनुपर्ने नेपाली राहदानी नवीकरण गर्ने सेवा।"
+        "service_name": "Passport Renewal",
+        "service_description": "Service to renew an existing Nepali passport that is expired or about to expire."
+
     },
     {
-        "service_name": "गुनासो वा ठाडो उजुरी",
-        "service_description": "सरकारी सेवा वा निर्णय सम्बन्धी गुनासो वा उजुरी दर्ता गरी छानबिन गराउने सेवा।"
+        "service_name": "Complaint or Grievance Registration",
+        "service_description": "Service to register complaints or grievances regarding government services or decisions and have them investigated."
     },
     {
-        "service_name": "संस्था दर्ता",
-        "service_description": "गैर-सरकारी संस्था, समिति वा संघ दर्ता गरी कानुनी मान्यता प्राप्त गर्ने सेवा।"
+        "service_name": "Organization Registration",
+        "service_description": "Service to register NGOs, committees, or associations to obtain legal recognition."
     },
     {
-        "service_name": "संस्था नवीकरण",
-        "service_description": "दर्ता भइसकेको संस्थाको नवीकरण गरी वैधता कायम गर्ने सेवा।"
+        "service_name": "Organization Renewal",
+        "service_description": "Service to renew a registered organization to maintain its legal validity."
     },
     {
-        "service_name": "दैवी प्रकोप राहत रकम",
-        "service_description": "बाढी, पहिरो, आगलागी जस्ता दैवी प्रकोपबाट पीडितले राहत रकम प्राप्त गर्ने सेवा।"
+        "service_name": "Disaster Relief Fund",
+        "service_description": "Service for victims of natural disasters such as floods, landslides, or fires to receive relief funds."
     }
 ]
 
 passages = [
-    f"passage: {s['service_description']}"
+    f"passage: {s['service_name']}"
     for s in services
 ]
 
@@ -69,7 +70,7 @@ service_embeddings = model.encode(
 
 
 
-query = "query: marriage nagarikta certificate "
+query = "query:  passport "
 
 query_embedding = model.encode(
     query,
@@ -78,7 +79,7 @@ query_embedding = model.encode(
 
 scores = np.dot(service_embeddings, query_embedding)
 
-top_k = 4 # or we can write threshold 
+top_k = 8 # or we can write threshold 
 top_indices = scores.argsort()[::-1][:top_k]
 
 print("Top 4 matched services:")
