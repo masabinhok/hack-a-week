@@ -103,6 +103,28 @@ export default function ProfilePage() {
         convenientMunicipalityId: user.convenientMunicipalityId || 0,
         convenientWardId: user.convenientWardId || 0,
       });
+
+      // Load existing location hierarchy for permanent address
+      if (user.permanentProvinceId) {
+        loadDistricts(user.permanentProvinceId, "permanent");
+        if (user.permanentDistrictId) {
+          loadMunicipalities(user.permanentDistrictId, "permanent");
+          if (user.permanentMunicipalityId) {
+            loadWards(user.permanentMunicipalityId, "permanent");
+          }
+        }
+      }
+
+      // Load existing location hierarchy for convenient address
+      if (user.convenientProvinceId) {
+        loadDistricts(user.convenientProvinceId, "convenient");
+        if (user.convenientDistrictId) {
+          loadMunicipalities(user.convenientDistrictId, "convenient");
+          if (user.convenientMunicipalityId) {
+            loadWards(user.convenientMunicipalityId, "convenient");
+          }
+        }
+      }
     }
   }, [user]);
 

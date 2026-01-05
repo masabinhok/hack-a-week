@@ -84,26 +84,23 @@ export default function OfficeForm({ office }: OfficeFormProps) {
 
   useEffect(() => {
     fetchCategories();
-    fetchLocations();
-  }, []);
-
-  // Load dependent location data when editing an existing office
-  useEffect(() => {
-    const loadExistingLocationData = async () => {
+    const initializeLocations = async () => {
+      await fetchLocations();
+      // Load dependent location data when editing an existing office
       if (office?.location) {
         if (office.location.provinceId) {
           await fetchDistricts(office.location.provinceId);
-        }
-        if (office.location.districtId) {
-          await fetchMunicipalities(office.location.districtId);
-        }
-        if (office.location.municipalityId) {
-          await fetchWards(office.location.municipalityId);
+          if (office.location.districtId) {
+            await fetchMunicipalities(office.location.districtId);
+            if (office.location.municipalityId) {
+              await fetchWards(office.location.municipalityId);
+            }
+          }
         }
       }
     };
-    loadExistingLocationData();
-  }, [office]);
+    initializeLocations();
+  }, [office?.id]);
 
   useEffect(() => {
     if (office?.facilities) {
@@ -128,8 +125,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
       const provincesRes = await fetch(`${API_BASE_URL}/locations/provinces`);
       const provincesData = await provincesRes.json();
-      // Handle both direct array and wrapped response
-      const provinces = Array.isArray(provincesData) ? provincesData : provincesData?.data || [];
+      // API returns { data: { provinces: [...] } }
+      const provinces = provincesData?.data?.provinces || [];
 
       setLocationData({
         provinces,
@@ -148,7 +145,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
       const response = await fetch(`${API_BASE_URL}/locations/provinces/${provinceId}/districts`);
       const data = await response.json();
-      const districts = Array.isArray(data) ? data : data?.data || [];
+      // API returns { data: { province: {...}, districts: [...] } }
+      const districts = data?.data?.districts || [];
       setLocationData((prev) => ({ ...prev, districts, municipalities: [], wards: [] }));
     } catch (error) {
       console.error('Failed to fetch districts:', error);
@@ -161,7 +159,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
       const response = await fetch(`${API_BASE_URL}/locations/districts/${districtId}/municipalities`);
       const data = await response.json();
-      const municipalities = Array.isArray(data) ? data : data?.data || [];
+      // API returns { data: { district: {...}, municipalities: [...] } }
+      const municipalities = data?.data?.municipalities || [];
       setLocationData((prev) => ({ ...prev, municipalities, wards: [] }));
     } catch (error) {
       console.error('Failed to fetch municipalities:', error);
@@ -174,7 +173,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
       const response = await fetch(`${API_BASE_URL}/locations/municipalities/${municipalityId}/wards`);
       const data = await response.json();
-      const wards = Array.isArray(data) ? data : data?.data || [];
+      // API returns { data: { municipality: {...}, wards: [...] } }
+      const wards = data?.data?.wards || [];
       setLocationData((prev) => ({ ...prev, wards }));
     } catch (error) {
       console.error('Failed to fetch wards:', error);
@@ -187,18 +187,11 @@ export default function OfficeForm({ office }: OfficeFormProps) {
   };
 
   const handleLocationChange = (field: keyof NonNullable<CreateOfficeData['location']>, value: number | undefined) => {
-    setFormData((prev) => ({
-      ...prev,
-      location: {
-        ...prev.location,
-        [field]: value,
-      },
-    }));
-
-    // Load dependent data based on selection
-    if (field === 'provinceId' && value) {
-      fetchDistricts(value);
-      // Clear dependent fields
+    // Load dependent data and clear dependent fields based on selection
+    if (field === 'provinceId') {
+      if (value) {
+        fetchDistricts(value);
+      }
       setFormData((prev) => ({
         ...prev,
         location: {
@@ -209,8 +202,12 @@ export default function OfficeForm({ office }: OfficeFormProps) {
           wardId: undefined,
         },
       }));
-    } else if (field === 'districtId' && value) {
-      fetchMunicipalities(value);
+      // Clear dependent location data
+      setLocationData((prev) => ({ ...prev, districts: [], municipalities: [], wards: [] }));
+    } else if (field === 'districtId') {
+      if (value) {
+        fetchMunicipalities(value);
+      }
       setFormData((prev) => ({
         ...prev,
         location: {
@@ -220,14 +217,29 @@ export default function OfficeForm({ office }: OfficeFormProps) {
           wardId: undefined,
         },
       }));
-    } else if (field === 'municipalityId' && value) {
-      fetchWards(value);
+      // Clear dependent location data
+      setLocationData((prev) => ({ ...prev, municipalities: [], wards: [] }));
+    } else if (field === 'municipalityId') {
+      if (value) {
+        fetchWards(value);
+      }
       setFormData((prev) => ({
         ...prev,
         location: {
           ...prev.location,
           municipalityId: value,
           wardId: undefined,
+        },
+      }));
+      // Clear dependent location data
+      setLocationData((prev) => ({ ...prev, wards: [] }));
+    } else {
+      // For wardId, just update the value
+      setFormData((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          [field]: value,
         },
       }));
     }

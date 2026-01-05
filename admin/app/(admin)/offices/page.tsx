@@ -105,7 +105,9 @@ export default function OfficesPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/provinces`);
       const data = await response.json();
-      const provinces = Array.isArray(data) ? data : data.data || [];
+      // API returns { data: { provinces: [...] } }
+      console.log(data)
+      const provinces = data.data?.provinces || [];
       setLocationData(prev => ({ ...prev, provinces }));
     } catch (error) {
       console.error('Failed to fetch provinces:', error);
@@ -116,7 +118,8 @@ export default function OfficesPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/provinces/${provinceId}/districts`);
       const data = await response.json();
-      const districts = Array.isArray(data) ? data : data.data || [];
+      // API returns { data: { province: {...}, districts: [...] } }
+      const districts = data.data?.districts || [];
       setLocationData(prev => ({ ...prev, districts, municipalities: [], wards: [] }));
     } catch (error) {
       console.error('Failed to fetch districts:', error);
@@ -127,7 +130,8 @@ export default function OfficesPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/districts/${districtId}/municipalities`);
       const data = await response.json();
-      const municipalities = Array.isArray(data) ? data : data.data || [];
+      // API returns { data: { district: {...}, municipalities: [...] } }
+      const municipalities = data.data?.municipalities || [];
       setLocationData(prev => ({ ...prev, municipalities, wards: [] }));
     } catch (error) {
       console.error('Failed to fetch municipalities:', error);
@@ -138,7 +142,8 @@ export default function OfficesPage() {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1'}/locations/municipalities/${municipalityId}/wards`);
       const data = await response.json();
-      const wards = Array.isArray(data) ? data : data.data || [];
+      // API returns { data: { municipality: {...}, wards: [...] } }
+      const wards = data.data?.wards || [];
       setLocationData(prev => ({ ...prev, wards }));
     } catch (error) {
       console.error('Failed to fetch wards:', error);
