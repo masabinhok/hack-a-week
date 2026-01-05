@@ -8,13 +8,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { api, ServiceDetail, PRIORITY_OPTIONS, OFFICE_TYPES } from '@/lib/api';
+import { api, ServiceDetail, PRIORITY_OPTIONS, OfficeCategory } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
 
 export default function ServiceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [service, setService] = useState<ServiceDetail | null>(null);
+  const [officeCategories, setOfficeCategories] = useState<OfficeCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deleteDialog, setDeleteDialog] = useState(false);
@@ -24,7 +25,18 @@ export default function ServiceDetailPage() {
     if (params.id) {
       fetchService(params.id as string);
     }
+    fetchOfficeCategories();
   }, [params.id]);
+
+  const fetchOfficeCategories = async () => {
+    try {
+      const response = await api.getOfficeCategories();
+      const data = Array.isArray(response) ? response : (response as any).data || [];
+      setOfficeCategories(data);
+    } catch (err) {
+      console.error('Failed to fetch office categories:', err);
+    }
+  };
 
   const fetchService = async (id: string) => {
     setLoading(true);
@@ -59,8 +71,8 @@ export default function ServiceDetailPage() {
     return <span className={cn('gov-badge', option.color)}>{option.label}</span>;
   };
 
-  const getOfficeTypeLabel = (type: string) => {
-    return OFFICE_TYPES.find((o) => o.value === type)?.label || type;
+  const getOfficeCategoryLabel = (categoryId: string) => {
+    return officeCategories.find((c) => c.id === categoryId)?.name || categoryId;
   };
 
   if (loading) {
@@ -338,14 +350,14 @@ export default function ServiceDetailPage() {
                           </div>
                         </div>
 
-                        {/* Office Types */}
-                        {step.officeTypes.length > 0 && (
+                        {/* Office Categories */}
+                        {step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
                           <div className="mt-3">
-                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Office Types</label>
+                            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Office Categories</label>
                             <div className="flex flex-wrap gap-1 mt-1">
-                              {step.officeTypes.map((type) => (
-                                <Badge key={type} variant="outline" className="text-xs">
-                                  {getOfficeTypeLabel(type)}
+                              {step.officeCategoryIds.map((categoryId) => (
+                                <Badge key={categoryId} variant="outline" className="text-xs">
+                                  {getOfficeCategoryLabel(categoryId)}
                                 </Badge>
                               ))}
                             </div>

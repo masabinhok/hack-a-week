@@ -151,17 +151,17 @@ export class AdminServicesService {
       throw new NotFoundException(`Service with ID ${id} not found`);
     }
 
-    // Workaround for Prisma adapter-pg bug with enum arrays
+    // Workaround for Prisma adapter-pg bug with string arrays
     if (service.serviceSteps.length > 0) {
       const stepIds = service.serviceSteps.map(s => s.id);
-      const officeTypesResult = await this.prisma.$queryRaw<{ id: string; officeTypes: string[] }[]>`
-        SELECT id, "officeTypes"::text[] as "officeTypes" FROM "ServiceStep" WHERE id = ANY(${stepIds})
+      const officeCategoryIdsResult = await this.prisma.$queryRaw<{ id: string; officeCategoryIds: string[] }[]>`
+        SELECT id, "officeCategoryIds" as "officeCategoryIds" FROM "ServiceStep" WHERE id = ANY(${stepIds})
       `;
-      const officeTypesMap = new Map(officeTypesResult.map(r => [r.id, r.officeTypes || []]));
+      const officeCategoryIdsMap = new Map(officeCategoryIdsResult.map(r => [r.id, r.officeCategoryIds || []]));
       
       service.serviceSteps = service.serviceSteps.map(step => ({
         ...step,
-        officeTypes: officeTypesMap.get(step.id) || [],
+        officeCategoryIds: officeCategoryIdsMap.get(step.id) || [],
       })) as any;
     }
 
@@ -534,7 +534,7 @@ export class AdminServicesService {
       step: step.step,
       stepTitle: step.stepTitle,
       stepDescription: step.stepDescription,
-      officeTypes: step.officeTypes as any || [],
+      officeCategoryIds: step.officeCategoryIds || [],
       requiresAppointment: step.requiresAppointment || false,
       isOnline: step.isOnline || false,
       onlineFormUrl: step.onlineFormUrl,

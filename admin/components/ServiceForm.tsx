@@ -17,7 +17,7 @@ import {
   CreateDocumentData,
   CreateFeeData,
   PRIORITY_OPTIONS,
-  OFFICE_TYPES,
+  OfficeCategory,
   DOC_TYPES,
   FEE_TYPES,
   WEEKDAYS,
@@ -33,6 +33,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [officeCategories, setOfficeCategories] = useState<OfficeCategory[]>([]);
   const [activeTab, setActiveTab] = useState<'basic' | 'steps' | 'procedure' | 'metadata'>('basic');
 
   // Basic Info State
@@ -52,7 +53,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
       step: s.step,
       stepTitle: s.stepTitle,
       stepDescription: s.stepDescription,
-      officeTypes: s.officeTypes,
+      officeCategoryIds: s.officeCategoryIds,
       requiresAppointment: s.requiresAppointment,
       isOnline: s.isOnline,
       onlineFormUrl: s.onlineFormUrl,
@@ -111,6 +112,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
 
   useEffect(() => {
     fetchCategories();
+    fetchOfficeCategories();
   }, []);
 
   // Update formData when service prop changes
@@ -132,7 +134,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
           step: s.step,
           stepTitle: s.stepTitle,
           stepDescription: s.stepDescription,
-          officeTypes: s.officeTypes,
+          officeCategoryIds: s.officeCategoryIds,
           requiresAppointment: s.requiresAppointment,
           isOnline: s.isOnline,
           onlineFormUrl: s.onlineFormUrl,
@@ -203,6 +205,17 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
     }
   };
 
+  const fetchOfficeCategories = async () => {
+    try {
+      const response = await api.getOfficeCategories();
+      const data = Array.isArray(response) ? response : (response as any).data || [];
+      setOfficeCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch office categories:', error);
+      setOfficeCategories([]);
+    }
+  };
+
   const handleNameChange = (name: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -241,7 +254,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
           step: nextStep,
           stepTitle: '',
           stepDescription: '',
-          officeTypes: [],
+          officeCategoryIds: [],
           requiresAppointment: false,
           isOnline: false,
           documentsRequired: [],
@@ -572,12 +585,12 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Types</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Category</label>
                     <Select
-                      options={OFFICE_TYPES}
-                      value={step.officeTypes?.[0] || ''}
-                      onChange={(e) => updateStep(stepIndex, { officeTypes: e.target.value ? [e.target.value] : [] })}
-                      placeholder="Select office type"
+                      options={officeCategories.map(cat => ({ value: cat.id, label: cat.name }))}
+                      value={step.officeCategoryIds?.[0] || ''}
+                      onChange={(e) => updateStep(stepIndex, { officeCategoryIds: e.target.value ? [e.target.value] : [] })}
+                      placeholder="Select office category"
                     />
                   </div>
                 </div>

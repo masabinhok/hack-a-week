@@ -276,13 +276,13 @@ export class ServicesService {
     // Get breadcrumb
     const breadcrumb = await this.getBreadcrumb(service.id);
 
-    // Workaround for Prisma adapter-pg bug with enum arrays
-    // Fetch officeTypes separately using raw SQL
+    // Workaround for Prisma adapter-pg bug with string arrays
+    // Fetch officeCategoryIds separately using raw SQL
     const stepIds = service.serviceSteps.map(s => s.id);
-    const officeTypesResult = await this.prisma.$queryRaw<{ id: string; officeTypes: string[] }[]>`
-      SELECT id, "officeTypes"::text[] as "officeTypes" FROM "ServiceStep" WHERE id = ANY(${stepIds})
+    const officeCategoryIdsResult = await this.prisma.$queryRaw<{ id: string; officeCategoryIds: string[] }[]>`
+      SELECT id, "officeCategoryIds"::text[] as "officeCategoryIds" FROM "ServiceStep" WHERE id = ANY(${stepIds})
     `;
-    const officeTypesMap = new Map(officeTypesResult.map(r => [r.id, r.officeTypes || []]));
+    const officeCategoryIdsMap = new Map(officeCategoryIdsResult.map(r => [r.id, r.officeCategoryIds || []]));
 
     return {
       id: service.id,
@@ -305,7 +305,7 @@ export class ServicesService {
         stepTitleNepali: null,
         stepDescription: step.stepDescription,
         stepDescriptionNepali: null,
-        officeTypes: officeTypesMap.get(step.id) || [], // Use raw SQL result
+        officeCategoryIds: officeCategoryIdsMap.get(step.id) || [], // Use raw SQL result
         locationType: step.locationType,
         requiresAppointment: step.requiresAppointment,
         isOnline: step.isOnline,

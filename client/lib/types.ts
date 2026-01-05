@@ -161,7 +161,7 @@ export interface ServiceStep {
   stepTitleNepali?: string;
   stepDescription?: string;
   stepDescriptionNepali?: string;
-  officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
+  officeCategoryIds: string[]; // Category IDs for this step
   locationType?: LocationType; // Which address type to use for finding offices
   requiresAppointment: boolean;
   isOnline?: boolean; // NEW: If true, this step is completed online
@@ -173,30 +173,6 @@ export interface ServiceStep {
   workingHours: StepWorkingHours[];
   responsibleAuthorities: StepAuthority[];
 }
-
-// OfficeType aligned with backend Prisma enum
-export type OfficeType =
-  // District Level - Core Services (77 offices each)
-  | "DISTRICT_ADMINISTRATION_OFFICE" // DAO - Citizenship, recommendations, certificates
-  | "LAND_REVENUE_OFFICE" // Malpot - Land registration, ownership transfer
-  | "DISTRICT_EDUCATION_OFFICE" // SEE/SLC verification, certificate attestation
-  // Transport Services
-  | "TRANSPORT_MANAGEMENT_OFFICE" // Vehicle registration, blue book, license
-  | "DRIVING_LICENSE_OFFICE" // License tests and renewals
-  // Local Government - Daily services (753 offices)
-  | "MUNICIPALITY_OFFICE" // Nagarpalika - Local services, business tax
-  | "RURAL_MUNICIPALITY_OFFICE" // Gaupalika - Rural local services
-  // Ward Level - Highest volume (6,743 offices)
-  | "WARD_OFFICE" // Birth/death registration, business registration, recommendations
-  // Travel & Immigration
-  | "PASSPORT_OFFICE" // Passport applications and renewals
-  | "IMMIGRATION_OFFICE" // Visa, travel documents
-  // Business Registration - Federal Level
-  | "OFFICE_OF_COMPANY_REGISTRAR" // OCR - Company registration (e-OCR/CAMIS)
-  | "COTTAGE_SMALL_INDUSTRY_OFFICE" // DCSI - Cottage/small industry registration
-  | "INLAND_REVENUE_OFFICE" // IRD - PAN/VAT registration, tax filing
-  // Social Services
-  | "LABOUR_OFFICE"; // Foreign employment, work permits, labor disputes
 
 export interface StepDocument {
   id: number;
@@ -323,7 +299,6 @@ export interface Office {
   name: string;
   nameNepali?: string;
   slug?: string;
-  type: OfficeType;
   categoryId?: string;
   category?: OfficeCategory;
   address: string;
@@ -381,7 +356,7 @@ export interface OfficeWorkingHours {
 
 export interface OfficeForService {
   stepNumber: number;
-  officeTypes: OfficeType[]; // Changed from officeType to officeTypes array
+  officeCategoryIds: string[]; // Category IDs for this step
   isOnline?: boolean; // NEW: If true, this step is completed online
   onlineFormUrl?: string; // NEW: URL to online form/portal for this step
   offices: Office[];
@@ -428,7 +403,7 @@ export interface SearchFilters {
   category?: string;
   priority?: Priority;
   isOnlineEnabled?: boolean;
-  officeType?: OfficeType;
+  categoryId?: string;
   districtId?: number;
   municipalityId?: number;
 }

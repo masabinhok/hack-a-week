@@ -16,7 +16,6 @@ import type {
   Office,
   OfficeForService,
   SearchResult,
-  OfficeType,
 } from "./types";
 import type { ErrorResponse } from "./error-types";
 import { ErrorCode } from "./error-types";
@@ -461,25 +460,14 @@ export async function getOffices(filters?: {
 }
 
 /**
- * Get office types
- */
-export async function getOfficeTypes(): Promise<{ type: string; count: number }[]> {
-  const result = await fetchAPI<{ types: { type: string; count: number }[] }>("/offices/types", {
-    revalidate: CACHE_TIMES.OFFICES,
-    tags: ["office-types"],
-  });
-  return result.types;
-}
-
-/**
  * Search offices
  */
 export async function searchOffices(
   query: string,
-  options?: { type?: string; limit?: number }
+  options?: { categoryId?: string; limit?: number }
 ): Promise<Office[]> {
   const params = new URLSearchParams({ q: query });
-  if (options?.type) params.append("type", options.type);
+  if (options?.categoryId) params.append("categoryId", options.categoryId);
   if (options?.limit) params.append("limit", options.limit.toString());
 
   const result = await fetchAPI<OfficesResponse>(`/offices/search?${params}`, {
@@ -529,66 +517,6 @@ export function getPriorityColor(
     LOW: "bg-green-100 text-green-700 border-green-200",
   };
   return colors[priority] || colors.LOW;
-}
-
-/**
- * Get office type display name
- */
-export function getOfficeTypeName(type: OfficeType): string {
-  const names: Record<OfficeType, string> = {
-    // District Level
-    DISTRICT_ADMINISTRATION_OFFICE: "District Administration Office (DAO)",
-    LAND_REVENUE_OFFICE: "Land Revenue Office",
-    DISTRICT_EDUCATION_OFFICE: "District Education Office",
-    // Transport
-    TRANSPORT_MANAGEMENT_OFFICE: "Transport Management Office",
-    DRIVING_LICENSE_OFFICE: "Driving License Office",
-    // Local Government
-    MUNICIPALITY_OFFICE: "Municipality Office",
-    RURAL_MUNICIPALITY_OFFICE: "Rural Municipality Office",
-    // Ward Level
-    WARD_OFFICE: "Ward Office",
-    // Travel & Immigration
-    PASSPORT_OFFICE: "Passport Office",
-    IMMIGRATION_OFFICE: "Immigration Office",
-    // Business Registration
-    OFFICE_OF_COMPANY_REGISTRAR: "Office of Company Registrar (OCR)",
-    COTTAGE_SMALL_INDUSTRY_OFFICE: "Cottage & Small Industry Office",
-    INLAND_REVENUE_OFFICE: "Inland Revenue Office",
-    // Social Services
-    LABOUR_OFFICE: "Labour Office",
-  };
-  return names[type] || type;
-}
-
-/**
- * Get office type display name in Nepali
- */
-export function getOfficeTypeNameNepali(type: OfficeType): string {
-  const names: Record<OfficeType, string> = {
-    // District Level
-    DISTRICT_ADMINISTRATION_OFFICE: "जिल्ला प्रशासन कार्यालय",
-    LAND_REVENUE_OFFICE: "मालपोत कार्यालय",
-    DISTRICT_EDUCATION_OFFICE: "जिल्ला शिक्षा कार्यालय",
-    // Transport
-    TRANSPORT_MANAGEMENT_OFFICE: "यातायात व्यवस्थापन कार्यालय",
-    DRIVING_LICENSE_OFFICE: "सवारी चालक अनुमतिपत्र कार्यालय",
-    // Local Government
-    MUNICIPALITY_OFFICE: "नगरपालिका कार्यालय",
-    RURAL_MUNICIPALITY_OFFICE: "गाउँपालिका कार्यालय",
-    // Ward Level
-    WARD_OFFICE: "वडा कार्यालय",
-    // Travel & Immigration
-    PASSPORT_OFFICE: "राहदानी कार्यालय",
-    IMMIGRATION_OFFICE: "अध्यागमन कार्यालय",
-    // Business Registration
-    OFFICE_OF_COMPANY_REGISTRAR: "कम्पनी रजिस्ट्रारको कार्यालय",
-    COTTAGE_SMALL_INDUSTRY_OFFICE: "घरेलु तथा साना उद्योग कार्यालय",
-    INLAND_REVENUE_OFFICE: "आन्तरिक राजस्व कार्यालय",
-    // Social Services
-    LABOUR_OFFICE: "श्रम कार्यालय",
-  };
-  return names[type] || type;
 }
 
 /**
@@ -679,5 +607,4 @@ export type {
   Office,
   OfficeForService,
   SearchResult,
-  OfficeType,
-} from "./types";
+

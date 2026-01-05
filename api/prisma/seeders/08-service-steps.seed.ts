@@ -5,7 +5,7 @@
  * 
  * @module prisma/seeders/08-service-steps.seed
  */
-import { PrismaClient, OfficeType, LocationType } from 'src/generated/prisma/client';
+import { PrismaClient, LocationType } from 'src/generated/prisma/client';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,7 +16,7 @@ interface ServiceStepData {
   stepTitleNepali?: string;
   stepDescription: string;
   stepDescriptionNepali?: string;
-  officeTypes: OfficeType[];
+  officeCategoryNames: string[]; // Category names like "WARD_OFFICE", "DISTRICT_ADMINISTRATION_OFFICE"
   locationType?: LocationType;
   requiresAppointment: boolean;
   isOnline?: boolean;
@@ -35,6 +35,10 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
   
   // Build a cache of service slugs to IDs
   const serviceCache = new Map<string, string>();
+  
+  // Build a cache of category names to IDs
+  const categories = await prisma.officeCategory.findMany();
+  const categoryCache = new Map(categories.map(c => [c.name, c.id]));
   
   let created = 0;
   let updated = 0;
@@ -60,6 +64,11 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
       serviceCache.set(step.serviceSlug, serviceId);
     }
 
+    // Map category names to IDs
+    const officeCategoryIds = (step.officeCategoryNames || [])
+      .map(name => categoryCache.get(name))
+      .filter((id): id is string => id !== undefined);
+
     // Check if step already exists
     const existingStep = await prisma.serviceStep.findUnique({
       where: {
@@ -73,7 +82,7 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
     const stepData = {
       stepTitle: step.stepTitle,
       stepDescription: step.stepDescription,
-      officeTypes: step.officeTypes,
+      officeCategoryIds,
       locationType: step.locationType || 'CONVENIENT',
       requiresAppointment: step.requiresAppointment,
       isOnline: step.isOnline || false,

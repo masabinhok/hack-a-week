@@ -9,9 +9,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { OfficeTypeBadge } from "@/components/shared";
+import { OfficeCategoryBadge } from "@/components/shared";
 import { getOfficesForService, type UpdateUserLocationsDto } from "@/lib/api";
-import type { Office, OfficeType } from "@/lib/types";
+import type { Office, OfficeCategory } from "@/lib/types";
 import {
   Building2,
   MapPin,
@@ -26,7 +26,8 @@ import {
 interface OfficeFinderCardProps {
   serviceSlug: string;
   stepNumber: number;
-  officeTypes: OfficeType[]; // Changed from single officeType to array
+  officeCategoryIds: string[]; // Category IDs for this step
+  officeCategories?: OfficeCategory[]; // Optional category details for display
   addressType?: "permanent" | "convenient"; // Which address to use
   userLocations?: UpdateUserLocationsDto | null;
   className?: string;
@@ -35,7 +36,8 @@ interface OfficeFinderCardProps {
 export function OfficeFinderCard({
   serviceSlug,
   stepNumber,
-  officeTypes,
+  officeCategoryIds,
+  officeCategories = [],
   addressType = "convenient", // Default to convenient address
   userLocations,
   className = "",
@@ -44,6 +46,12 @@ export function OfficeFinderCard({
   const [offices, setOffices] = useState<Office[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Get category names for display
+  const getCategoryName = (categoryId: string) => {
+    const cat = officeCategories.find(c => c.id === categoryId);
+    return cat?.name || categoryId;
+  };
 
   // Fetch offices when component mounts or locations change
   useEffect(() => {
@@ -135,10 +143,10 @@ export function OfficeFinderCard({
                 ? "Showing offices near your permanent address"
                 : "Showing offices near your convenient location"}
             </p>
-            {/* Show badges for all office types */}
+            {/* Show badges for all office categories */}
             <div className="flex flex-wrap gap-2">
-              {officeTypes.map((type) => (
-                <OfficeTypeBadge key={type} type={type} />
+              {officeCategoryIds.map((categoryId) => (
+                <OfficeCategoryBadge key={categoryId} name={getCategoryName(categoryId)} />
               ))}
             </div>
           </div>

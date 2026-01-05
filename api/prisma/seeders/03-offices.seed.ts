@@ -1,4 +1,4 @@
-import { OfficeType, PrismaClient } from 'src/generated/prisma/client';
+import { PrismaClient } from 'src/generated/prisma/client';
 
 export async function seedOffices(prisma: PrismaClient) {
   console.log('🏢 Seeding offices...\n');
@@ -35,7 +35,6 @@ export async function seedOffices(prisma: PrismaClient) {
         categoryId: daoCategory.id,
         name: `${district.name} District Administration Office`,
         nameNepali: `${district.nameNep || district.name} जिल्ला प्रशासन कार्यालय`,
-        type: 'DISTRICT_ADMINISTRATION_OFFICE',
         address: `${district.name} District`,
         addressNepali: `${district.nameNep || district.name} जिल्ला`,
         contact: null,
@@ -83,7 +82,6 @@ export async function seedOffices(prisma: PrismaClient) {
         categoryId: wardCategory.id,
         name: `${ward.municipality.name} Ward No. ${ward.wardNumber} Office`,
         nameNepali: `${ward.municipality.nameNep || ward.municipality.name} वडा नं. ${ward.wardNumber} कार्यालय`,
-        type: OfficeType.WARD_OFFICE,
         address: `${ward.municipality.district.name} District`,
         addressNepali: `${ward.municipality.district.nameNep || ward.municipality.district.name} जिल्ला`,
         contact: null,

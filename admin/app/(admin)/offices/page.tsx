@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { api, Office, OFFICE_TYPES } from '@/lib/api';
+import { api, Office, OfficeCategory } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
 
 const selectClassName = "flex h-10 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50";
@@ -25,10 +25,11 @@ export default function OfficesPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [offices, setOffices] = useState<Office[]>([]);
+  const [officeCategories, setOfficeCategories] = useState<OfficeCategory[]>([]);
   const [meta, setMeta] = useState({ total: 0, page: 1, limit: 20, totalPages: 0 });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(searchParams.get('search') || '');
-  const [typeFilter, setTypeFilter] = useState(searchParams.get('type') || '');
+  const [categoryFilter, setCategoryFilter] = useState(searchParams.get('categoryId') || '');
   
   // Location filters
   const [locationData, setLocationData] = useState<LocationData>({
@@ -52,11 +53,22 @@ export default function OfficesPage() {
 
   useEffect(() => {
     fetchProvinces();
+    fetchOfficeCategories();
   }, []);
 
   useEffect(() => {
     fetchOffices();
-  }, [page, typeFilter, provinceFilter, districtFilter, municipalityFilter, wardFilter]);
+  }, [page, categoryFilter, provinceFilter, districtFilter, municipalityFilter, wardFilter]);
+
+  const fetchOfficeCategories = async () => {
+    try {
+      const response = await api.getOfficeCategories();
+      const data = Array.isArray(response) ? response : (response as any).data || [];
+      setOfficeCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch office categories:', error);
+    }
+  };
 
   // Cascading location fetches
   useEffect(() => {
@@ -140,7 +152,7 @@ export default function OfficesPage() {
         page,
         limit: 20,
         search: search || undefined,
-        type: typeFilter || undefined,
+        categoryId: categoryFilter || undefined,
         provinceId: provinceFilter ? parseInt(provinceFilter) : undefined,
         districtId: districtFilter ? parseInt(districtFilter) : undefined,
         municipalityId: municipalityFilter ? parseInt(municipalityFilter) : undefined,
@@ -176,11 +188,10 @@ export default function OfficesPage() {
     }
   };
 
-  const getTypeBadge = (type: string) => {
-    const option = OFFICE_TYPES.find((t) => t.value === type);
+  const getCategoryBadge = (categoryName?: string) => {
     return (
       <Badge variant="secondary" className="text-xs">
-        {option?.label || type}
+        {categoryName || '-'}
       </Badge>
     );
   };
@@ -196,7 +207,7 @@ export default function OfficesPage() {
 
   const clearFilters = () => {
     setSearch('');
-    setTypeFilter('');
+    setCategoryFilter('');
     setProvinceFilter('');
     setDistrictFilter('');
     setMunicipalityFilter('');
@@ -204,7 +215,7 @@ export default function OfficesPage() {
     router.push('/offices');
   };
 
-  const hasFilters = search || typeFilter || provinceFilter || districtFilter || municipalityFilter || wardFilter;
+  const hasFilters = search || categoryFilter || provinceFilter || districtFilter || municipalityFilter || wardFilter;
 
   return (
     <div>
@@ -238,13 +249,13 @@ export default function OfficesPage() {
               </div>
               <select
                 className={cn(selectClassName, "w-[200px]")}
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
               >
-                <option value="">All Office Types</option>
-                {OFFICE_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
+                <option value="">All Categories</option>
+                {officeCategories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
                   </option>
                 ))}
               </select>
@@ -329,7 +340,7 @@ export default function OfficesPage() {
                     Office
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Type
+                    Category
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Location
@@ -387,7 +398,7 @@ export default function OfficesPage() {
                         </div>
                       </td>
                       <td className="px-4 py-4">
-                        {getTypeBadge(office.type)}
+                        {getCategoryBadge(office.category?.name)}
                       </td>
                       <td className="px-4 py-4 text-sm text-gray-600">
                         {getLocationString(office)}
