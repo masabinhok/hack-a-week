@@ -16,7 +16,7 @@ export class AdminOfficesService {
    * Get all offices with pagination and filters
    */
   async findAll(params: AdminOfficeQueryDto) {
-    const { page = 1, limit = 20, search, type, categoryId, isActive, provinceId, districtId, municipalityId, wardId } = params;
+    const { page = 1, limit = 20, search, categoryId, isActive, provinceId, districtId, municipalityId, wardId } = params;
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -112,10 +112,6 @@ export class AdminOfficesService {
       }));
     }
 
-    if (type) {
-      where.type = type;
-    }
-
     if (categoryId) {
       where.categoryId = categoryId;
     }
@@ -199,7 +195,7 @@ export class AdminOfficesService {
             },
           },
         },
-        orderBy: [{ type: 'asc' }, { name: 'asc' }],
+        orderBy: [{ categoryId: 'asc' }, { name: 'asc' }],
       }),
       this.prisma.office.count({ where }),
     ]);
@@ -376,19 +372,14 @@ export class AdminOfficesService {
     const [
       totalOffices,
       activeOffices,
-      officesByType,
       officesByCategory,
     ] = await Promise.all([
       this.prisma.office.count(),
       this.prisma.office.count({ where: { isActive: true } }),
       this.prisma.office.groupBy({
-        by: ['type'],
-        _count: { id: true },
-        orderBy: { _count: { id: 'desc' } },
-      }),
-      this.prisma.office.groupBy({
         by: ['categoryId'],
         _count: { id: true },
+        orderBy: { _count: { id: 'desc' } },
       }),
     ]);
 
@@ -396,23 +387,23 @@ export class AdminOfficesService {
     const categoryIds = officesByCategory.map((c) => c.categoryId);
     const categories = await this.prisma.officeCategory.findMany({
       where: { id: { in: categoryIds } },
-      select: { id: true, name: true },
+      select: { id: true, name: true, slug: true },
     });
-    const categoryMap = new Map(categories.map((c) => [c.id, c.name]));
+    const categoryMap = new Map(categories.map((c) => [c.id, { name: c.name, slug: c.slug }]));
 
     return {
       totalOffices,
       activeOffices,
       inactiveOffices: totalOffices - activeOffices,
-      byType: officesByType.map((t) => ({
-        type: t.type,
-        count: t._count.id,
-      })),
-      byCategory: officesByCategory.map((c) => ({
-        categoryId: c.categoryId,
-        categoryName: categoryMap.get(c.categoryId) || 'Unknown',
-        count: c._count.id,
-      })),
+      byCategory: officesByCategory.map((c) => {
+        const categoryInfo = categoryMap.get(c.categoryId);
+        return {
+          categoryId: c.categoryId,
+          categoryName: categoryInfo?.name || 'Unknown',
+          categorySlug: categoryInfo?.slug || 'unknown',
+          count: c._count.id,
+        };
+      }),
     };
   }
 
