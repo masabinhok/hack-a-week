@@ -111,14 +111,14 @@ export class EmailService {
 </head>
 <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
   <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-    <h1 style="color: white; margin: 0; font-size: 24px;">🏛️ Sarkari Sewa Portal</h1>
+    <h1 style="color: white; margin: 0; font-size: 24px;">🏛️ Setu - GSN</h1>
     <p style="color: #e0e7ff; margin: 10px 0 0 0;">Office Administration System</p>
   </div>
   
   <div style="background: #f8fafc; padding: 30px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 10px 10px;">
     <h2 style="color: #1e40af; margin-top: 0;">Welcome, Office Administrator!</h2>
     
-    <p>Your office <strong>${data.officeName}</strong> has been registered on the Sarkari Sewa Portal. Below are your admin credentials to access the office dashboard.</p>
+    <p>Your office <strong>${data.officeName}</strong> has been registered on the Setu - GSN platform. Below are your admin credentials to access the office dashboard.</p>
     
     <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 20px 0;">
       <h3 style="color: #1e40af; margin-top: 0; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">🔐 Login Credentials</h3>
