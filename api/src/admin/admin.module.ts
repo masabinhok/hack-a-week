@@ -12,10 +12,10 @@ import { ServiceRequestsModule } from './service-requests/service-requests.modul
   imports: [
     PrismaModule,
     JwtModule.register({}), // Configuration is done via ConfigService in the service
+    ServiceRequestsModule, // Must be before AdminServicesModule to avoid route conflicts
     AdminServicesModule,
     AdminOfficesModule,
     OfficeServicesModule,
-    ServiceRequestsModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

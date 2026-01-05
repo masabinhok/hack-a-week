@@ -44,10 +44,19 @@ export default function ServiceRequestsPage() {
         limit: 20,
         status: statusFilter === 'ALL' ? undefined : statusFilter,
       });
-      setRequests(response.data);
-      setMeta(response.meta);
-    } catch (error) {
+      setRequests(response.data || []);
+      setMeta(response.meta || { total: 0, page: 1, limit: 20, totalPages: 0 });
+    } catch (error: any) {
       console.error('Failed to fetch service requests:', error);
+      // Handle gracefully - set empty results
+      setRequests([]);
+      setMeta({ total: 0, page: 1, limit: 20, totalPages: 0 });
+      
+      // Only show error if it's not a "not found" or "no results" scenario
+      if (error?.status !== 404) {
+        // You could add a toast notification here if available
+        console.warn('Error fetching service requests:', error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -57,8 +66,15 @@ export default function ServiceRequestsPage() {
     try {
       const statsData = await api.getServiceRequestStats();
       setStats(statsData);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch stats:', error);
+      // Set default stats on error
+      setStats(null);
+      
+      // Only log warning for non-404 errors
+      if (error?.status !== 404) {
+        console.warn('Error fetching stats:', error.message);
+      }
     }
   }, []);
 
