@@ -12,6 +12,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { AdminModule } from './admin/admin.module';
 import { UsersModule } from './users/users.module';
 import { AuthGuard } from './common/guards/auth.guard';
+import { EmailModule } from './common/services/email.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthGuard } from './common/guards/auth.guard';
     JwtModule.register({
       global: true,
     }),
+    EmailModule,
     CategoriesModule,
     ServicesModule,
     OfficesModule,

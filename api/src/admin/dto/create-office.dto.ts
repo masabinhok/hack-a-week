@@ -7,6 +7,8 @@ import {
   IsEnum,
   ValidateNested,
   Min,
+  IsEmail,
+  IsNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
@@ -89,9 +91,9 @@ export class CreateOfficeDto {
   @IsOptional()
   alternateContact?: string;
 
-  @IsString()
-  @IsOptional()
-  email?: string;
+  @IsEmail({}, { message: 'Please provide a valid email address' })
+  @IsNotEmpty({ message: 'Email is required for sending admin credentials' })
+  email: string;
 
   @IsString()
   @IsOptional()

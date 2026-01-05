@@ -399,7 +399,7 @@ export interface CreateOfficeData {
   addressNepali?: string;
   contact?: string;
   alternateContact?: string;
-  email?: string;
+  email: string; // Required - admin credentials will be sent to this email
   website?: string;
   mapUrl?: string;
   photoUrls?: string[];
@@ -570,11 +570,13 @@ export interface CreateOfficeResponse {
   message: string;
   data: OfficeDetail;
   officeAdminCredentials: OfficeAdminCredentials;
+  emailSent?: boolean;
   createdBy?: string;
 }
 
 export interface ResetPasswordResponse {
   message: string;
   credentials: OfficeAdminCredentials;
+  emailSent?: boolean;
   resetBy?: string;
 }

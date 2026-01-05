@@ -47,10 +47,14 @@ export default function OfficeForm({ office }: OfficeFormProps) {
     open: boolean;
     credentials: OfficeAdminCredentials | null;
     officeName: string;
+    officeEmail: string;
+    emailSent: boolean;
   }>({
     open: false,
     credentials: null,
     officeName: '',
+    officeEmail: '',
+    emailSent: false,
   });
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
@@ -258,6 +262,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
             open: true,
             credentials: result.officeAdminCredentials,
             officeName: formData.name,
+            officeEmail: formData.email,
+            emailSent: result.emailSent ?? false,
           });
         } else {
           router.push('/offices');
@@ -278,7 +284,7 @@ export default function OfficeForm({ office }: OfficeFormProps) {
   };
 
   const handleCredentialsDialogClose = () => {
-    setCredentialsDialog({ open: false, credentials: null, officeName: '' });
+    setCredentialsDialog({ open: false, credentials: null, officeName: '', officeEmail: '', emailSent: false });
     router.push('/offices');
     router.refresh();
   };
@@ -585,14 +591,18 @@ export default function OfficeForm({ office }: OfficeFormProps) {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                Email <span className="text-red-500">*</span>
               </label>
               <Input
                 type="email"
                 value={formData.email || ''}
                 onChange={(e) => handleChange('email', e.target.value)}
                 placeholder="e.g., info@dao-kathmandu.gov.np"
+                required
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Admin credentials will be sent to this email address
+              </p>
             </div>
 
             {/* Website */}
@@ -695,22 +705,44 @@ export default function OfficeForm({ office }: OfficeFormProps) {
             </DialogTitle>
             <DialogDescription>
               An office admin account has been created for <strong>{credentialsDialog.officeName}</strong>. 
-              Please save these credentials - they will only be shown once.
+              {credentialsDialog.emailSent ? (
+                <span className="block mt-1 text-green-600">
+                  ✉️ Credentials have been emailed to <strong>{credentialsDialog.officeEmail}</strong>
+                </span>
+              ) : (
+                <span className="block mt-1 text-amber-600">
+                  ⚠️ Email could not be sent. Please save these credentials manually.
+                </span>
+              )}
             </DialogDescription>
           </DialogHeader>
           
           {credentialsDialog.credentials && (
             <div className="space-y-4 py-4">
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                <div className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <p className="text-sm text-amber-800">
-                    <strong>Important:</strong> Copy these credentials now. The password cannot be recovered after closing this dialog.
-                  </p>
+              {/* Email status banner */}
+              {credentialsDialog.emailSent ? (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <svg className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <p className="text-sm text-green-800">
+                      <strong>Email Sent!</strong> The credentials have been sent to the office email. The password is also shown below for your records.
+                    </p>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
+                  <div className="flex items-start gap-2">
+                    <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p className="text-sm text-amber-800">
+                      <strong>Important:</strong> Copy these credentials now. The password cannot be recovered after closing this dialog.
+                    </p>
+                  </div>
+                </div>
+              )}
 
               <div className="space-y-3">
                 <div>

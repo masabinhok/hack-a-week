@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateOfficeDto, UpdateOfficeDto, AdminOfficeQueryDto } from '../dto/create-office.dto';
+import { EmailService } from '../../common/services/email.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
 @Injectable()
 export class AdminOfficesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly emailService: EmailService,
+  ) {}
 
   /**
    * Get all offices with pagination and filters
@@ -532,10 +536,21 @@ export class AdminOfficesService {
       };
     });
 
+    // Send credentials email to office email
+    const emailSent = await this.emailService.sendOfficeCredentialsEmail({
+      officeName: dto.name,
+      officeEmail: dto.email,
+      username: result.officeAdminCredentials.username,
+      password: result.officeAdminCredentials.password,
+    });
+
     return {
-      message: 'Office created successfully with office admin credentials',
+      message: emailSent 
+        ? 'Office created successfully. Admin credentials have been sent to the office email.'
+        : 'Office created successfully. Admin credentials email could not be sent - please note them down.',
       data: result.office,
       officeAdminCredentials: result.officeAdminCredentials,
+      emailSent,
     };
   }
 
@@ -590,12 +605,26 @@ export class AdminOfficesService {
       data: { passwordHash: hashedPassword },
     });
 
+    // Send new credentials via email if office has email
+    let emailSent = false;
+    if (office.email) {
+      emailSent = await this.emailService.sendOfficeCredentialsEmail({
+        officeName: office.name,
+        officeEmail: office.email,
+        username: office.officeAdmin.username!,
+        password: newPassword,
+      });
+    }
+
     return {
-      message: 'Office admin password reset successfully',
+      message: emailSent 
+        ? 'Office admin password reset successfully. New credentials have been sent to the office email.'
+        : 'Office admin password reset successfully. Please share the new credentials securely.',
       credentials: {
         username: office.officeAdmin.username,
         password: newPassword,
       },
+      emailSent,
     };
   }
 
