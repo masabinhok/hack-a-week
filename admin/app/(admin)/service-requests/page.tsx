@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import ServiceDetailDialog from '@/components/ServiceDetailDialog';
 import { api, ServiceRequest, ServiceRequestStats, PRIORITY_OPTIONS } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
@@ -33,6 +34,12 @@ export default function ServiceRequestsPage() {
   const [reviewNotes, setReviewNotes] = useState('');
   const [rejectionReason, setRejectionReason] = useState('');
   const [processing, setProcessing] = useState(false);
+
+  // View detail dialog state
+  const [viewDetailDialog, setViewDetailDialog] = useState<{ open: boolean; serviceId: string | null }>({
+    open: false,
+    serviceId: null,
+  });
 
   const page = meta.page;
 
@@ -279,10 +286,25 @@ export default function ServiceRequestsPage() {
 
                       {request.approvedService && (
                         <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                          <span className="text-sm text-green-600 font-medium">Created Service:</span>
-                          <p className="text-sm text-green-700 mt-1">
-                            {request.approvedService.name} ({request.approvedService.serviceId})
-                          </p>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <span className="text-sm text-green-600 font-medium">Created Service:</span>
+                              <p className="text-sm text-green-700 mt-1">
+                                {request.approvedService.name} ({request.approvedService.serviceId})
+                              </p>
+                            </div>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setViewDetailDialog({ open: true, serviceId: request.approvedService!.id })}
+                            >
+                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                              </svg>
+                              View Details
+                            </Button>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -416,6 +438,13 @@ export default function ServiceRequestsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Service Detail Dialog */}
+      <ServiceDetailDialog
+        serviceId={viewDetailDialog.serviceId}
+        open={viewDetailDialog.open}
+        onOpenChange={(open) => !open && setViewDetailDialog({ open: false, serviceId: null })}
+      />
     </div>
   );
 }
