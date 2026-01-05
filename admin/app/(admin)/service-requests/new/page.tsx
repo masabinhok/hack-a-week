@@ -1,84 +1,82 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import AdminHeader from '@/components/AdminHeader';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Select } from '@/components/ui/select';
-import { api, Category, PRIORITY_OPTIONS } from '@/lib/api';
+import { Badge } from '@/components/ui/badge';
+import ServiceForm from '@/components/ServiceForm';
+import { api, Service, ServiceDetail } from '@/lib/api';
 import { useAuth } from '@/lib/auth';
+import { cn } from '@/lib/utils';
 
 export default function NewServiceRequestPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isOfficeAdmin } = useAuth();
+  const [mode, setMode] = useState<'browse' | 'create'>('browse');
   const [loading, setLoading] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [formData, setFormData] = useState({
-    serviceName: '',
-    serviceDescription: '',
-    categoryId: '',
-    priority: '',
-    justification: '',
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [services, setServices] = useState<Service[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
-    fetchCategories();
-  }, []);
+    if (mode === 'browse') {
+      fetchServices();
+    }
+  }, [mode, searchQuery, page]);
 
-  const fetchCategories = async () => {
+  const fetchServices = async () => {
+    setLoading(true);
     try {
-      const cats = await api.getCategories();
-      setCategories(cats);
+      const response = await api.getServices({
+        page,
+        limit: 20,
+        search: searchQuery || undefined,
+      });
+      setServices(response.data || []);
+      setTotalPages(response.meta?.totalPages || 1);
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
+      console.error('Failed to fetch services:', error);
+      setServices([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-    
-    if (!formData.serviceName.trim()) {
-      newErrors.serviceName = 'Service name is required';
-    } else if (formData.serviceName.length < 3) {
-      newErrors.serviceName = 'Service name must be at least 3 characters';
-    } else if (formData.serviceName.length > 200) {
-      newErrors.serviceName = 'Service name must be less than 200 characters';
+  const handleServiceSelect = async (service: Service) => {
+    setLoading(true);
+    try {
+      const detail = await api.getService(service.id);
+      setSelectedService(detail);
+    } catch (error) {
+      console.error('Failed to fetch service details:', error);
+      setSelectedService(null);
+    } finally {
+      setLoading(false);
     }
-
-    if (formData.serviceDescription && formData.serviceDescription.length > 2000) {
-      newErrors.serviceDescription = 'Description must be less than 2000 characters';
-    }
-
-    if (formData.justification && formData.justification.length > 1000) {
-      newErrors.justification = 'Justification must be less than 1000 characters';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitRequest = async () => {
+    if (!selectedService) return;
     
-    if (!validateForm()) return;
-
     setLoading(true);
     try {
       await api.createServiceRequest({
-        serviceName: formData.serviceName.trim(),
-        serviceDescription: formData.serviceDescription.trim() || undefined,
-        categoryId: formData.categoryId || undefined,
-        priority: (formData.priority as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT') || undefined,
-        justification: formData.justification.trim() || undefined,
+        serviceName: selectedService.name,
+        serviceDescription: selectedService.description || undefined,
+        categoryId: selectedService.categories?.[0]?.id || undefined,
+        priority: 'MEDIUM',
+        justification: `Requesting to add ${selectedService.name} service to our office.`,
       });
       router.push('/service-requests');
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to submit request';
-      setErrors({ submit: errorMessage });
+    } catch (error: any) {
+      console.error('Failed to submit request:', error);
+      alert(error.message || 'Failed to submit request');
     } finally {
       setLoading(false);
     }
@@ -104,110 +102,201 @@ export default function NewServiceRequestPage() {
   return (
     <div>
       <AdminHeader
-        title="Request New Service"
-        description="Submit a request for a new service to be added to the system"
+        title="Request Service"
+        description="Browse existing services to claim or create a new service request"
       />
 
-      <div className="p-8 max-w-2xl">
-        <Card>
-          <CardContent className="p-6">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {errors.submit && (
-                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                  {errors.submit}
+      <div className="p-8">
+        {/* Mode Selector */}
+        <div className="mb-6 flex gap-4 max-w-4xl">
+          <Button
+            variant={mode === 'browse' ? 'default' : 'outline'}
+            onClick={() => setMode('browse')}
+            className="flex-1"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Browse Existing Services
+          </Button>
+          <Button
+            variant={mode === 'create' ? 'default' : 'outline'}
+            onClick={() => setMode('create')}
+            className="flex-1"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create New Service
+          </Button>
+        </div>
+
+        {/* Browse Mode */}
+        {mode === 'browse' && (
+          <div className="max-w-6xl">
+            <Card className="mb-6">
+              <CardContent className="p-4">
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <Input
+                      placeholder="Search services by name..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          setPage(1);
+                          fetchServices();
+                        }
+                      }}
+                    />
+                  </div>
+                  <Button onClick={() => { setPage(1); fetchServices(); }}>
+                    Search
+                  </Button>
                 </div>
-              )}
+              </CardContent>
+            </Card>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Service Name <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  placeholder="Enter the name of the service"
-                  value={formData.serviceName}
-                  onChange={(e) => setFormData({ ...formData, serviceName: e.target.value })}
-                  className={errors.serviceName ? 'border-red-500' : ''}
-                />
-                {errors.serviceName && (
-                  <p className="mt-1 text-sm text-red-500">{errors.serviceName}</p>
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-nepal-blue-600"></div>
+              </div>
+            ) : services.length === 0 ? (
+              <Card>
+                <CardContent className="p-12 text-center">
+                  <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No Services Found</h3>
+                  <p className="text-gray-500">Try a different search or create a new service request.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <>
+                <div className="grid gap-4 mb-6">
+                  {services.map((service) => (
+                    <Card
+                      key={service.id}
+                      className={cn(
+                        'cursor-pointer transition-all hover:shadow-md',
+                        selectedService?.id === service.id && 'ring-2 ring-nepal-blue-500'
+                      )}
+                      onClick={() => handleServiceSelect(service)}
+                    >
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-3 mb-2">
+                              <h3 className="text-lg font-semibold text-gray-900">{service.name}</h3>
+                              {service.isOnlineEnabled && (
+                                <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                  Online Available
+                                </Badge>
+                              )}
+                              {service.parentId && (
+                                <Badge variant="outline">Sub-service</Badge>
+                              )}
+                            </div>
+                            {service.description && (
+                              <p className="text-gray-600 mb-3 line-clamp-2">{service.description}</p>
+                            )}
+                            <div className="flex gap-4 text-sm text-gray-500">
+                              {service.categories && service.categories.length > 0 && (
+                                <div>
+                                  <span className="font-medium">Categories: </span>
+                                  {service.categories.map(c => c.name).join(', ')}
+                                </div>
+                              )}
+                              {service.stepsCount > 0 && (
+                                <div>
+                                  <span className="font-medium">{service.stepsCount} steps</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {selectedService?.id === service.id && (
+                            <div className="ml-4">
+                              <svg className="w-6 h-6 text-nepal-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={page === 1}
+                    >
+                      Previous
+                    </Button>
+                    <span className="px-4 py-2 text-sm text-gray-600">
+                      Page {page} of {totalPages}
+                    </span>
+                    <Button
+                      variant="outline"
+                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                      disabled={page === totalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
                 )}
-              </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <Textarea
-                  placeholder="Describe the service and what it provides to citizens"
-                  value={formData.serviceDescription}
-                  onChange={(e) => setFormData({ ...formData, serviceDescription: e.target.value })}
-                  rows={4}
-                  className={errors.serviceDescription ? 'border-red-500' : ''}
-                />
-                {errors.serviceDescription && (
-                  <p className="mt-1 text-sm text-red-500">{errors.serviceDescription}</p>
+                {/* Submit Button */}
+                {selectedService && (
+                  <Card className="mt-6 bg-nepal-blue-50 border-nepal-blue-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-1">
+                            Request: {selectedService.name}
+                          </h4>
+                          <p className="text-sm text-gray-600">
+                            Submit a request to add this service to your office
+                          </p>
+                        </div>
+                        <Button onClick={handleSubmitRequest} disabled={loading}>
+                          {loading ? 'Submitting...' : 'Submit Request'}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 )}
-              </div>
+              </>
+            )}
+          </div>
+        )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Suggested Category
-                </label>
-                <Select
-                  value={formData.categoryId}
-                  onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
-                  options={categories.map((cat) => ({ value: cat.id, label: cat.name }))}
-                  placeholder="Select a category (optional)"
-                />
-              </div>
+        {/* Create Mode - Use ServiceForm */}
+        {mode === 'create' && (
+          <div className="max-w-6xl">
+            <Card className="mb-6 bg-yellow-50 border-yellow-200">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <svg className="w-5 h-5 text-yellow-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  <div>
+                    <h4 className="font-semibold text-yellow-900 mb-1">New Service Request</h4>
+                    <p className="text-sm text-yellow-700">
+                      Fill in as much detail as possible. This will be reviewed by administrators before approval.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Priority
-                </label>
-                <Select
-                  value={formData.priority}
-                  onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
-                  options={PRIORITY_OPTIONS}
-                  placeholder="Select priority (optional)"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Justification
-                </label>
-                <Textarea
-                  placeholder="Explain why this service should be added (helps with approval)"
-                  value={formData.justification}
-                  onChange={(e) => setFormData({ ...formData, justification: e.target.value })}
-                  rows={3}
-                  className={errors.justification ? 'border-red-500' : ''}
-                />
-                {errors.justification && (
-                  <p className="mt-1 text-sm text-red-500">{errors.justification}</p>
-                )}
-                <p className="mt-1 text-xs text-gray-500">
-                  Provide context about why this service is needed and how many citizens it will help.
-                </p>
-              </div>
-
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => router.back()}
-                  disabled={loading}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" disabled={loading}>
-                  {loading ? 'Submitting...' : 'Submit Request'}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
+            <ServiceForm isServiceRequest={true} />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ export class AdminServicesController {
    * Get all services with pagination and search
    */
   @Get()
+  @Roles('ADMIN', 'OFFICE_ADMIN')
   async findAll(
     @Query('page') page?: string,
     @Query('limit') limit?: string,
@@ -47,8 +48,7 @@ export class AdminServicesController {
    * GET /admin/services/stats
    * Get service statistics for dashboard
    */
-  @Get('stats')
-  async getStats() {
+  @Get('stats')  @Roles('ADMIN', 'OFFICE_ADMIN')  async getStats() {
     return this.adminServicesService.getStats();
   }
 
@@ -57,6 +57,7 @@ export class AdminServicesController {
    * Get all categories for dropdown selection
    */
   @Get('categories')
+  @Roles('ADMIN', 'OFFICE_ADMIN')
   async getCategories() {
     return this.adminServicesService.getCategories();
   }
@@ -66,6 +67,7 @@ export class AdminServicesController {
    * Get a single service by ID with all details
    */
   @Get(':id')
+  @Roles('ADMIN', 'OFFICE_ADMIN')
   async findOne(@Param('id') id: string) {
     return this.adminServicesService.findOne(id);
   }
