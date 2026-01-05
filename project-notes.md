@@ -4,18 +4,6 @@
 3. Introduce authentication for users and admins. We can store user information, enable feedbacks/contributions. Admin can verify those, and manage data. Admin control could be given to different government offices.
 4. Integrate google-maps ? calendar APIs for holidays ? 
 
-
-# API ENDPOINTS
-✅ GET /api/v1/services
-✅ GET /api/v1/services/:slug
-✅ GET /api/v1/sub-services/:slug 
-✅ GET /api/v1/locations/provinces
-✅ GET /api/v1/offices/nearby/:officeType
-✅ GET /api/v1/locations/provinces/:provinceId/districts
-✅ GET /api/v1/locations/districts/:districtId/municipalities
-✅ GET /api/v1/locations/municipalities/:municipalityId/wards
-
-
 # QUICK NOTES
 1. Kotha steps
 2. office associated with their officeAdmin credentials dinxam
@@ -40,6 +28,35 @@ officeSpecificChange OfficeSpecificChange
 7. office category and officeType redundant, use officeCategory.
 8. user feedback/report ???????
 9. nearby offices not limited to his specific ward, location
+10. super_admin feature, office can claim service, and req to create a new one if not available. 
 
 <!-- darlagdo feature -->
 1. location anusar distance liyera nearby office locate garne
+
+
+
+
+<!-- maile birse vani -->
+1. tyo email halka change garnu paryo
+2. office admin ko username generation change gARNY OPARYO TO MAINTAIN UNIQUENESS
+3. OFFICE CREATION MA ID AUTO GENERATE GARNE HO KI? CLIENT SIDE MA NAGARI? USING THE OFFICE CATEGORY AND OFFICE COUNT, OC-1 OC-2
+4. office create garda location fetch garya xaina so 4 level of location select vairaxaina....
+5. in each office profile for the super admin, we should add a send credentials button so that we can send them the credentials even after office creation!!
+6. service independetly exist, ani offices can claim services, if they provide that service, officeadmins can see all the services, and also can request to create a new service to the superadmin!!
+
+
+
+<!-- feri kura garau -->
+1. officeType fix
+2. permanent: euta/convenient : list of office dekhaune...
+3. data modelling + data filling
+4. embedding model integrate, service mapping...
+<!-- admin panel -->
+1. superAdmin -> monitors officeAdmin, create global services, create offices
+2. officeAdmin -> update/ own office, crud own service -> request for review -> see list of global service and claim the ones they provide!, 
+
+
+
+
+
+<!-- our app flow: demo presentation ma k k kura garne ta? -->
