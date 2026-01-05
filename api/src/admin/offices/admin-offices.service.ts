@@ -548,17 +548,17 @@ export class AdminOfficesService {
   /**
    * Generate a username for office admin based on office ID
    */
-  private generateOfficeAdminUsername(officeId: string): string {
-    // Clean the office ID to make it username-friendly
-    const cleanId = officeId.toLowerCase().replace(/[^a-z0-9]/g, '_');
-    return `office_${cleanId}`;
-  }
+private generateOfficeAdminUsername(officeId: string): string {
+  const shortId = officeId.slice(-4).toLowerCase().replace(/[^a-z0-9]/g,'');
+  return `ofc_${shortId}_${Math.random().toString(36).slice(-4)}`;
+}
+
 
   /**
    * Generate a secure random password
    */
   private generateSecurePassword(length: number = 12): string {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%';
     const bytes = crypto.randomBytes(length);
     let password = '';
     for (let i = 0; i < length; i++) {
