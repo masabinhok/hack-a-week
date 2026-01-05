@@ -606,5 +606,7 @@ export type {
   Ward,
   Office,
   OfficeForService,
-  SearchResult,
+  SearchResult} from "./types";
+export type { ErrorResponse } from "./error-types";
+
 

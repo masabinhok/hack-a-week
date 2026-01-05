@@ -288,7 +288,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
   };
 
   const generateOfficeId = () => {
-    const typePrefix = formData.type?.substring(0, 3).toUpperCase() || 'OFF';
+    const category = categories.find(c => c.id === formData.categoryId);
+    const typePrefix = category?.name?.substring(0, 3).toUpperCase() || 'OFF';
     const random = Math.random().toString(36).substring(2, 8).toUpperCase();
     handleChange('officeId', `${typePrefix}-${random}`);
   };
