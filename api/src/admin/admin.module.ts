@@ -5,6 +5,8 @@ import { AdminController } from './admin.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AdminServicesModule } from './services/admin-services.module';
 import { AdminOfficesModule } from './offices/admin-offices.module';
+import { OfficeServicesModule } from './office-services/office-services.module';
+import { ServiceRequestsModule } from './service-requests/service-requests.module';
 
 @Module({
   imports: [
@@ -12,6 +14,8 @@ import { AdminOfficesModule } from './offices/admin-offices.module';
     JwtModule.register({}), // Configuration is done via ConfigService in the service
     AdminServicesModule,
     AdminOfficesModule,
+    OfficeServicesModule,
+    ServiceRequestsModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

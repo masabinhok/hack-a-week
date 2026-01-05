@@ -12,7 +12,11 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AdminOfficesService } from './admin-offices.service';
-import { CreateOfficeDto, UpdateOfficeDto, AdminOfficeQueryDto } from '../dto/create-office.dto';
+import {
+  CreateOfficeDto,
+  UpdateOfficeDto,
+  AdminOfficeQueryDto,
+} from '../dto/create-office.dto';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { OfficeOwnerGuard } from '../../common/guards/office-owner.guard';
@@ -102,7 +106,10 @@ export class AdminOfficesController {
   @Post(':id/reset-password')
   @Roles('ADMIN')
   @HttpCode(HttpStatus.OK)
-  async resetOfficeAdminPassword(@Param('id') id: string, @GetUser() user: any) {
+  async resetOfficeAdminPassword(
+    @Param('id') id: string,
+    @GetUser() user: any,
+  ) {
     const result = await this.adminOfficesService.resetOfficeAdminPassword(id);
     return {
       ...result,

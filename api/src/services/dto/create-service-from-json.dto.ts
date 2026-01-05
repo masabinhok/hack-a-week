@@ -11,7 +11,14 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Priority, DocType, Currency, FeeType, WeekDay, LocationType } from 'src/generated/prisma/client';
+import {
+  Priority,
+  DocType,
+  Currency,
+  FeeType,
+  WeekDay,
+  LocationType,
+} from 'src/generated/prisma/client';
 
 // ========== Category DTOs (ordered by dependency) ==========
 export class CategoryWhereDto {
@@ -261,7 +268,6 @@ export class CreateServiceStepDto {
   @IsOptional()
   @IsUrl()
   onlineFormUrl?: string;
-
 
   @ValidateNested()
   @Type(() => StepDocumentsDto)

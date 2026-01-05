@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Office } from 'src/generated/prisma/client'
-import { 
-  FindOfficesByLocationDto, 
-  FindOfficesByCategoryDto, 
-  SearchOfficesDto, 
+import { Office } from 'src/generated/prisma/client';
+import {
+  FindOfficesByLocationDto,
+  FindOfficesByCategoryDto,
+  SearchOfficesDto,
   FindOfficesForServiceDto,
 } from './dtos';
 import { LocationCodeUtil } from '../common/utils/location-code.util';
@@ -42,7 +46,15 @@ export class OfficesService {
    * Uses either explicit IDs or location code
    */
   async findByLocation(dto: FindOfficesByLocationDto) {
-    let { provinceId, districtId, municipalityId, wardId, locationCode, page = 1, limit = 20 } = dto;
+    let {
+      provinceId,
+      districtId,
+      municipalityId,
+      wardId,
+      locationCode,
+      page = 1,
+      limit = 20,
+    } = dto;
     const skip = (page - 1) * limit;
 
     // Parse location code if provided
@@ -55,14 +67,14 @@ export class OfficesService {
         wardId = parsed.wardId;
       } else {
         throw new BadRequestException(
-          `Invalid location code format: ${locationCode}. Expected P-DD-MMM-WWWW`
+          `Invalid location code format: ${locationCode}. Expected P-DD-MMM-WWWW`,
         );
       }
     }
 
     if (!provinceId && !districtId && !municipalityId && !wardId) {
       throw new BadRequestException(
-        'At least one location parameter is required: provinceId, districtId, municipalityId, wardId, or locationCode'
+        'At least one location parameter is required: provinceId, districtId, municipalityId, wardId, or locationCode',
       );
     }
 
@@ -171,7 +183,16 @@ export class OfficesService {
    * Get offices of specific category near a location
    */
   async findByCategoryAndLocation(dto: FindOfficesByCategoryDto) {
-    let { categoryId, provinceId, districtId, municipalityId, wardId, locationCode, page = 1, limit = 20 } = dto;
+    let {
+      categoryId,
+      provinceId,
+      districtId,
+      municipalityId,
+      wardId,
+      locationCode,
+      page = 1,
+      limit = 20,
+    } = dto;
     const skip = (page - 1) * limit;
 
     // Parse location code if provided
@@ -184,7 +205,7 @@ export class OfficesService {
         wardId = parsed.wardId;
       } else {
         throw new BadRequestException(
-          `Invalid location code format: ${locationCode}. Expected P-DD-MMM-WWWW`
+          `Invalid location code format: ${locationCode}. Expected P-DD-MMM-WWWW`,
         );
       }
     }
@@ -442,11 +463,13 @@ export class OfficesService {
         name: o.name,
         nameNepali: o.nameNepali,
         address: o.address,
-        category: o.category ? {
-          id: o.category.id,
-          name: o.category.name,
-          slug: o.category.slug,
-        } : null,
+        category: o.category
+          ? {
+              id: o.category.id,
+              name: o.category.name,
+              slug: o.category.slug,
+            }
+          : null,
       })),
       total,
       page,
@@ -516,15 +539,20 @@ export class OfficesService {
     }
 
     // Create a map of step details
-    const stepDetailsMap = new Map(service.serviceSteps.map(s => [s.id, {
-      officeCategoryIds: s.officeCategoryIds || [],
-      isOnline: s.isOnline || false,
-      onlineFormUrl: s.onlineFormUrl || null,
-    }]));
+    const stepDetailsMap = new Map(
+      service.serviceSteps.map((s) => [
+        s.id,
+        {
+          officeCategoryIds: s.officeCategoryIds || [],
+          isOnline: s.isOnline || false,
+          onlineFormUrl: s.onlineFormUrl || null,
+        },
+      ]),
+    );
 
     // Filter out online steps when getting category IDs
     const allCategoryIds = service.serviceSteps
-      .filter(s => {
+      .filter((s) => {
         const details = stepDetailsMap.get(s.id);
         return !details?.isOnline; // Only include non-online steps
       })
@@ -532,15 +560,24 @@ export class OfficesService {
     const categoryIds = [...new Set(allCategoryIds)];
 
     // Build location filter for offices (only if there are non-online steps)
-    let offices: (Office & { category: { id: string; name: string; slug: string; description: string | null } | null })[] = [];
-    
+    let offices: (Office & {
+      category: {
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+      } | null;
+    })[] = [];
+
     if (categoryIds.length > 0) {
       const locationFilter: any[] = [];
       if (wardId) {
         locationFilter.push({ wardOffices: { some: { wardId } } });
       }
       if (municipalityId) {
-        locationFilter.push({ municipalityOffices: { some: { municipalityId } } });
+        locationFilter.push({
+          municipalityOffices: { some: { municipalityId } },
+        });
       }
       if (districtId) {
         locationFilter.push({ districtOffices: { some: { districtId } } });
@@ -550,7 +587,7 @@ export class OfficesService {
       }
 
       // Fetch all relevant offices
-      offices = await this.prisma.office.findMany({
+      offices = (await this.prisma.office.findMany({
         where: {
           categoryId: { in: categoryIds },
           ...(locationFilter.length > 0 ? { OR: locationFilter } : {}),
@@ -559,7 +596,14 @@ export class OfficesService {
           category: true,
         },
         orderBy: [{ category: { name: 'asc' } }, { name: 'asc' }],
-      }) as (Office & { category: { id: string; name: string; slug: string; description: string | null } | null })[];
+      })) as (Office & {
+        category: {
+          id: string;
+          name: string;
+          slug: string;
+          description: string | null;
+        } | null;
+      })[];
     }
 
     // Group offices by step
@@ -574,7 +618,7 @@ export class OfficesService {
         officeCategoryIds: stepCategoryIds,
         isOnline,
         onlineFormUrl,
-        offices: isOnline 
+        offices: isOnline
           ? [] // Return empty offices array for online steps
           : offices
               .filter((o) => stepCategoryIds.includes(o.categoryId)) // Match any of the category IDs
@@ -589,9 +633,9 @@ export class OfficesService {
                 email: o.email,
                 website: o.website,
                 category: o.category
-                  ? { 
+                  ? {
                       id: o.category.id,
-                      name: o.category.name, 
+                      name: o.category.name,
                       slug: o.category.slug,
                       description: o.category.description,
                     }
@@ -601,5 +645,83 @@ export class OfficesService {
     });
 
     return result;
+  }
+
+  /**
+   * Get services claimed by an office (public endpoint)
+   */
+  async getOfficeServices(
+    officeId: string,
+    page: number = 1,
+    limit: number = 20,
+  ) {
+    const skip = (page - 1) * limit;
+
+    const office = await this.prisma.office.findUnique({
+      where: { id: officeId },
+    });
+
+    if (!office) {
+      throw new NotFoundException(`Office '${officeId}' not found`);
+    }
+
+    const [officeServices, total] = await Promise.all([
+      this.prisma.officeService.findMany({
+        where: {
+          officeId,
+          status: 'CLAIMED', // Only show active claimed services
+        },
+        skip,
+        take: limit,
+        include: {
+          service: {
+            include: {
+              categories: {
+                include: { category: true },
+              },
+            },
+          },
+        },
+        orderBy: { claimedAt: 'desc' },
+      }),
+      this.prisma.officeService.count({
+        where: {
+          officeId,
+          status: 'CLAIMED',
+        },
+      }),
+    ]);
+
+    return {
+      services: officeServices.map((os) => ({
+        id: os.service.id,
+        serviceId: os.service.serviceId,
+        name: os.service.name,
+        slug: os.service.slug,
+        description: os.customDescription || os.service.description,
+        priority: os.service.priority,
+        isOnlineEnabled: os.service.isOnlineEnabled,
+        categories: os.service.categories.map((c) => ({
+          id: c.category.id,
+          name: c.category.name,
+          slug: c.category.slug,
+        })),
+        // Office-specific customizations
+        customFees: os.customFees,
+        customRequirements: os.customRequirements,
+        notes: os.notes,
+        claimedAt: os.claimedAt,
+      })),
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      office: {
+        id: office.id,
+        officeId: office.officeId,
+        name: office.name,
+        nameNepali: office.nameNepali,
+      },
+    };
   }
 }

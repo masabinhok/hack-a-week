@@ -79,10 +79,7 @@ export class UsersController {
   @UseGuards(UserAuthGuard)
   @Post('auth/register')
   @HttpCode(HttpStatus.OK)
-  async register(
-    @CurrentUser() user: UserPayload,
-    @Body() dto: RegisterDto,
-  ) {
+  async register(@CurrentUser() user: UserPayload, @Body() dto: RegisterDto) {
     return this.usersService.register(user.sub, dto);
   }
 
@@ -95,7 +92,10 @@ export class UsersController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = req.cookies[COOKIE_CONFIG.REFRESH_TOKEN.name];
-    const tokens = await this.usersService.refreshTokens(user.sub, refreshToken);
+    const tokens = await this.usersService.refreshTokens(
+      user.sub,
+      refreshToken,
+    );
 
     res.cookie(
       COOKIE_CONFIG.ACCESS_TOKEN.name,

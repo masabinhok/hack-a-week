@@ -143,6 +143,12 @@ model Service {
   // User saved services
   savedByUsers SavedService[]
 
+  // Office claims for this service
+  officeServices OfficeService[]
+
+  // Service request that created this (if any)
+  createdFromRequest ServiceRequest?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -356,6 +362,12 @@ model Office {
   category OfficeCategory @relation(fields: [categoryId], references: [id])
   ratings  OfficeRating?
 
+  // Claimed services by this office
+  officeServices OfficeService[]
+
+  // Service requests from this office
+  serviceRequests ServiceRequest[]
+
   @@index([isActive])
   @@index([categoryId])
 }
@@ -447,6 +459,11 @@ model User {
   savedServices SavedService[]
   contributions UserContribution[]
 
+  // Service requests (as requester - office admin)
+  serviceRequestsSubmitted ServiceRequest[] @relation("ServiceRequestRequester")
+  // Service requests reviewed (as reviewer - super admin)
+  serviceRequestsReviewed ServiceRequest[] @relation("ServiceRequestReviewer")
+
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -509,4 +526,88 @@ model UserContribution {
 
   @@index([userId])
   @@index([status])
+}
+
+// ---------------  SERVICE CLAIM & REQUEST SYSTEM  ---------------
+
+// Status enum for office-service claims
+enum OfficeServiceStatus {
+  CLAIMED
+  PENDING
+  REVOKED
+}
+
+// Status enum for service requests
+enum ServiceRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// Many-to-many relation between Office and Service (claimed services)
+model OfficeService {
+  id        String              @id @default(cuid())
+  officeId  String
+  serviceId String
+  status    OfficeServiceStatus @default(CLAIMED)
+
+  // Office-specific customizations (optional)
+  customDescription String?
+  customFees        Json? // Office-specific fee structure
+  customRequirements String[]
+  notes             String?
+
+  // Tracking
+  claimedBy   String? // User ID who claimed
+  claimedAt   DateTime  @default(now())
+  revokedAt   DateTime?
+  revokedBy   String?
+
+  office  Office  @relation(fields: [officeId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([officeId, serviceId]) // Prevent duplicate claims
+  @@index([officeId])
+  @@index([serviceId])
+  @@index([status])
+}
+
+// Service requests from office admins (for new services not in global list)
+model ServiceRequest {
+  id          String               @id @default(cuid())
+  requestedBy String // Office Admin User ID who requested
+  officeId    String? // Optional: Office for which service is being requested
+
+  // Requested service details
+  serviceName        String
+  serviceDescription String?
+  categoryId         String? // Suggested category
+  priority           Priority?
+  justification      String? // Why this service should be added
+
+  // Review process
+  status       ServiceRequestStatus @default(PENDING)
+  reviewedBy   String? // Admin User ID who reviewed
+  reviewedAt   DateTime?
+  reviewNotes  String? // Feedback from admin
+  rejectionReason String?
+
+  // If approved, links to the created service
+  approvedServiceId String? @unique
+
+  requester       User     @relation("ServiceRequestRequester", fields: [requestedBy], references: [id], onDelete: Cascade)
+  reviewer        User?    @relation("ServiceRequestReviewer", fields: [reviewedBy], references: [id])
+  office          Office?  @relation(fields: [officeId], references: [id])
+  approvedService Service? @relation(fields: [approvedServiceId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([requestedBy])
+  @@index([officeId])
+  @@index([status])
+  @@index([reviewedBy])
 }

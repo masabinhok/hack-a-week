@@ -8,7 +8,11 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto';
-import { JwtPayload, TokenResponse, LoginResponse } from './interfaces/jwt-payload.interface';
+import {
+  JwtPayload,
+  TokenResponse,
+  LoginResponse,
+} from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AdminService {
