@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import AdminHeader from '@/components/AdminHeader';
@@ -14,6 +15,8 @@ import { formatDate, cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
 
 export default function OfficeDetailPage() {
+  const toastRef = useRef<HTMLDivElement>(null);
+  const [showToast, setShowToast] = useState(false);
   const params = useParams();
   const router = useRouter();
   const { isAdmin, isOfficeAdmin } = useAuth();
@@ -66,6 +69,9 @@ export default function OfficeDetailPage() {
     try {
       const result = await api.resetOfficeAdminPassword(officeId);
       setNewCredentials(result.credentials);
+      handleCloseResetDialog();
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 2500);
     } catch (error: any) {
       alert(error.message || 'Failed to reset password');
       setResetPasswordDialog(false);
@@ -83,6 +89,7 @@ export default function OfficeDetailPage() {
   const handleCloseResetDialog = () => {
     setResetPasswordDialog(false);
     setNewCredentials(null);
+    setResettingPassword(false);
   };
 
   const getLocationString = () => {
@@ -129,6 +136,16 @@ export default function OfficeDetailPage() {
 
   return (
     <div>
+      {/* Toast notification */}
+      {showToast && (
+        <div
+          ref={toastRef}
+          className="fixed top-6 right-6 z-50 bg-green-600 text-white px-4 py-2 rounded shadow-lg animate-fade-in"
+          style={{ minWidth: 180, textAlign: 'center' }}
+        >
+          <span className="font-semibold">Credentials sent!</span>
+        </div>
+      )}
       <AdminHeader
         title={office.name}
         description={office.nameNepali || office.officeId}
@@ -147,11 +164,13 @@ export default function OfficeDetailPage() {
                 <Button
                   variant="outline"
                   onClick={() => setResetPasswordDialog(true)}
+                  disabled={!office.email}
+                  title={!office.email ? 'Email address required to send credentials' : 'Reset password and send credentials via email'}
                 >
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                   </svg>
-                  Reset Password
+                  Send Credentials
                 </Button>
                 <Button
                   variant="destructive"
@@ -328,13 +347,22 @@ export default function OfficeDetailPage() {
                 <dd className="mt-1 text-sm text-gray-900">{office.alternateContact || '-'}</dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Email</dt>
+                <dt className="text-sm font-medium text-gray-500 flex items-center gap-2">
+                  Email
+                  {!office.email && isAdmin && (
+                    <span className="text-xs text-amber-600 bg-amber-50 px-2 py-0.5 rounded">
+                      Required for credentials
+                    </span>
+                  )}
+                </dt>
                 <dd className="mt-1 text-sm text-gray-900">
                   {office.email ? (
                     <a href={`mailto:${office.email}`} className="text-blue-600 hover:underline">
                       {office.email}
                     </a>
-                  ) : '-'}
+                  ) : (
+                    <span className="text-gray-400">Not provided</span>
+                  )}
                 </dd>
               </div>
               <div>
@@ -426,33 +454,55 @@ export default function OfficeDetailPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
-              {newCredentials ? (
+              {resettingPassword ? (
+                <span className="flex items-center gap-2 text-blue-600">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Sending Credentials...
+                </span>
+              ) : newCredentials ? (
                 <span className="flex items-center gap-2 text-green-600">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
-                  Password Reset Successfully
+                  Sent!
                 </span>
               ) : (
-                'Reset Office Admin Password'
+                'Send New Credentials'
               )}
             </DialogTitle>
             <DialogDescription>
-              {newCredentials
-                ? 'New credentials have been generated. Please save them - the password will only be shown once.'
-                : `This will generate a new password for the office admin of "${office.name}". The old password will no longer work.`}
+              {resettingPassword
+                ? `Generating new password and sending to ${office.email}...`
+                : newCredentials
+                ? office.email 
+                  ? `Credentials sent to ${office.email}. This dialog will close automatically.`
+                  : 'New credentials have been generated. Please save them - the password will only be shown once.'
+                : `This will generate a new password for the office admin of "${office.name}" and send it to the office email address (${office.email}). The old password will no longer work.`}
             </DialogDescription>
           </DialogHeader>
 
-          {newCredentials ? (
+          {resettingPassword ? (
+            <div className="py-8 flex items-center justify-center">
+              <div className="text-center space-y-3">
+                <svg className="animate-spin h-12 w-12 text-blue-600 mx-auto" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                <p className="text-sm text-gray-600">Sending credentials via email...</p>
+              </div>
+            </div>
+          ) : newCredentials ? (
             <div className="space-y-4 py-4">
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                 <div className="flex items-start gap-2">
-                  <svg className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                   </svg>
                   <p className="text-sm text-amber-800">
-                    <strong>Important:</strong> Copy these credentials now. The password cannot be recovered after closing this dialog.
+                    <strong>Important:</strong> Copy these credentials for your records. The password cannot be recovered after closing this dialog.
                   </p>
                 </div>
               </div>
@@ -516,26 +566,23 @@ export default function OfficeDetailPage() {
           ) : null}
 
           <DialogFooter>
-            {newCredentials ? (
-              <Button onClick={handleCloseResetDialog} className="w-full">
-                I&apos;ve Saved the Credentials
-              </Button>
-            ) : (
+            {!resettingPassword && !newCredentials && (
               <>
                 <Button
                   variant="outline"
                   onClick={handleCloseResetDialog}
-                  disabled={resettingPassword}
                 >
                   Cancel
                 </Button>
-                <Button
-                  onClick={handleResetPassword}
-                  disabled={resettingPassword}
-                >
-                  {resettingPassword ? 'Resetting...' : 'Reset Password'}
+                <Button onClick={handleResetPassword}>
+                  Send Credentials
                 </Button>
               </>
+            )}
+            {newCredentials && (
+              <Button onClick={handleCloseResetDialog} className="w-full">
+                Close
+              </Button>
             )}
           </DialogFooter>
         </DialogContent>
