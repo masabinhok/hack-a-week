@@ -99,6 +99,8 @@ async function fetchAPI<T>(
   const { revalidate = 3600, tags, ...fetchOptions } = options;
 
   const url = `${API_BASE_URL}${endpoint}`;
+  
+  // ...existing code...
 
   try {
     const response = await fetch(url, {

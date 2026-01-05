@@ -50,6 +50,7 @@ export class ServicesController {
    */
   @Get(':slug/guide')
   findGuide(@Param('slug') slug: string) {
+    // ...existing code...
     return this.servicesService.findGuideBySlug(slug);
   }
 

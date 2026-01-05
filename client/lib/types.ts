@@ -162,6 +162,7 @@ export interface ServiceStep {
   stepDescription?: string;
   stepDescriptionNepali?: string;
   officeCategoryIds: string[]; // Category IDs for this step
+  officeCategories?: OfficeCategory[]; // Category details for display
   locationType?: LocationType; // Which address type to use for finding offices
   requiresAppointment: boolean;
   isOnline?: boolean; // NEW: If true, this step is completed online

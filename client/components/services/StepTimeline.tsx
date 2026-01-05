@@ -40,10 +40,14 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
       : Array.isArray((step as any).officeTypes) 
         ? (step as any).officeTypes 
         : [];
-    
+    // Get office categories from the step data if available
+    const officeCategories = Array.isArray((step as any).officeCategories)
+      ? (step as any).officeCategories
+      : [];
     return {
       ...step,
-      officeCategoryIds
+      officeCategoryIds,
+      officeCategories,
     };
   });
 
@@ -172,7 +176,10 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                           {step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
                             <Badge key="offices" variant="secondary" className="text-xs">
                               <Building2 className="w-3 h-3 mr-1" />
-                              {step.officeCategoryIds.length} office {step.officeCategoryIds.length === 1 ? "category" : "categories"}
+                              {step.officeCategories && step.officeCategories.length > 0
+                                ? step.officeCategories.map((c: { name: string }) => c.name).join(', ')
+                                : `${step.officeCategoryIds.length} office ${step.officeCategoryIds.length === 1 ? "category" : "categories"}`
+                              }
                             </Badge>
                           )}
                           {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
@@ -282,6 +289,7 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                           serviceSlug={serviceSlug}
                           stepNumber={step.step}
                           officeCategoryIds={step.officeCategoryIds}
+                          officeCategories={step.officeCategories}
                           userLocations={userLocations}
                           addressType={step.locationType === "PERMANENT" ? "permanent" : "convenient"}
                         />

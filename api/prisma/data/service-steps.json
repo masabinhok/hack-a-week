@@ -8,7 +8,7 @@
         "stepDescriptionNepali": "नागरिकता आवेदनको लागि सिफारिस पत्र प्राप्त गर्न आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्। वडा सचिवले तपाईंको बसोबास र पारिवारिक विवरणहरू प्रमाणित गर्नेछन्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "citizenship-by-descent",
@@ -19,7 +19,7 @@
         "stepDescriptionNepali": "सबै आवश्यक कागजातहरू लिएर जिल्ला प्रशासन कार्यालयमा जानुहोस्। नागरिकता आवेदन फाराम (फाराम नं. १) भरेर प्रमाणीकरणको लागि कागजातहरू पेश गर्नुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
+        "officeCategoryNames": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
         "serviceSlug": "citizenship-by-descent",
@@ -30,7 +30,7 @@
         "stepDescriptionNepali": "कागजात प्रमाणीकरण पछि, बायोमेट्रिक डाटा (औंलाका छाप) दिनुहोस् र नागरिकता प्रमाणपत्रको लागि फोटो खिचाउनुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
+        "officeCategoryNames": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
         "serviceSlug": "citizenship-by-descent",
@@ -41,7 +41,7 @@
         "stepDescriptionNepali": "प्रशोधन अवधि (सामान्यतया ७-१५ कार्य दिन) पछि आफ्नो रसिद लिएर नागरिकता प्रमाणपत्र संकलन गर्न जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
+        "officeCategoryNames": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
         "serviceSlug": "birth-registration",
@@ -52,7 +52,7 @@
         "stepDescriptionNepali": "निःशुल्क दर्ताको लागि जन्मको ३५ दिनभित्र आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्, वा पछि लागू विलम्ब शुल्क सहित। उपलब्ध भएमा अस्पताल जन्म प्रमाणपत्र सहित सबै आवश्यक कागजातहरू ल्याउनुहोस्।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "birth-registration",
@@ -63,7 +63,7 @@
         "stepDescriptionNepali": "बच्चाको विवरण, अभिभावकको जानकारी, जन्म मिति, समय र स्थान सहित जन्म दर्ता फाराम भर्नुहोस्। आवश्यक भएमा वडा सचिवले सहयोग गर्नेछन्।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "birth-registration",
@@ -74,7 +74,7 @@
         "stepDescriptionNepali": "प्रमाणीकरण पछि, जन्म दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। समयमै दर्ता गरिएकोमा यो सामान्यतया त्यही दिन जारी गरिन्छ।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "death-registration",
@@ -85,7 +85,7 @@
         "stepDescriptionNepali": "मृत्यु भएको ३५ दिनभित्र (निःशुल्क) वा पछि विलम्ब शुल्क सहित मृतकको स्थायी वा अस्थायी बसोबासको वडा कार्यालयमा जानुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "death-registration",
@@ -96,7 +96,7 @@
         "stepDescriptionNepali": "मृत्यु दर्ता फाराम मृतकको नागरिकता, सूचना दिने व्यक्तिको नागरिकता, र अस्पतालमा मृत्यु भएको खण्डमा चिकित्सा प्रमाणपत्र सहित पेश गर्नुहोस्। अप्राकृतिक मृत्युको लागि प्रहरी प्रतिवेदन आवश्यक छ।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "death-registration",
@@ -107,7 +107,7 @@
         "stepDescriptionNepali": "प्रमाणीकरण पछि, मृत्यु दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो कागजात सम्पत्ति हस्तान्तरण, बीमा दावी र पेन्सन बन्दोबस्तको लागि आवश्यक छ।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "marriage-registration",
@@ -118,7 +118,7 @@
         "stepDescriptionNepali": "विवाहको ३५ दिनभित्र दुलही र दुलहा दुवै पक्षको बसोबासको वडा कार्यालयमा सँगै जानुपर्छ। साक्षीहरू पनि आवश्यक छन्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "marriage-registration",
@@ -129,7 +129,7 @@
         "stepDescriptionNepali": "दुवै पक्षको नागरिकता प्रमाणपत्र, पासपोर्ट साइजको फोटो र साक्षीको बयान सहित पूरा भरिएको विवाह दर्ता फाराम पेश गर्नुहोस्। दुवै पक्षले फारामामा हस्ताक्षर गर्नुपर्छ।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "marriage-registration",
@@ -140,7 +140,7 @@
         "stepDescriptionNepali": "प्रमाणीकरण र स्वीकृति पछि, विवाह दर्ता प्रमाणपत्र प्राप्त गर्नुहोस्। यो सामान्यतया १-३ कार्य दिनभित्र जारी गरिन्छ।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "new-passport-application",
@@ -153,7 +153,7 @@
         "isOnline": true,
         "onlineFormUrl": "https://nepalpassport.gov.np",
         "locationType": "CONVENIENT",
-        "officeTypes": []
+        "officeCategoryNames": []
     },
     {
         "serviceSlug": "new-passport-application",
@@ -166,7 +166,7 @@
         "isOnline": true,
         "onlineFormUrl": "https://nepalpassport.gov.np/payment",
         "locationType": "CONVENIENT",
-        "officeTypes": []
+        "officeCategoryNames": []
     },
     {
         "serviceSlug": "new-passport-application",
@@ -177,7 +177,7 @@
         "stepDescriptionNepali": "आफ्नो भेटघाटको मितिमा छनौट गरिएको राहदानी कार्यालयमा जानुहोस्। मूल नागरिकता, भुक्तानी रसिद र आवेदन प्रिन्टआउट ल्याउनुहोस्। बायोमेट्रिक डाटा र फोटो खिचिनेछ।",
         "requiresAppointment": true,
         "locationType": "CONVENIENT",
-        "officeTypes": ["PASSPORT_OFFICE"]
+        "officeCategoryNames": ["PASSPORT_OFFICE"]
     },
     {
         "serviceSlug": "new-passport-application",
@@ -188,7 +188,7 @@
         "stepDescriptionNepali": "प्रशोधन पछि त्यही कार्यालयबाट आफ्नो राहदानी संकलन गर्नुहोस्। नियमित सेवा १५-३० दिन लाग्छ, द्रुत सेवा २-५ दिन लाग्छ। आफ्नो स्वीकृति रसिद ल्याउनुहोस्।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["PASSPORT_OFFICE"]
+        "officeCategoryNames": ["PASSPORT_OFFICE"]
     },
     {
         "serviceSlug": "duplicate-citizenship-certificate",
@@ -199,7 +199,7 @@
         "stepDescriptionNepali": "नागरिकता हराएको वा चोरी भएको खण्डमा, नजिकैको प्रहरी चौकीमा प्रथम सूचना प्रतिवेदन (एफआईआर) दर्ता गर्नुहोस्। आफ्नो आवेदनको लागि एफआईआरको प्रतिलिपि प्राप्त गर्नुहोस्।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "duplicate-citizenship-certificate",
@@ -210,7 +210,7 @@
         "stepDescriptionNepali": "राष्ट्रिय दैनिक समाचारपत्रमा आफ्नो नागरिकता हराएको र अमान्य भएको घोषणा गर्दै सूचना प्रकाशित गर्नुहोस्। मूल समाचारपत्र र स्पष्ट कतर्नी राख्नुहोस्।",
         "requiresAppointment": false,
         "locationType": "CONVENIENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "duplicate-citizenship-certificate",
@@ -221,7 +221,7 @@
         "stepDescriptionNepali": "प्रतिलिपि नागरिकताको लागि सिफारिस पत्र प्राप्त गर्न प्रहरी प्रतिवेदन र समाचारपत्र कतर्नी सहित आफ्नो स्थानीय वडा कार्यालयमा जानुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["WARD_OFFICE"]
+        "officeCategoryNames": ["WARD_OFFICE"]
     },
     {
         "serviceSlug": "duplicate-citizenship-certificate",
@@ -232,7 +232,7 @@
         "stepDescriptionNepali": "आफ्नो मूल नागरिकता जारी भएको (वा हालको बसोबास) जिल्ला प्रशासन कार्यालयमा जानुहोस्। सबै कागजातहरू सहित आवेदन पेश गर्नुहोस् र रु ४०० प्रतिलिपि शुल्क तिर्नुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
+        "officeCategoryNames": ["DISTRICT_ADMINISTRATION_OFFICE"]
     },
     {
         "serviceSlug": "duplicate-citizenship-certificate",
@@ -243,6 +243,6 @@
         "stepDescriptionNepali": "आफ्नो प्रतिलिपि नागरिकता प्रमाणपत्र संकलन गर्न प्रमाणीकरण (७-२१ दिन) पछि जिल्ला प्रशासन कार्यालयमा फर्कनुहोस्।",
         "requiresAppointment": false,
         "locationType": "PERMANENT",
-        "officeTypes": ["DISTRICT_ADMINISTRATION_OFFICE"]
+        "officeCategoryNames": ["DISTRICT_ADMINISTRATION_OFFICE"]
     }
 ]

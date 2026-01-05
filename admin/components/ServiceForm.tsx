@@ -585,13 +585,38 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Category</label>
-                    <Select
-                      options={officeCategories.map(cat => ({ value: cat.id, label: cat.name }))}
-                      value={step.officeCategoryIds?.[0] || ''}
-                      onChange={(e) => updateStep(stepIndex, { officeCategoryIds: e.target.value ? [e.target.value] : [] })}
-                      placeholder="Select office category"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Categories</label>
+                    <div className="border rounded-md p-2 max-h-32 overflow-y-auto">
+                      {officeCategories.map(cat => (
+                        <label key={cat.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            checked={step.officeCategoryIds?.includes(cat.id) || false}
+                            onChange={(e) => {
+                              const currentIds = step.officeCategoryIds || [];
+                              const newIds = e.target.checked
+                                ? [...currentIds, cat.id]
+                                : currentIds.filter(id => id !== cat.id);
+                              updateStep(stepIndex, { officeCategoryIds: newIds });
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm text-gray-700">{cat.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {step.officeCategoryIds.map(id => {
+                          const cat = officeCategories.find(c => c.id === id);
+                          return cat ? (
+                            <Badge key={id} variant="secondary" className="text-xs">
+                              {cat.name}
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
 

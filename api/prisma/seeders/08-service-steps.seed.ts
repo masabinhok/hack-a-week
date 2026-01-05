@@ -1,7 +1,8 @@
 /**
  * Service Steps Seeder (Updated for Self-Referential Service Model)
- * Seeds service steps from service-steps-updated.json
+ * Seeds service steps from service-steps.json
  * Links steps directly to Service model via serviceSlug
+ * Maps officeCategoryNames to officeCategoryIds
  * 
  * @module prisma/seeders/08-service-steps.seed
  */
@@ -38,11 +39,15 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
   
   // Build a cache of category names to IDs
   const categories = await prisma.officeCategory.findMany();
-  const categoryCache = new Map(categories.map(c => [c.name, c.id]));
+  const categoryNameToIdCache = new Map(categories.map(c => [c.name, c.id]));
+  
+  // Log available categories for debugging
+  console.log(`  📋 Available office categories: ${Array.from(categoryNameToIdCache.keys()).join(', ')}\n`);
   
   let created = 0;
   let updated = 0;
   let skipped = 0;
+  const invalidCategories: string[] = [];
 
   for (const step of steps) {
     // Get service ID from cache or database
@@ -64,10 +69,17 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
       serviceCache.set(step.serviceSlug, serviceId);
     }
 
-    // Map category names to IDs
-    const officeCategoryIds = (step.officeCategoryNames || [])
-      .map(name => categoryCache.get(name))
-      .filter((id): id is string => id !== undefined);
+    // Map category names to IDs and validate
+    const officeCategoryIds: string[] = [];
+    for (const name of (step.officeCategoryNames || [])) {
+      const categoryId = categoryNameToIdCache.get(name);
+      if (categoryId) {
+        officeCategoryIds.push(categoryId);
+      } else if (name && !invalidCategories.includes(name)) {
+        invalidCategories.push(name);
+        console.warn(`  ⚠️  Invalid office category name: "${name}" in step ${step.step} of ${step.serviceSlug}`);
+      }
+    }
 
     // Check if step already exists
     const existingStep = await prisma.serviceStep.findUnique({
@@ -107,6 +119,10 @@ export async function seedServiceSteps(prisma: PrismaClient): Promise<void> {
     }
   }
 
+  if (invalidCategories.length > 0) {
+    console.log(`  ⚠️  Found ${invalidCategories.length} invalid category names: ${invalidCategories.join(', ')}`);
+  }
+  
   console.log(`  ✅ Service Steps: ${created} created, ${updated} updated, ${skipped} skipped (${steps.length} total)\n`);
 }
 

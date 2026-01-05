@@ -27,7 +27,7 @@ interface OfficeFinderCardProps {
   serviceSlug: string;
   stepNumber: number;
   officeCategoryIds: string[]; // Category IDs for this step
-  officeCategories?: OfficeCategory[]; // Optional category details for display
+  officeCategories?: OfficeCategory[]; // Category details for display
   addressType?: "permanent" | "convenient"; // Which address to use
   userLocations?: UpdateUserLocationsDto | null;
   className?: string;
@@ -47,16 +47,30 @@ export function OfficeFinderCard({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Get category names for display
-  const getCategoryName = (categoryId: string) => {
+  // Get category name for display - use provided categories or fallback to ID
+  const getCategoryDisplayName = (categoryId: string) => {
     const cat = officeCategories.find(c => c.id === categoryId);
-    return cat?.name || categoryId;
+    if (cat?.name) {
+      // Convert type names like "WARD_OFFICE" to readable "Ward Office"
+      return cat.name.split('_').map(word => 
+        word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+      ).join(' ');
+    }
+    return categoryId;
   };
 
   // Fetch offices when component mounts or locations change
   useEffect(() => {
     const fetchOffices = async () => {
+      console.log("[OfficeFinderCard] Starting fetchOffices...");
+      console.log("[OfficeFinderCard] serviceSlug:", serviceSlug);
+      console.log("[OfficeFinderCard] stepNumber:", stepNumber);
+      console.log("[OfficeFinderCard] officeCategoryIds:", officeCategoryIds);
+      console.log("[OfficeFinderCard] addressType:", addressType);
+      console.log("[OfficeFinderCard] userLocations:", userLocations);
+
       if (!userLocations) {
+        console.log("[OfficeFinderCard] No user locations provided, skipping fetch");
         setOffices([]);
         return;
       }
@@ -75,8 +89,15 @@ export function OfficeFinderCard({
           ? userLocations.permanentWardId
           : userLocations.convenientWardId;
 
+      console.log("[OfficeFinderCard] Selected location IDs:", {
+        districtId,
+        municipalityId,
+        wardId,
+      });
+
       // Need at least district
       if (!districtId) {
+        console.log("[OfficeFinderCard] No district ID available, skipping fetch");
         setOffices([]);
         return;
       }
@@ -84,6 +105,17 @@ export function OfficeFinderCard({
       try {
         setLoading(true);
         setError(null);
+        
+        console.log("[OfficeFinderCard] Setting loading state to true");
+
+        // Construct the API URL for logging
+        const apiUrl = `/api/services/${serviceSlug}/offices`;
+        console.log("[OfficeFinderCard] Fetching from URL:", apiUrl);
+        console.log("[OfficeFinderCard] Query params:", {
+          districtId,
+          municipalityId,
+          wardId,
+        });
 
         const result = await getOfficesForService(serviceSlug, {
           districtId,
@@ -91,22 +123,49 @@ export function OfficeFinderCard({
           wardId,
         });
 
-        // Filter for current step
-        const stepOffices = result.find((r) => r.stepNumber === stepNumber);
+        console.log("[OfficeFinderCard] ✅ API Response received");
+        console.log("[OfficeFinderCard] Full API response:", JSON.stringify(result, null, 2));
+        console.log("[OfficeFinderCard] Response type:", typeof result);
+        console.log("[OfficeFinderCard] Response is array:", Array.isArray(result));
+        console.log("[OfficeFinderCard] Response length:", result?.length);
+
+        // Filter for current step - with fallback
+        const stepOffices = Array.isArray(result) 
+          ? result.find((r) => r.stepNumber === stepNumber)
+          : null;
+        
+        console.log("[OfficeFinderCard] Step offices data:", stepOffices);
+        console.log("[OfficeFinderCard] Step offices has officeCategoryIds:", stepOffices?.officeCategoryIds);
+        console.log("[OfficeFinderCard] Step offices has officeCategories:", stepOffices?.offices[0].category);
+        console.log("[OfficeFinderCard] Step isOnline:", stepOffices?.isOnline);
         
         // If step is online, don't show offices
         if (stepOffices?.isOnline) {
+          console.log("[OfficeFinderCard] Step is online, not showing offices");
           setOffices([]);
           return;
         }
         
-        setOffices(stepOffices?.offices || []);
+        // Use fallback to ensure we always have an array
+        const officesList = stepOffices?.offices || [];
+        console.log("[OfficeFinderCard] Setting offices state with:", officesList.length, "offices");
+        console.log("[OfficeFinderCard] Offices list:", JSON.stringify(officesList, null, 2));
+        
+        setOffices(officesList);
+        
+        console.log("[OfficeFinderCard] State updated successfully");
       } catch (err) {
-        console.error("Failed to fetch offices:", err);
+        console.error("[OfficeFinderCard] ❌ Error fetching offices:", err);
+        console.error("[OfficeFinderCard] Error type:", err instanceof Error ? err.constructor.name : typeof err);
+        console.error("[OfficeFinderCard] Error message:", err instanceof Error ? err.message : String(err));
+        console.error("[OfficeFinderCard] Error stack:", err instanceof Error ? err.stack : "N/A");
+        
         setError("Failed to load offices. Please try again.");
         setOffices([]);
       } finally {
         setLoading(false);
+        console.log("[OfficeFinderCard] Setting loading state to false");
+        console.log("[OfficeFinderCard] Final offices state:", offices.length, "offices");
       }
     };
 
@@ -146,7 +205,7 @@ export function OfficeFinderCard({
             {/* Show badges for all office categories */}
             <div className="flex flex-wrap gap-2">
               {officeCategoryIds.map((categoryId) => (
-                <OfficeCategoryBadge key={categoryId} name={getCategoryName(categoryId)} />
+                <OfficeCategoryBadge key={categoryId} name={getCategoryDisplayName(categoryId)} />
               ))}
             </div>
           </div>
