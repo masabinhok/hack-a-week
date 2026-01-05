@@ -1,4 +1,4 @@
-
+import { seedUsers } from './seeders/00-users.seed';
 import { seedLocations } from './seeders/01-locations.seed';
 import { seedOfficeCategories } from './seeders/02-office-categories.seed';
 import { seedOffices } from './seeders/03-offices.seed';
@@ -37,12 +37,15 @@ async function main() {
     await seedOffices(prisma);
     await seedOfficeLocations(prisma);
     
-    // Phase 2: Categories & Services
+    // Phase 2: Users (after offices are created)
+    await seedUsers(prisma);
+    
+    // Phase 3: Categories & Services
     await seedCategories(prisma);
     await seedServices(prisma);
     await seedServiceCategories(prisma);
     
-    // Phase 3: Service Steps & Details
+    // Phase 4: Service Steps & Details
     await seedServiceSteps(prisma);
     await seedStepDetails(prisma);
     await seedDetailedProc(prisma);

@@ -1,12 +1,20 @@
 
-import { PrismaClient, OfficeType } from 'src/generated/prisma/client';
+import { PrismaClient } from 'src/generated/prisma/client';
 
 export async function seedOfficeLocations(prisma: PrismaClient) {
   console.log('🏢 Seeding office-location links...\n');
 
+  // Get office categories
+  const daoCategory = await prisma.officeCategory.findUnique({
+    where: { name: 'DISTRICT_ADMINISTRATION_OFFICE' }
+  });
+  const wardCategory = await prisma.officeCategory.findUnique({
+    where: { name: 'WARD_OFFICE' }
+  });
+
   // 1. Link DAOs to Districts
   const daos = await prisma.office.findMany({
-    where: { type: 'DISTRICT_ADMINISTRATION_OFFICE' },
+    where: { categoryId: daoCategory?.id },
   });
   let districtLinks = 0;
   for (const dao of daos) {
@@ -28,7 +36,7 @@ export async function seedOfficeLocations(prisma: PrismaClient) {
 
   // 2. Link Ward Offices to Wards
   const wardOffices = await prisma.office.findMany({
-    where: { type: 'WARD_OFFICE' },
+    where: { categoryId: wardCategory?.id },
   });
   let wardLinks = 0;
   for (const office of wardOffices) {

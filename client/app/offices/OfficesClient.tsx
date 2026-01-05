@@ -7,8 +7,8 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { getOffices, OfficeType } from "@/lib/api";
-import { LocationSelector, OfficeTypeBadge } from "@/components/shared";
+import { getOffices } from "@/lib/api";
+import { LocationSelector, OfficeCategoryBadge } from "@/components/shared";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -233,11 +233,11 @@ export function OfficesClient() {
             >
               <Card className="h-full transition-all duration-300 hover:shadow-lg hover:-translate-y-1 group-hover:border-primary-crimson">
                 <CardContent className="p-5">
-                  {/* Office Type Badge */}
+                  {/* Office Category Badge */}
                   <div className="mb-3">
                     {office.category && (
-                      <OfficeTypeBadge
-                        type={office.category.slug as OfficeType}
+                      <OfficeCategoryBadge
+                        name={office.category.name}
                       />
                     )}
                   </div>

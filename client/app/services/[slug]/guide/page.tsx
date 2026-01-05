@@ -74,7 +74,7 @@ export default async function ServiceGuidePage({ params }: PageProps) {
 
   // Serialize the service data to ensure proper transfer to client component
   const serializedService = JSON.parse(JSON.stringify(service));
-  console.log(serializedService)
+  // console.log(serializedService)
 
   return <GuideClient service={serializedService} slug={slug} breadcrumbs={breadcrumbs} />;
 }

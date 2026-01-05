@@ -43,36 +43,6 @@ enum DocType {
   CERTIFIED_COPY
 }
 
-enum OfficeType {
-  // District Level - Core Services (77 offices each)
-  DISTRICT_ADMINISTRATION_OFFICE // DAO - Citizenship, recommendations, certificates
-  LAND_REVENUE_OFFICE // Malpot - Land registration, ownership transfer
-  DISTRICT_EDUCATION_OFFICE // SEE/SLC verification, certificate attestation
-
-  // Transport Services
-  TRANSPORT_MANAGEMENT_OFFICE // Vehicle registration, blue book, license
-  DRIVING_LICENSE_OFFICE // License tests and renewals
-
-  // Local Government - Daily services (753 offices)
-  MUNICIPALITY_OFFICE // Nagarpalika - Local services, business tax
-  RURAL_MUNICIPALITY_OFFICE // Gaupalika - Rural local services
-
-  // Ward Level - Highest volume (6,743 offices)
-  WARD_OFFICE // Birth/death registration, business registration, recommendations
-
-  // Travel & Immigration
-  PASSPORT_OFFICE // Passport applications and renewals
-  IMMIGRATION_OFFICE // Visa, travel documents
-
-  // Business Registration - Federal Level
-  OFFICE_OF_COMPANY_REGISTRAR // OCR - Company registration (e-OCR/CAMIS)
-  COTTAGE_SMALL_INDUSTRY_OFFICE // DCSI - Cottage/small industry registration
-  INLAND_REVENUE_OFFICE // IRD - PAN/VAT registration, tax filing
-
-  // Social Services - NEWLY ADDED
-  LABOUR_OFFICE // Foreign employment, work permits, labor disputes
-}
-
 enum WeekDay {
   SUNDAY
   MONDAY
@@ -227,7 +197,7 @@ model ServiceStep {
   step                Int
   stepTitle           String
   stepDescription     String
-  officeTypes         OfficeType[] // Changed from single officeType to array
+  officeCategoryIds   String[]     // Array of OfficeCategory IDs that can handle this step
   locationType        LocationType @default(CONVENIENT) // Which address type to use for finding offices
   requiresAppointment Boolean      @default(false)
   isOnline            Boolean      @default(false) // NEW: If true, this step is completed online
@@ -343,9 +313,13 @@ model DetailedProc {
 // ---------------  OFFICE (linked to Ward + OfficeCategory)  ---------------
 model OfficeCategory {
   id          String   @id @default(cuid())
-  name        String   @unique // maps to officeType enum
+  name        String   @unique // Category name (e.g., "WARD_OFFICE", "DISTRICT_ADMINISTRATION_OFFICE")
+  slug        String   @unique // URL-friendly identifier
   description String?
   offices     Office[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Office {
@@ -354,7 +328,6 @@ model Office {
   categoryId       String
   name             String
   nameNepali       String?
-  type             OfficeType
   address          String
   mapUrl           String?
   addressNepali    String?
@@ -382,7 +355,6 @@ model Office {
   category OfficeCategory @relation(fields: [categoryId], references: [id])
   ratings  OfficeRating?
 
-  @@index([type])
   @@index([isActive])
   @@index([categoryId])
 }

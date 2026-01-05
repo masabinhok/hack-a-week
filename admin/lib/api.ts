@@ -233,7 +233,7 @@ export interface ServiceStep {
   step: number;
   stepTitle: string;
   stepDescription: string;
-  officeTypes: string[];
+  officeCategoryIds: string[];
   requiresAppointment: boolean;
   isOnline: boolean;
   onlineFormUrl?: string;
@@ -327,7 +327,6 @@ export interface Office {
   categoryId: string;
   name: string;
   nameNepali?: string;
-  type: string;
   address: string;
   addressNepali?: string;
   contact?: string;
@@ -349,6 +348,7 @@ export interface Office {
 export interface OfficeCategory {
   id: string;
   name: string;
+  slug: string;
   description?: string;
 }
 
@@ -385,7 +385,6 @@ export interface OfficeStats {
   totalOffices: number;
   activeOffices: number;
   inactiveOffices: number;
-  byType: { type: string; count: number }[];
   byCategory: { categoryId: string; categoryName: string; count: number }[];
 }
 
@@ -394,7 +393,6 @@ export interface CreateOfficeData {
   categoryId: string;
   name: string;
   nameNepali?: string;
-  type: string;
   address: string;
   addressNepali?: string;
   contact?: string;
@@ -437,7 +435,7 @@ export interface CreateStepData {
   step: number;
   stepTitle: string;
   stepDescription: string;
-  officeTypes?: string[];
+  officeCategoryIds?: string[];
   requiresAppointment?: boolean;
   isOnline?: boolean;
   onlineFormUrl?: string;
@@ -510,23 +508,6 @@ export interface CreateMetadataData {
 }
 
 // Constants
-export const OFFICE_TYPES = [
-  { value: 'DISTRICT_ADMINISTRATION_OFFICE', label: 'District Administration Office (DAO)' },
-  { value: 'LAND_REVENUE_OFFICE', label: 'Land Revenue Office' },
-  { value: 'DISTRICT_EDUCATION_OFFICE', label: 'District Education Office' },
-  { value: 'TRANSPORT_MANAGEMENT_OFFICE', label: 'Transport Management Office' },
-  { value: 'DRIVING_LICENSE_OFFICE', label: 'Driving License Office' },
-  { value: 'MUNICIPALITY_OFFICE', label: 'Municipality Office' },
-  { value: 'RURAL_MUNICIPALITY_OFFICE', label: 'Rural Municipality Office' },
-  { value: 'WARD_OFFICE', label: 'Ward Office' },
-  { value: 'PASSPORT_OFFICE', label: 'Passport Office' },
-  { value: 'IMMIGRATION_OFFICE', label: 'Immigration Office' },
-  { value: 'OFFICE_OF_COMPANY_REGISTRAR', label: 'Office of Company Registrar' },
-  { value: 'COTTAGE_SMALL_INDUSTRY_OFFICE', label: 'Cottage & Small Industry Office' },
-  { value: 'INLAND_REVENUE_OFFICE', label: 'Inland Revenue Office (IRD)' },
-  { value: 'LABOUR_OFFICE', label: 'Labour Office' },
-];
-
 export const DOC_TYPES = [
   { value: 'ORIGINAL', label: 'Original' },
   { value: 'PHOTOCOPY', label: 'Photocopy' },

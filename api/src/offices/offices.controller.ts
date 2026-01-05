@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 import { OfficesService } from './offices.service';
 import {
   FindOfficesByLocationDto,
-  FindOfficesByTypeDto,
+  FindOfficesByCategoryDto,
   SearchOfficesDto,
   FindOfficesForServiceDto,
   PaginationDto,
@@ -22,15 +22,6 @@ export class OfficesController {
   
 
   /**
-   * GET /api/v1/offices/types
-   * Get all office types with counts
-   */
-  @Get('types')
-  getOfficeTypes() {
-    return this.officesService.getOfficeTypes();
-  }
-
-  /**
    * GET /api/v1/offices/categories
    * Get all office categories with counts
    */
@@ -40,7 +31,7 @@ export class OfficesController {
   }
 
   /**
-   * GET /api/v1/offices/search?q=keyword&type=WARD&limit=20
+   * GET /api/v1/offices/search?q=keyword&categoryId=...&limit=20
    * Search offices by name
    */
   @Get('search')
@@ -59,13 +50,13 @@ export class OfficesController {
   }
 
   /**
-   * GET /api/v1/offices/by-type?officeType=WARD&provinceId=1&districtId=27
-   * GET /api/v1/offices/by-type?officeType=PASSPORT&locationCode=1-27-001
-   * Get offices of specific type near a location
+   * GET /api/v1/offices/by-category?categoryId=...&provinceId=1&districtId=27
+   * GET /api/v1/offices/by-category?categoryId=...&locationCode=1-27-001
+   * Get offices of specific category near a location
    */
-  @Get('by-type')
-  findByType(@Query() dto: FindOfficesByTypeDto) {
-    return this.officesService.findByTypeAndLocation(dto);
+  @Get('by-category')
+  findByCategory(@Query() dto: FindOfficesByCategoryDto) {
+    return this.officesService.findByCategoryAndLocation(dto);
   }
 
   /**

@@ -6,8 +6,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getOfficeById, OfficeType } from "@/lib/api";
-import { BreadcrumbTrail, OfficeTypeBadge } from "@/components/shared";
+import { getOfficeById } from "@/lib/api";
+import { BreadcrumbTrail, OfficeCategoryBadge } from "@/components/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -114,7 +114,7 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                           </p>
                         )}
                         {office.category && (
-                          <OfficeTypeBadge type={office.category.slug as OfficeType} />
+                          <OfficeCategoryBadge name={office.category.name} />
                         )}
                       </div>
                     </div>

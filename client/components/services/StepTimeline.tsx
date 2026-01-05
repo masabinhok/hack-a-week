@@ -32,18 +32,22 @@ interface StepTimelineProps {
 }
 
 export function StepTimeline({ steps, serviceSlug, userLocations, className = "" }: StepTimelineProps) {
-  // Normalize steps to ensure officeTypes is always an array
+  // Normalize steps to ensure officeCategoryIds is always an array
   const normalizedSteps = steps.map(step => {
-    // Handle both officeType (string) and officeTypes (array) fields
-    const officeTypes = Array.isArray((step as any).officeTypes) 
-      ? (step as any).officeTypes 
-      : (step as any).officeType 
-        ? [( step as any).officeType] 
+    // Handle both old officeTypes and new officeCategoryIds fields
+    const officeCategoryIds = Array.isArray((step as any).officeCategoryIds) 
+      ? (step as any).officeCategoryIds 
+      : Array.isArray((step as any).officeTypes) 
+        ? (step as any).officeTypes 
         : [];
-    
+    // Get office categories from the step data if available
+    const officeCategories = Array.isArray((step as any).officeCategories)
+      ? (step as any).officeCategories
+      : [];
     return {
       ...step,
-      officeTypes
+      officeCategoryIds,
+      officeCategories,
     };
   });
 
@@ -169,10 +173,13 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                               {step.timeRequired.averageTime}
                             </Badge>
                           )}
-                          {step.officeTypes && step.officeTypes.length > 0 && (
+                          {step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
                             <Badge key="offices" variant="secondary" className="text-xs">
                               <Building2 className="w-3 h-3 mr-1" />
-                              {step.officeTypes.length} office {step.officeTypes.length === 1 ? "type" : "types"}
+                              {step.officeCategories && step.officeCategories.length > 0
+                                ? step.officeCategories.map((c: { name: string }) => c.name).join(', ')
+                                : `${step.officeCategoryIds.length} office ${step.officeCategoryIds.length === 1 ? "category" : "categories"}`
+                              }
                             </Badge>
                           )}
                           {step.responsibleAuthorities && step.responsibleAuthorities.length > 0 && (
@@ -276,12 +283,13 @@ export function StepTimeline({ steps, serviceSlug, userLocations, className = ""
                         </div>
                       )}
 
-                      {/* Office Finder - Show if serviceSlug is provided, step has officeTypes, and NOT online */}
-                      {serviceSlug && !step.isOnline && step.officeTypes && step.officeTypes.length > 0 && (
+                      {/* Office Finder - Show if serviceSlug is provided, step has officeCategoryIds, and NOT online */}
+                      {serviceSlug && !step.isOnline && step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
                         <OfficeFinderCard
                           serviceSlug={serviceSlug}
                           stepNumber={step.step}
-                          officeTypes={step.officeTypes}
+                          officeCategoryIds={step.officeCategoryIds}
+                          officeCategories={step.officeCategories}
                           userLocations={userLocations}
                           addressType={step.locationType === "PERMANENT" ? "permanent" : "convenient"}
                         />

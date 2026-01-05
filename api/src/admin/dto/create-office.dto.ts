@@ -4,7 +4,6 @@ import {
   IsBoolean,
   IsArray,
   IsInt,
-  IsEnum,
   ValidateNested,
   Min,
   IsEmail,
@@ -12,24 +11,6 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
-
-// Enum matching Prisma schema
-export enum OfficeType {
-  DISTRICT_ADMINISTRATION_OFFICE = 'DISTRICT_ADMINISTRATION_OFFICE',
-  LAND_REVENUE_OFFICE = 'LAND_REVENUE_OFFICE',
-  DISTRICT_EDUCATION_OFFICE = 'DISTRICT_EDUCATION_OFFICE',
-  TRANSPORT_MANAGEMENT_OFFICE = 'TRANSPORT_MANAGEMENT_OFFICE',
-  DRIVING_LICENSE_OFFICE = 'DRIVING_LICENSE_OFFICE',
-  MUNICIPALITY_OFFICE = 'MUNICIPALITY_OFFICE',
-  RURAL_MUNICIPALITY_OFFICE = 'RURAL_MUNICIPALITY_OFFICE',
-  WARD_OFFICE = 'WARD_OFFICE',
-  PASSPORT_OFFICE = 'PASSPORT_OFFICE',
-  IMMIGRATION_OFFICE = 'IMMIGRATION_OFFICE',
-  OFFICE_OF_COMPANY_REGISTRAR = 'OFFICE_OF_COMPANY_REGISTRAR',
-  COTTAGE_SMALL_INDUSTRY_OFFICE = 'COTTAGE_SMALL_INDUSTRY_OFFICE',
-  INLAND_REVENUE_OFFICE = 'INLAND_REVENUE_OFFICE',
-  LABOUR_OFFICE = 'LABOUR_OFFICE',
-}
 
 // Location assignment DTOs
 export class LocationAssignmentDto {
@@ -72,9 +53,6 @@ export class CreateOfficeDto {
   @IsString()
   @IsOptional()
   nameNepali?: string;
-
-  @IsEnum(OfficeType)
-  type: OfficeType;
 
   @IsString()
   address: string;
@@ -152,10 +130,6 @@ export class AdminOfficeQueryDto {
   @IsString()
   @IsOptional()
   search?: string;
-
-  @IsEnum(OfficeType)
-  @IsOptional()
-  type?: OfficeType;
 
   @IsString()
   @IsOptional()

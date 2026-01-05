@@ -276,15 +276,42 @@ export class ServicesService {
     // Get breadcrumb
     const breadcrumb = await this.getBreadcrumb(service.id);
 
-    // Workaround for Prisma adapter-pg bug with enum arrays
-    // Fetch officeTypes separately using raw SQL
-    const stepIds = service.serviceSteps.map(s => s.id);
-    const officeTypesResult = await this.prisma.$queryRaw<{ id: string; officeTypes: string[] }[]>`
-      SELECT id, "officeTypes"::text[] as "officeTypes" FROM "ServiceStep" WHERE id = ANY(${stepIds})
-    `;
-    const officeTypesMap = new Map(officeTypesResult.map(r => [r.id, r.officeTypes || []]));
+    // ...existing code...
 
-    return {
+    // Workaround for Prisma adapter-pg bug with string arrays
+    // Fetch officeCategoryIds separately using raw SQL
+    const stepIds = service.serviceSteps.map(s => s.id);
+    const officeCategoryIdsResult = await this.prisma.$queryRaw<{ id: string; officeCategoryIds: string[] }[]>`
+      SELECT id, "officeCategoryIds"::text[] as "officeCategoryIds" FROM "ServiceStep" WHERE id = ANY(${stepIds})
+    `;
+    
+    // ...existing code...
+    
+    const officeCategoryIdsMap = new Map(officeCategoryIdsResult.map(r => [r.id, r.officeCategoryIds || []]));
+    
+    // ...existing code...
+
+    // Fetch all unique category IDs and get their details for display
+    const allCategoryIds = [...new Set(
+      Array.from(officeCategoryIdsMap.values()).flat()
+    )];
+    
+    // ...existing code...
+    
+    const categories = allCategoryIds.length > 0
+      ? await this.prisma.officeCategory.findMany({
+          where: { id: { in: allCategoryIds } },
+          select: { id: true, name: true, slug: true, description: true }
+        })
+      : [];
+    
+    // ...existing code...
+    
+    const categoryDetailsMap = new Map(categories.map(c => [c.id, c]));
+    
+    // ...existing code...
+
+    const result = {
       id: service.id,
       serviceId: service.serviceId,
       name: service.name,
@@ -296,67 +323,77 @@ export class ServicesService {
       eligibility: service.eligibility,
       validityPeriod: service.validityPeriod,
       breadcrumb,
-      steps: service.serviceSteps.map((step) => ({
-        id: step.id,
-        stepId: step.id,
-        serviceId: step.serviceId,
-        step: step.step,
-        stepTitle: step.stepTitle,
-        stepTitleNepali: null,
-        stepDescription: step.stepDescription,
-        stepDescriptionNepali: null,
-        officeTypes: officeTypesMap.get(step.id) || [], // Use raw SQL result
-        locationType: step.locationType,
-        requiresAppointment: step.requiresAppointment,
-        isOnline: step.isOnline,
-        onlineFormUrl: step.onlineFormUrl,
-        isActive: true,
-        documentsRequired: step.documentsRequired.map((doc) => ({
-          id: doc.id,
-          docId: doc.docId,
-          name: doc.name,
-          nameNepali: doc.nameNepali,
-          type: doc.type,
-          quantity: doc.quantity,
-          format: doc.format,
-          isMandatory: doc.isMandatory,
-          notes: doc.notes,
-          notesNepali: null,
-        })),
-        totalFees: step.totalFees.map((fee) => ({
-          id: fee.id,
-          feeId: fee.feeId,
-          feeTitle: fee.feeTitle,
-          feeTitleNepali: fee.feeTitleNepali,
-          feeAmount: fee.feeAmount,
-          currency: fee.currency,
-          feeType: fee.feeType,
-          isRefundable: fee.isRefundable,
-          notes: fee.notes,
-          notesNepali: null,
-        })),
-        timeRequired: step.timeRequired
-          ? {
-              minimumTime: step.timeRequired.minimumTime,
-              maximumTime: step.timeRequired.maximumTime,
-              averageTime: step.timeRequired.averageTime,
-              remarks: step.timeRequired.remarks,
-              expeditedAvailable: step.timeRequired.expeditedAvailable,
-            }
-          : null,
-        workingHours: step.workingHours.map((wh) => ({
-          day: wh.day,
-          openClose: wh.openClose,
-        })),
-        responsibleAuthorities: step.responsibleAuthorities.map((auth) => ({
-          position: auth.position,
-          positionNepali: auth.positionNepali,
-          department: auth.department,
-          departmentNepali: null,
-          contactNumber: auth.contactNumber,
-          email: auth.email,
-        })),
-      })),
+      steps: service.serviceSteps.map((step) => {
+        const stepCategoryIds = officeCategoryIdsMap.get(step.id) || [];
+        const stepCategories = stepCategoryIds
+          .map(id => categoryDetailsMap.get(id))
+          .filter(Boolean);
+        
+        // ...existing code...
+        
+        return {
+          id: step.id,
+          stepId: step.id,
+          serviceId: step.serviceId,
+          step: step.step,
+          stepTitle: step.stepTitle,
+          stepTitleNepali: null,
+          stepDescription: step.stepDescription,
+          stepDescriptionNepali: null,
+          officeCategoryIds: stepCategoryIds, // Use raw SQL result
+          officeCategories: stepCategories, // Include category details for frontend display
+          locationType: step.locationType,
+          requiresAppointment: step.requiresAppointment,
+          isOnline: step.isOnline,
+          onlineFormUrl: step.onlineFormUrl,
+          isActive: true,
+          documentsRequired: step.documentsRequired.map((doc) => ({
+            id: doc.id,
+            docId: doc.docId,
+            name: doc.name,
+            nameNepali: doc.nameNepali,
+            type: doc.type,
+            quantity: doc.quantity,
+            format: doc.format,
+            isMandatory: doc.isMandatory,
+            notes: doc.notes,
+            notesNepali: null,
+          })),
+          totalFees: step.totalFees.map((fee) => ({
+            id: fee.id,
+            feeId: fee.feeId,
+            feeTitle: fee.feeTitle,
+            feeTitleNepali: fee.feeTitleNepali,
+            feeAmount: fee.feeAmount,
+            currency: fee.currency,
+            feeType: fee.feeType,
+            isRefundable: fee.isRefundable,
+            notes: fee.notes,
+            notesNepali: null,
+          })),
+          timeRequired: step.timeRequired
+            ? {
+                minimumTime: step.timeRequired.minimumTime,
+                maximumTime: step.timeRequired.maximumTime,
+                averageTime: step.timeRequired.averageTime,
+                remarks: step.timeRequired.remarks,
+                expeditedAvailable: step.timeRequired.expeditedAvailable,
+              }
+            : null,
+          workingHours: step.workingHours.map((wh) => ({
+            day: wh.day,
+            openClose: wh.openClose,
+          })),
+          responsibleAuthorities: step.responsibleAuthorities.map((auth) => ({
+            position: auth.position,
+            positionNepali: auth.positionNepali,
+            department: auth.department,
+            departmentNepali: null,
+            contactNumber: auth.contactNumber,
+            email: auth.email,
+          })),
+        };
+      }),
       detailedProcedure: service.detailedProc
         ? {
             overview: service.detailedProc.overview,
@@ -370,6 +407,10 @@ export class ServicesService {
         : null,
       metadata: service.metadata,
     };
+    
+    // ...existing code...
+    
+    return result;
   }
 
   /**

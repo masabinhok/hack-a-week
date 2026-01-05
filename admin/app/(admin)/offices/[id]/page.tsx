@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { api, OfficeDetail, OFFICE_TYPES, OfficeAdminCredentials } from '@/lib/api';
+import { api, OfficeDetail, OfficeAdminCredentials } from '@/lib/api';
 import { formatDate, cn } from '@/lib/utils';
 import { useAuth } from '@/lib/auth';
 
@@ -83,11 +83,6 @@ export default function OfficeDetailPage() {
   const handleCloseResetDialog = () => {
     setResetPasswordDialog(false);
     setNewCredentials(null);
-  };
-
-  const getTypeBadge = (type: string) => {
-    const option = OFFICE_TYPES.find((t) => t.value === type);
-    return option?.label || type;
   };
 
   const getLocationString = () => {
@@ -186,14 +181,10 @@ export default function OfficeDetailPage() {
                 <dd className="mt-1 text-sm text-gray-900">{office.officeId}</dd>
               </div>
               <div>
-                <dt className="text-sm font-medium text-gray-500">Type</dt>
-                <dd className="mt-1">
-                  <Badge variant="secondary">{getTypeBadge(office.type)}</Badge>
-                </dd>
-              </div>
-              <div>
                 <dt className="text-sm font-medium text-gray-500">Category</dt>
-                <dd className="mt-1 text-sm text-gray-900">{office.category?.name || '-'}</dd>
+                <dd className="mt-1">
+                  <Badge variant="secondary">{office.category?.name || '-'}</Badge>
+                </dd>
               </div>
               <div>
                 <dt className="text-sm font-medium text-gray-500">Status</dt>

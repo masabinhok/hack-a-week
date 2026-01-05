@@ -132,8 +132,14 @@ export class AdminService {
             officeId: true,
             name: true,
             nameNepali: true,
-            type: true,
+            categoryId: true,
             address: true,
+            category: {
+              select: {
+                name: true,
+                slug: true,
+              },
+            },
           },
         },
       },

@@ -12,7 +12,6 @@ import {
   OfficeCategory,
   OfficeDetail,
   CreateOfficeData,
-  OFFICE_TYPES,
   OfficeAdminCredentials,
 } from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -64,7 +63,6 @@ export default function OfficeForm({ office }: OfficeFormProps) {
     categoryId: office?.categoryId || '',
     name: office?.name || '',
     nameNepali: office?.nameNepali || '',
-    type: office?.type || '',
     address: office?.address || '',
     addressNepali: office?.addressNepali || '',
     contact: office?.contact || '',
@@ -290,7 +288,8 @@ export default function OfficeForm({ office }: OfficeFormProps) {
   };
 
   const generateOfficeId = () => {
-    const typePrefix = formData.type?.substring(0, 3).toUpperCase() || 'OFF';
+    const category = categories.find(c => c.id === formData.categoryId);
+    const typePrefix = category?.name?.substring(0, 3).toUpperCase() || 'OFF';
     const random = Math.random().toString(36).substring(2, 8).toUpperCase();
     handleChange('officeId', `${typePrefix}-${random}`);
   };
@@ -337,26 +336,6 @@ export default function OfficeForm({ office }: OfficeFormProps) {
                 {Array.isArray(categories) && categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Office Type */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Office Type <span className="text-red-500">*</span>
-              </label>
-              <select
-                className={selectClassName}
-                value={formData.type}
-                onChange={(e) => handleChange('type', e.target.value)}
-                required
-              >
-                <option value="">Select office type</option>
-                {OFFICE_TYPES.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
                   </option>
                 ))}
               </select>

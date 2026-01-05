@@ -17,7 +17,7 @@ import {
   CreateDocumentData,
   CreateFeeData,
   PRIORITY_OPTIONS,
-  OFFICE_TYPES,
+  OfficeCategory,
   DOC_TYPES,
   FEE_TYPES,
   WEEKDAYS,
@@ -33,6 +33,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [officeCategories, setOfficeCategories] = useState<OfficeCategory[]>([]);
   const [activeTab, setActiveTab] = useState<'basic' | 'steps' | 'procedure' | 'metadata'>('basic');
 
   // Basic Info State
@@ -52,7 +53,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
       step: s.step,
       stepTitle: s.stepTitle,
       stepDescription: s.stepDescription,
-      officeTypes: s.officeTypes,
+      officeCategoryIds: s.officeCategoryIds,
       requiresAppointment: s.requiresAppointment,
       isOnline: s.isOnline,
       onlineFormUrl: s.onlineFormUrl,
@@ -111,6 +112,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
 
   useEffect(() => {
     fetchCategories();
+    fetchOfficeCategories();
   }, []);
 
   // Update formData when service prop changes
@@ -132,7 +134,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
           step: s.step,
           stepTitle: s.stepTitle,
           stepDescription: s.stepDescription,
-          officeTypes: s.officeTypes,
+          officeCategoryIds: s.officeCategoryIds,
           requiresAppointment: s.requiresAppointment,
           isOnline: s.isOnline,
           onlineFormUrl: s.onlineFormUrl,
@@ -203,6 +205,17 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
     }
   };
 
+  const fetchOfficeCategories = async () => {
+    try {
+      const response = await api.getOfficeCategories();
+      const data = Array.isArray(response) ? response : (response as any).data || [];
+      setOfficeCategories(data);
+    } catch (error) {
+      console.error('Failed to fetch office categories:', error);
+      setOfficeCategories([]);
+    }
+  };
+
   const handleNameChange = (name: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -241,7 +254,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
           step: nextStep,
           stepTitle: '',
           stepDescription: '',
-          officeTypes: [],
+          officeCategoryIds: [],
           requiresAppointment: false,
           isOnline: false,
           documentsRequired: [],
@@ -572,13 +585,38 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Types</label>
-                    <Select
-                      options={OFFICE_TYPES}
-                      value={step.officeTypes?.[0] || ''}
-                      onChange={(e) => updateStep(stepIndex, { officeTypes: e.target.value ? [e.target.value] : [] })}
-                      placeholder="Select office type"
-                    />
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Office Categories</label>
+                    <div className="border rounded-md p-2 max-h-32 overflow-y-auto">
+                      {officeCategories.map(cat => (
+                        <label key={cat.id} className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50">
+                          <input
+                            type="checkbox"
+                            checked={step.officeCategoryIds?.includes(cat.id) || false}
+                            onChange={(e) => {
+                              const currentIds = step.officeCategoryIds || [];
+                              const newIds = e.target.checked
+                                ? [...currentIds, cat.id]
+                                : currentIds.filter(id => id !== cat.id);
+                              updateStep(stepIndex, { officeCategoryIds: newIds });
+                            }}
+                            className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                          <span className="text-sm text-gray-700">{cat.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    {step.officeCategoryIds && step.officeCategoryIds.length > 0 && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {step.officeCategoryIds.map(id => {
+                          const cat = officeCategories.find(c => c.id === id);
+                          return cat ? (
+                            <Badge key={id} variant="secondary" className="text-xs">
+                              {cat.name}
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    )}
                   </div>
                 </div>
 
