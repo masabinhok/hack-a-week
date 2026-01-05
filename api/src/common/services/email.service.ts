@@ -46,12 +46,23 @@ export class EmailService {
   /**
    * Send office admin credentials email
    */
-  async sendOfficeCredentialsEmail(data: OfficeCredentialsEmailData): Promise<boolean> {
+  async sendOfficeCredentialsEmail(
+    data: OfficeCredentialsEmailData,
+  ): Promise<boolean> {
     const { officeName, officeEmail, username, password, loginUrl } = data;
-    
-    const adminLoginUrl = loginUrl || this.configService.get<string>('ADMIN_URL', 'http://localhost:3001') + '/login';
-    const fromEmail = this.configService.get<string>('SMTP_FROM', 'noreply@sarkari-sewa.gov.np');
-    const fromName = this.configService.get<string>('SMTP_FROM_NAME', 'Sarkari Sewa Portal');
+
+    const adminLoginUrl =
+      loginUrl ||
+      this.configService.get<string>('ADMIN_URL', 'http://localhost:3001') +
+        '/login';
+    const fromEmail = this.configService.get<string>(
+      'SMTP_FROM',
+      'noreply@sarkari-sewa.gov.np',
+    );
+    const fromName = this.configService.get<string>(
+      'SMTP_FROM_NAME',
+      'Sarkari Sewa Portal',
+    );
 
     const emailContent = {
       from: `"${fromName}" <${fromEmail}>`,
@@ -87,10 +98,15 @@ export class EmailService {
 
     try {
       const info = await this.transporter.sendMail(emailContent);
-      this.logger.log(`Credentials email sent to ${officeEmail}: ${info.messageId}`);
+      this.logger.log(
+        `Credentials email sent to ${officeEmail}: ${info.messageId}`,
+      );
       return true;
     } catch (error) {
-      this.logger.error(`Failed to send credentials email to ${officeEmail}:`, error);
+      this.logger.error(
+        `Failed to send credentials email to ${officeEmail}:`,
+        error,
+      );
       return false;
     }
   }

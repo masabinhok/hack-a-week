@@ -76,7 +76,9 @@ export const ERROR_MESSAGES: Record<ErrorCode, BilingualMessage> = {
  * Get bilingual error message for a given error code
  */
 export function getErrorMessage(errorCode: ErrorCode): BilingualMessage {
-  return ERROR_MESSAGES[errorCode] || ERROR_MESSAGES[ErrorCode.INTERNAL_SERVER_ERROR];
+  return (
+    ERROR_MESSAGES[errorCode] || ERROR_MESSAGES[ErrorCode.INTERNAL_SERVER_ERROR]
+  );
 }
 
 /**
@@ -85,7 +87,7 @@ export function getErrorMessage(errorCode: ErrorCode): BilingualMessage {
 export function createCustomMessage(
   baseCode: ErrorCode,
   customEn?: string,
-  customNe?: string
+  customNe?: string,
 ): BilingualMessage {
   const base = getErrorMessage(baseCode);
   return {

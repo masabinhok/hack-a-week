@@ -43,7 +43,9 @@ export class UsersService {
    * Send OTP to phone number for registration/login
    * In production, this would integrate with SMS gateways like Sparrow SMS
    */
-  async sendOtp(dto: SendOtpDto): Promise<{ message: string; expiresIn: number }> {
+  async sendOtp(
+    dto: SendOtpDto,
+  ): Promise<{ message: string; expiresIn: number }> {
     const normalizedPhone = this.normalizePhoneNumber(dto.phoneNumber);
 
     // Check rate limiting (max 3 OTPs per 10 minutes)
@@ -112,12 +114,16 @@ export class UsersService {
     });
 
     if (!otpRecord) {
-      throw new BadRequestException('OTP expired or not found. Please request a new one.');
+      throw new BadRequestException(
+        'OTP expired or not found. Please request a new one.',
+      );
     }
 
     // Check attempts (max 3)
     if (otpRecord.attempts >= 3) {
-      throw new BadRequestException('Too many failed attempts. Please request a new OTP.');
+      throw new BadRequestException(
+        'Too many failed attempts. Please request a new OTP.',
+      );
     }
 
     // Verify OTP
@@ -161,7 +167,11 @@ export class UsersService {
     }
 
     // Generate tokens
-    const tokens = await this.generateTokens(user.id, normalizedPhone, user.role);
+    const tokens = await this.generateTokens(
+      user.id,
+      normalizedPhone,
+      user.role,
+    );
 
     // Store refresh token hash
     await this.prisma.user.update({
@@ -342,8 +352,10 @@ export class UsersService {
         fullName: dto.fullName ?? user.fullName,
         email: dto.email ?? user.email,
         nationalId: dto.nationalId ?? user.nationalId,
-        permanentProvinceId: dto.permanentProvinceId ?? user.permanentProvinceId,
-        permanentDistrictId: dto.permanentDistrictId ?? user.permanentDistrictId,
+        permanentProvinceId:
+          dto.permanentProvinceId ?? user.permanentProvinceId,
+        permanentDistrictId:
+          dto.permanentDistrictId ?? user.permanentDistrictId,
         permanentMunicipalityId:
           dto.permanentMunicipalityId ?? user.permanentMunicipalityId,
         permanentWardId: dto.permanentWardId ?? user.permanentWardId,
@@ -549,7 +561,7 @@ export class UsersService {
 
   private normalizePhoneNumber(phone: string): string {
     // Remove +977 prefix if present and ensure 10-digit format
-    let normalized = phone.replace(/^\+977/, '');
+    const normalized = phone.replace(/^\+977/, '');
     // Ensure it starts with 9
     if (!normalized.startsWith('9')) {
       throw new BadRequestException('Invalid Nepali phone number');

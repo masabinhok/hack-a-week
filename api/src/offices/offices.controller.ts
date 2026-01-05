@@ -19,7 +19,6 @@ export class OfficesController {
   getAllOffices(@Query() dto: PaginationDto) {
     return this.officesService.getAllOffices(dto.page, dto.limit);
   }
-  
 
   /**
    * GET /api/v1/offices/categories
@@ -66,9 +65,18 @@ export class OfficesController {
   @Get('for-service/:slug')
   findForService(
     @Param('slug') slug: string,
-    @Query() dto: FindOfficesForServiceDto
+    @Query() dto: FindOfficesForServiceDto,
   ) {
     return this.officesService.findForService(slug, dto);
+  }
+
+  /**
+   * GET /api/v1/offices/:id/services
+   * Get services claimed/offered by an office (public)
+   */
+  @Get(':id/services')
+  getOfficeServices(@Param('id') id: string, @Query() dto: PaginationDto) {
+    return this.officesService.getOfficeServices(id, dto.page, dto.limit);
   }
 
   /**

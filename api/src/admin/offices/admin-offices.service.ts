@@ -1,6 +1,15 @@
-import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateOfficeDto, UpdateOfficeDto, AdminOfficeQueryDto } from '../dto/create-office.dto';
+import {
+  CreateOfficeDto,
+  UpdateOfficeDto,
+  AdminOfficeQueryDto,
+} from '../dto/create-office.dto';
 import { EmailService } from '../../common/services/email.service';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -16,7 +25,17 @@ export class AdminOfficesService {
    * Get all offices with pagination and filters
    */
   async findAll(params: AdminOfficeQueryDto) {
-    const { page = 1, limit = 20, search, categoryId, isActive, provinceId, districtId, municipalityId, wardId } = params;
+    const {
+      page = 1,
+      limit = 20,
+      search,
+      categoryId,
+      isActive,
+      provinceId,
+      districtId,
+      municipalityId,
+      wardId,
+    } = params;
     const skip = (page - 1) * limit;
 
     const where: any = {};
@@ -24,9 +43,9 @@ export class AdminOfficesService {
     // Enhanced search - search through office fields AND location names
     if (search) {
       const searchTerms = search.toLowerCase().split(/\s+/).filter(Boolean);
-      
+
       // Build search conditions for each term
-      where.AND = searchTerms.map(term => ({
+      where.AND = searchTerms.map((term) => ({
         OR: [
           { name: { contains: term, mode: 'insensitive' } },
           { nameNepali: { contains: term, mode: 'insensitive' } },
@@ -39,7 +58,11 @@ export class AdminOfficesService {
               some: {
                 ward: {
                   OR: [
-                    { wardNumber: isNaN(parseInt(term)) ? undefined : parseInt(term) },
+                    {
+                      wardNumber: isNaN(parseInt(term))
+                        ? undefined
+                        : parseInt(term),
+                    },
                     {
                       municipality: {
                         OR: [
@@ -48,8 +71,15 @@ export class AdminOfficesService {
                           {
                             district: {
                               OR: [
-                                { name: { contains: term, mode: 'insensitive' } },
-                                { nameNep: { contains: term, mode: 'insensitive' } },
+                                {
+                                  name: { contains: term, mode: 'insensitive' },
+                                },
+                                {
+                                  nameNep: {
+                                    contains: term,
+                                    mode: 'insensitive',
+                                  },
+                                },
                               ],
                             },
                           },
@@ -136,8 +166,16 @@ export class AdminOfficesService {
       ];
     } else if (provinceId) {
       where.OR = [
-        { wardOffices: { some: { ward: { municipality: { district: { provinceId } } } } } },
-        { municipalityOffices: { some: { municipality: { district: { provinceId } } } } },
+        {
+          wardOffices: {
+            some: { ward: { municipality: { district: { provinceId } } } },
+          },
+        },
+        {
+          municipalityOffices: {
+            some: { municipality: { district: { provinceId } } },
+          },
+        },
         { districtOffices: { some: { district: { provinceId } } } },
         { provinceOffices: { some: { provinceId } } },
       ];
@@ -286,10 +324,12 @@ export class AdminOfficesService {
     }
 
     return {
-      data: [{
-        ...office,
-        location: this.extractLocation(office),
-      }],
+      data: [
+        {
+          ...office,
+          location: this.extractLocation(office),
+        },
+      ],
       meta: {
         total: 1,
         page: 1,
@@ -369,11 +409,7 @@ export class AdminOfficesService {
    * Get statistics for dashboard
    */
   async getStats() {
-    const [
-      totalOffices,
-      activeOffices,
-      officesByCategory,
-    ] = await Promise.all([
+    const [totalOffices, activeOffices, officesByCategory] = await Promise.all([
       this.prisma.office.count(),
       this.prisma.office.count({ where: { isActive: true } }),
       this.prisma.office.groupBy({
@@ -389,7 +425,9 @@ export class AdminOfficesService {
       where: { id: { in: categoryIds } },
       select: { id: true, name: true, slug: true },
     });
-    const categoryMap = new Map(categories.map((c) => [c.id, { name: c.name, slug: c.slug }]));
+    const categoryMap = new Map(
+      categories.map((c) => [c.id, { name: c.name, slug: c.slug }]),
+    );
 
     return {
       totalOffices,
@@ -426,16 +464,21 @@ export class AdminOfficesService {
     });
 
     if (!category) {
-      throw new BadRequestException(`Category with ID "${dto.categoryId}" not found`);
+      throw new BadRequestException(
+        `Category with ID "${dto.categoryId}" not found`,
+      );
     }
 
     // Generate unique office ID based on category abbreviation and count
-    const generatedOfficeId = await this.generateOfficeId(category.abbreviation);
+    const generatedOfficeId = await this.generateOfficeId(
+      category.abbreviation,
+    );
 
     const { location, ...officeData } = dto;
 
     // Generate office admin credentials
-    const generatedUsername = this.generateOfficeAdminUsername(generatedOfficeId);
+    const generatedUsername =
+      this.generateOfficeAdminUsername(generatedOfficeId);
     const generatedPassword = this.generateSecurePassword();
     const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
@@ -531,7 +574,7 @@ export class AdminOfficesService {
     });
 
     return {
-      message: emailSent 
+      message: emailSent
         ? 'Office created successfully. Admin credentials have been sent to the office email.'
         : 'Office created successfully. Admin credentials email could not be sent - please note them down.',
       data: result.office,
@@ -563,17 +606,20 @@ export class AdminOfficesService {
   /**
    * Generate a username for office admin based on office ID
    */
-private generateOfficeAdminUsername(officeId: string): string {
-  const shortId = officeId.slice(-4).toLowerCase().replace(/[^a-z0-9]/g,'');
-  return `ofc_${shortId}_${Math.random().toString(36).slice(-4)}`;
-}
-
+  private generateOfficeAdminUsername(officeId: string): string {
+    const shortId = officeId
+      .slice(-4)
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+    return `ofc_${shortId}_${Math.random().toString(36).slice(-4)}`;
+  }
 
   /**
    * Generate a secure random password
    */
   private generateSecurePassword(length: number = 12): string {
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%';
+    const chars =
+      'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%';
     const bytes = crypto.randomBytes(length);
     let password = '';
     for (let i = 0; i < length; i++) {
@@ -600,7 +646,9 @@ private generateOfficeAdminUsername(officeId: string): string {
     }
 
     if (!office.officeAdmin) {
-      throw new BadRequestException('This office does not have an assigned office admin');
+      throw new BadRequestException(
+        'This office does not have an assigned office admin',
+      );
     }
 
     const newPassword = this.generateSecurePassword();
@@ -623,7 +671,7 @@ private generateOfficeAdminUsername(officeId: string): string {
     }
 
     return {
-      message: emailSent 
+      message: emailSent
         ? 'Office admin password reset successfully. New credentials have been sent to the office email.'
         : 'Office admin password reset successfully. Please share the new credentials securely.',
       credentials: {
@@ -656,7 +704,9 @@ private generateOfficeAdminUsername(officeId: string): string {
       });
 
       if (!category) {
-        throw new BadRequestException(`Category with ID "${dto.categoryId}" not found`);
+        throw new BadRequestException(
+          `Category with ID "${dto.categoryId}" not found`,
+        );
       }
     }
 

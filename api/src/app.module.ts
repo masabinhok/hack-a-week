@@ -32,8 +32,6 @@ import { EmailModule } from './common/services/email.module';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}

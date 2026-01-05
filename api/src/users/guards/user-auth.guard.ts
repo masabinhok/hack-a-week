@@ -18,10 +18,10 @@ export class UserAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    
+
     // Try to get token from cookie first, then from Authorization header
     let token = request.cookies?.[COOKIE_CONFIG.ACCESS_TOKEN.name];
-    
+
     if (!token) {
       const authHeader = request.headers.authorization;
       if (authHeader?.startsWith('Bearer ')) {

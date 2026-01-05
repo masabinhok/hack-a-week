@@ -44,7 +44,14 @@ class ApiClient {
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ message: 'Request failed' }));
-      throw new Error(error.message || `HTTP ${response.status}`);
+      const errorMessage = error.message || `HTTP ${response.status}`;
+      const customError = new Error(errorMessage) as Error & { 
+        status: number; 
+        details?: any;
+      };
+      customError.status = response.status;
+      customError.details = error;
+      throw customError;
     }
 
     return response.json();
@@ -164,6 +171,88 @@ class ApiClient {
 
   async getOfficeCategories() {
     return this.request<OfficeCategory[]>('/admin/offices/categories');
+  }
+
+  // Office Services (Claims)
+  async getAvailableServicesForOffice(officeId: string, params?: {
+    page?: number;
+    limit?: number;
+    search?: string;
+  }) {
+    return this.request<AvailableServicesResponse>(`/admin/offices/${officeId}/available-services`, {
+      params: params as any,
+    });
+  }
+
+  async getOfficeServices(officeId: string, params?: {
+    page?: number;
+    limit?: number;
+    status?: 'CLAIMED' | 'PENDING' | 'REVOKED';
+  }) {
+    return this.request<OfficeServicesResponse>(`/admin/offices/${officeId}/services`, {
+      params: params as any,
+    });
+  }
+
+  async claimServiceForOffice(officeId: string, data: ClaimServiceData) {
+    return this.request<{ message: string; data: OfficeService }>(`/admin/offices/${officeId}/services/claim`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateOfficeService(officeId: string, officeServiceId: string, data: UpdateOfficeServiceData) {
+    return this.request<{ message: string; data: OfficeService }>(`/admin/offices/${officeId}/services/${officeServiceId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async revokeOfficeService(officeId: string, officeServiceId: string) {
+    return this.request<{ message: string; data: OfficeService }>(`/admin/offices/${officeId}/services/${officeServiceId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Service Requests
+  async createServiceRequest(data: CreateServiceRequestData) {
+    return this.request<{ message: string; data: ServiceRequest }>('/admin/services/requests', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getServiceRequests(params?: {
+    page?: number;
+    limit?: number;
+    status?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    officeId?: string;
+  }) {
+    return this.request<ServiceRequestsResponse>('/admin/services/requests', {
+      params: params as any,
+    });
+  }
+
+  async getServiceRequest(id: string) {
+    return this.request<ServiceRequest>(`/admin/services/requests/${id}`);
+  }
+
+  async approveServiceRequest(id: string, data?: { reviewNotes?: string }) {
+    return this.request<{ message: string; data: ServiceRequest }>(`/admin/services/requests/${id}/approve`, {
+      method: 'POST',
+      body: JSON.stringify(data || {}),
+    });
+  }
+
+  async rejectServiceRequest(id: string, data: { rejectionReason: string; reviewNotes?: string }) {
+    return this.request<{ message: string; data: ServiceRequest }>(`/admin/services/requests/${id}/reject`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getServiceRequestStats() {
+    return this.request<ServiceRequestStats>('/admin/services/requests/stats');
   }
 }
 
@@ -560,4 +649,131 @@ export interface ResetPasswordResponse {
   credentials: OfficeAdminCredentials;
   emailSent?: boolean;
   resetBy?: string;
+}
+
+// Office Service (Claim) Types
+export interface OfficeService {
+  id: string;
+  officeId: string;
+  serviceId: string;
+  status: 'CLAIMED' | 'PENDING' | 'REVOKED';
+  customDescription?: string;
+  customFees?: Record<string, any>;
+  customRequirements: string[];
+  notes?: string;
+  claimedBy?: string;
+  claimedAt: string;
+  revokedAt?: string;
+  revokedBy?: string;
+  service: Service;
+  office?: {
+    id: string;
+    officeId: string;
+    name: string;
+    nameNepali?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AvailableService extends Service {
+  isClaimedByOffice: boolean;
+  claimStatus: 'CLAIMED' | 'PENDING' | 'REVOKED' | null;
+}
+
+export interface AvailableServicesResponse {
+  data: AvailableService[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface OfficeServicesResponse {
+  data: OfficeService[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface ClaimServiceData {
+  serviceId: string;
+  customDescription?: string;
+  customFees?: Record<string, any>;
+  customRequirements?: string[];
+  notes?: string;
+}
+
+export interface UpdateOfficeServiceData {
+  customDescription?: string;
+  customFees?: Record<string, any>;
+  customRequirements?: string[];
+  notes?: string;
+}
+
+// Service Request Types
+export interface ServiceRequest {
+  id: string;
+  requestedBy: string;
+  officeId?: string;
+  serviceName: string;
+  serviceDescription?: string;
+  categoryId?: string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  justification?: string;
+  status: 'PENDING' | 'APPROVED' | 'REJECTED';
+  reviewedBy?: string;
+  reviewedAt?: string;
+  reviewNotes?: string;
+  rejectionReason?: string;
+  approvedServiceId?: string;
+  requester?: {
+    id: string;
+    username: string;
+    fullName?: string;
+  };
+  reviewer?: {
+    id: string;
+    username: string;
+    fullName?: string;
+  };
+  office?: {
+    id: string;
+    officeId: string;
+    name: string;
+  };
+  approvedService?: Service;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ServiceRequestsResponse {
+  data: ServiceRequest[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export interface CreateServiceRequestData {
+  serviceName: string;
+  serviceDescription?: string;
+  categoryId?: string;
+  priority?: 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
+  justification?: string;
+  officeId?: string;
+}
+
+export interface ServiceRequestStats {
+  total: number;
+  pending: number;
+  approved: number;
+  rejected: number;
 }
