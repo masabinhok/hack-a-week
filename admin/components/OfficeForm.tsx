@@ -59,7 +59,6 @@ export default function OfficeForm({ office }: OfficeFormProps) {
 
   // Form state
   const [formData, setFormData] = useState<CreateOfficeData>({
-    officeId: office?.officeId || '',
     categoryId: office?.categoryId || '',
     name: office?.name || '',
     nameNepali: office?.nameNepali || '',
@@ -287,13 +286,6 @@ export default function OfficeForm({ office }: OfficeFormProps) {
     router.refresh();
   };
 
-  const generateOfficeId = () => {
-    const category = categories.find(c => c.id === formData.categoryId);
-    const typePrefix = category?.name?.substring(0, 3).toUpperCase() || 'OFF';
-    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
-    handleChange('officeId', `${typePrefix}-${random}`);
-  };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Basic Information */}
@@ -303,24 +295,6 @@ export default function OfficeForm({ office }: OfficeFormProps) {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Office ID */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Office ID <span className="text-red-500">*</span>
-              </label>
-              <div className="flex gap-2">
-                <Input
-                  value={formData.officeId}
-                  onChange={(e) => handleChange('officeId', e.target.value)}
-                  placeholder="e.g., DAO-KTMN01"
-                  required
-                />
-                <Button type="button" variant="outline" onClick={generateOfficeId}>
-                  Generate
-                </Button>
-              </div>
-            </div>
-
             {/* Category */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">

@@ -389,7 +389,7 @@ export interface OfficeStats {
 }
 
 export interface CreateOfficeData {
-  officeId: string;
+  // officeId is now auto-generated on backend
   categoryId: string;
   name: string;
   nameNepali?: string;

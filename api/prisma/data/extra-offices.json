@@ -1,0 +1,334 @@
+{
+  "offices": [
+    {
+      "id": "cmk2gnww5002deogrfnee9iib",
+      "officeId": "DCC-001",
+      "categoryId": "cmk1gnw7e0001eogr40b7hpy2",
+      "name": "Kathmandu District Coordination Committee",
+      "nameNepali": "काठमाडौं जिल्ला समन्वय समिति",
+      "address": "Kathmandu District",
+      "addressNepali": "काठमाडौं जिल्ला",
+      "email": "dccktm@gmail.com",
+      "website": "dccktm.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iic",
+      "officeId": "DCC-002",
+      "categoryId": "cmk1gnw7e0001eogr40b7hpy2",
+      "name": "Bhaktapur District Coordination Committee",
+      "nameNepali": "भक्तपुर जिल्ला समन्वय समिति",
+      "address": "Bhaktapur District",
+      "addressNepali": "भक्तपुर जिल्ला",
+      "email": "daobhaktapur@gmail.com",
+      "website": "daobhaktapur.moha.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iid",
+      "officeId": "LRO-001",
+      "categoryId": "cmk1gnw7e0002eogr40b7hpy2",
+      "name": "Kathmandu Land Revenue Office",
+      "nameNepali": "काठमाडौं भूमिसम्बन्धी कार्यालय",
+      "address": "Kalanki, Kathmandu",
+      "addressNepali": "कलंकी, काठमाडौं",
+      "email": "kalanki.malpot@gmail.com",
+      "website": "dolrm.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iie",
+      "officeId": "LRO-002",
+      "categoryId": "cmk1gnw7e0002eogr40b7hpy2",
+      "name": "Lalitpur Land Revenue Office",
+      "nameNepali": "ललितपुर भूमिसम्बन्धी कार्यालय",
+      "address": "Lagankhel, Lalitpur",
+      "addressNepali": "लगंखेल, ललितपुर",
+      "email": "lalitpur.malpot@gmail.com",
+      "website": "dolrm.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iif",
+      "officeId": "DFO-001",
+      "categoryId": "cmk1gnw7e0003eogr40b7hpy2",
+      "name": "Kathmandu Division Forest Office",
+      "nameNepali": "काठमाडौं प्रभाग वन कार्यालय",
+      "address": "Hattisar, Kathmandu",
+      "addressNepali": "हत्तिसार, काठमाडौं",
+      "email": "dfoktm@gmail.com",
+      "website": "dfokathmandu.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iig",
+      "officeId": "DFO-002",
+      "categoryId": "cmk1gnw7e0003eogr40b7hpy2",
+      "name": "Pyuthan Division Forest Office",
+      "nameNepali": "प्यूठान प्रभाग वन कार्यालय",
+      "address": "Pyuthan District",
+      "addressNepali": "प्यूठान जिल्ला",
+      "email": "dfopyuthan2075@gmail.com",
+      "website": "dfopyuthan.lumbini.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iih",
+      "officeId": "SO-001",
+      "categoryId": "cmk1gnw7e0004eogr40b7hpy2",
+      "name": "Survey Department",
+      "nameNepali": "नापी विभाग",
+      "address": "Minbhawan, Kathmandu",
+      "addressNepali": "मिनभवन, काठमाडौं",
+      "email": "survey@dept.wlink.com.np",
+      "website": "www.dos.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iii",
+      "officeId": "SO-002",
+      "categoryId": "cmk1gnw7e0004eogr40b7hpy2",
+      "name": "Survey Office Darchula",
+      "nameNepali": "दार्चुला नापी कार्यालय",
+      "address": "Khalanga, Darchula",
+      "addressNepali": "खलंगा, दार्चुला",
+      "email": "daodarchula@moha.gov.np",
+      "website": "daodarchula.moha.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iij",
+      "officeId": "LRO-003",
+      "categoryId": "cmk1gnw7e0002eogr40b7hpy2",
+      "name": "Bhaktapur Land Revenue Office",
+      "nameNepali": "भक्तपुर भूमिसम्बन्धी कार्यालय",
+      "address": "Bhaktapur District",
+      "addressNepali": "भक्तपुर जिल्ला",
+      "email": "bhaktapur.malpot@gmail.com",
+      "website": "dolrm.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iik",
+      "officeId": "LRO-004",
+      "categoryId": "cmk1gnw7e0002eogr40b7hpy2",
+      "name": "Gotikhel Land Revenue Office",
+      "nameNepali": "गोटिखेल भूमिसम्बन्धी कार्यालय",
+      "address": "Gotikhel, Lalitpur",
+      "addressNepali": "गोटिखेल, ललितपुर",
+      "email": "gotikhel.malpot@gmail.com",
+      "website": "dolrm.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iil",
+      "officeId": "DCC-003",
+      "categoryId": "cmk1gnw7e0001eogr40b7hpy2",
+      "name": "Jhapa District Coordination Committee",
+      "nameNepali": "झापा जिल्ला समन्वय समिति",
+      "address": "Jhapa District",
+      "addressNepali": "झापा जिल्ला",
+      "email": "info@ddcjhapa.gov.np",
+      "website": "ddcjhapa.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iim",
+      "officeId": "DCC-004",
+      "categoryId": "cmk1gnw7e0001eogr40b7hpy2",
+      "name": "Surkhet District Coordination Committee",
+      "nameNepali": "सुर्खेत जिल्ला समन्वय समिति",
+      "address": "Surkhet District",
+      "addressNepali": "सुर्खेत जिल्ला",
+      "email": "dccsurkhet@gmail.com",
+      "website": "dccsurkhet.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iin",
+      "officeId": "DFO-003",
+      "categoryId": "cmk1gnw7e0003eogr40b7hpy2",
+      "name": "Kapilvastu Sub Division Forest Office",
+      "nameNepali": "कपिलवस्तु उपप्रभाग वन कार्यालय",
+      "address": "Badahara, Kapilvastu",
+      "addressNepali": "बडहरा, कपिलवस्तु",
+      "email": "badaharasdfo@gmail.com",
+      "website": "dfokapilvastu.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iio",
+      "officeId": "DFO-004",
+      "categoryId": "cmk1gnw7e0003eogr40b7hpy2",
+      "name": "National Forest Research and Training Centre",
+      "nameNepali": "राष्ट्रिय वन अनुसन्धान तथा तालिम केन्द्र",
+      "address": "Babarmahal, Kathmandu",
+      "addressNepali": "बबरमहल, काठमाडौं",
+      "email": "info@frtc.gov.np",
+      "website": "frtc.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iip",
+      "officeId": "LRMP-001",
+      "categoryId": "cmk1gnw7e0005eogr40b7hpy2",
+      "name": "Department of Land Reform and Management",
+      "nameNepali": "भूमिसुधार तथा व्यवस्थापन विभाग",
+      "address": "Singha Durbar, Kathmandu",
+      "addressNepali": "सिंहदरबार, काठमाडौं",
+      "email": "dlr@wlink.com.np",
+      "website": "landdepartment.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iiq",
+      "officeId": "LRMP-002",
+      "categoryId": "cmk1gnw7e0005eogr40b7hpy2",
+      "name": "National Land Rights Forum",
+      "nameNepali": "राष्ट्रिय भूमि अधिकार मञ्च",
+      "address": "Dhapasi, Kathmandu",
+      "addressNepali": "धापासी, काठमाडौं",
+      "email": "landrights@csrcnepal.org",
+      "website": "csrcnepal.org"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iir",
+      "officeId": "MUN-001",
+      "categoryId": "cmk1gnw7e0006eogr40b7hpy2",
+      "name": "Kathmandu Metropolitan City Office",
+      "nameNepali": "काठमाडौं महानगरपालिका कार्यालय",
+      "address": "Bagdurbar, Kathmandu",
+      "addressNepali": "बागदरबार, काठमाडौं",
+      "email": "info@kathmandu.gov.np",
+      "website": "kathmandu.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iis",
+      "officeId": "MUN-002",
+      "categoryId": "cmk1gnw7e0006eogr40b7hpy2",
+      "name": "Lalitpur Metropolitan City Office",
+      "nameNepali": "ललितपुर महानगरपालिका कार्यालय",
+      "address": "Pulchowk, Lalitpur",
+      "addressNepali": "पुल्चोक, ललितपुर",
+      "email": "info@lalitpurmun.gov.np",
+      "website": "lalitpurmun.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iit",
+      "officeId": "MUN-003",
+      "categoryId": "cmk1gnw7e0006eogr40b7hpy2",
+      "name": "Bhaktapur Municipality Office",
+      "nameNepali": "भक्तपुर नगरपालिका कार्यालय",
+      "address": "Byasi, Bhaktapur",
+      "addressNepali": "ब्यासी, भक्तपुर",
+      "email": "info@bhaktapurmun.gov.np",
+      "website": "bhaktapurmun.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iiu",
+      "officeId": "MUN-004",
+      "categoryId": "cmk1gnw7e0006eogr40b7hpy2",
+      "name": "Pokhara Metropolitan City Office",
+      "nameNepali": "पोखरा महानगरपालिका कार्यालय",
+      "address": "Pokhara, Kaski",
+      "addressNepali": "पोखरा, कास्की",
+      "email": "info@pokharamun.gov.np",
+      "website": "pokharamun.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iiv",
+      "officeId": "NPRL-001",
+      "categoryId": "cmk1gnw7e0007eogr40b7hpy2",
+      "name": "Nepal Policy Research Laboratory",
+      "nameNepali": "नेपाल नीति अनुसन्धान प्रयोगशाला",
+      "address": "Koteshwor, Kathmandu",
+      "addressNepali": "कोटेश्वोर, काठमाडौं",
+      "email": "info@nprl.gov.np",
+      "website": "nprl.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iiw",
+      "officeId": "NPRL-002",
+      "categoryId": "cmk1gnw7e0007eogr40b7hpy2",
+      "name": "Nepal Agricultural Research Laboratory",
+      "nameNepali": "नेपाल कृषि अनुसन्धान प्रयोगशाला",
+      "address": "Khumaltar, Lalitpur",
+      "addressNepali": "खुमलटार, ललितपुर",
+      "email": "narl@narc.gov.np",
+      "website": "narc.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iix",
+      "officeId": "SDFO-001",
+      "categoryId": "cmk1gnw7e0008eogr40b7hpy2",
+      "name": "Sub Division Forest Office Badahara",
+      "nameNepali": "बडहरा उपप्रभाग वन कार्यालय",
+      "address": "Badahara, Kapilvastu",
+      "addressNepali": "बडहरा, कपिलवस्तु",
+      "email": "badaharasdfo@gmail.com",
+      "website": "dfokapilvastu.gov.np"
+    },
+    {
+      "id": "cmk2gnww5002deogrfnee9iiy",
+      "officeId": "SDFO-002",
+      "categoryId": "cmk1gnw7e0008eogr40b7hpy2",
+      "name": "Sub Division Forest Office Taulihawa",
+      "nameNepali": "तौलिहवा उपप्रभाग वन कार्यालय",
+      "address": "Taulihawa, Kapilvastu",
+      "addressNepali": "तौलिहवा, कपिलवस्तु",
+      "email": "taulihawasdfo@gmail.com",
+      "website": "dfokapilvastu.gov.np"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cmk1gnw7e0001eogr40b7hpy2",
+      "name": "DISTRICT_COORDINATION_COMMITTEE",
+      "slug": "district-coordination-committee",
+      "description": "District Coordination Committee (DCC) - Local governance and coordination",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0002eogr40b7hpy2",
+      "name": "LAND_REVENUE_OFFICE",
+      "slug": "land-revenue-office",
+      "description": "Land Revenue Office (Malpot) - Land registration and revenue collection",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0003eogr40b7hpy2",
+      "name": "DIVISION_FOREST_OFFICE",
+      "slug": "division-forest-office",
+      "description": "Division Forest Office - Forest management and conservation",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0004eogr40b7hpy2",
+      "name": "SURVEY_OFFICE",
+      "slug": "survey-office",
+      "description": "Survey Office - Land surveying and mapping services",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0005eogr40b7hpy2",
+      "name": "LAND_REFORM_MANAGEMENT",
+      "slug": "land-reform-management",
+      "description": "Land Reform and Management - Policy and administration",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0006eogr40b7hpy2",
+      "name": "METROPOLITAN_MUNICIPALITY",
+      "slug": "metropolitan-municipality",
+      "description": "Metropolitan/Municipality Office - Local urban governance",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0007eogr40b7hpy2",
+      "name": "POLICY_RESEARCH_LABORATORY",
+      "slug": "policy-research-laboratory",
+      "description": "Policy Research Laboratory - Research and development",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    },
+    {
+      "id": "cmk1gnw7e0008eogr40b7hpy2",
+      "name": "SUB_DIVISION_FOREST_OFFICE",
+      "slug": "sub-division-forest-office",
+      "description": "Sub Division Forest Office - Local forest management",
+      "createdAt": "2026-01-05T17:55:11.689Z",
+      "updatedAt": "2026-01-05T17:55:11.689Z"
+    }
+  ]
+}

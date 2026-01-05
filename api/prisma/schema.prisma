@@ -312,11 +312,12 @@ model DetailedProc {
 
 // ---------------  OFFICE (linked to Ward + OfficeCategory)  ---------------
 model OfficeCategory {
-  id          String   @id @default(cuid())
-  name        String   @unique // Category name (e.g., "WARD_OFFICE", "DISTRICT_ADMINISTRATION_OFFICE")
-  slug        String   @unique // URL-friendly identifier
-  description String?
-  offices     Office[]
+  id           String   @id @default(cuid())
+  name         String   @unique // Category name (e.g., "WARD_OFFICE", "DISTRICT_ADMINISTRATION_OFFICE")
+  slug         String   @unique // URL-friendly identifier
+  abbreviation String   @unique // Short code for office ID generation (e.g., "DAO", "WARD")
+  description  String?
+  offices      Office[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

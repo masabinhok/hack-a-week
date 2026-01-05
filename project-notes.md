@@ -39,7 +39,7 @@ officeSpecificChange OfficeSpecificChange
 <!-- maile birse vani -->
 1. tyo email halka change garnu paryo
 2. office admin ko username generation change gARNY OPARYO TO MAINTAIN UNIQUENESS
-3. OFFICE CREATION MA ID AUTO GENERATE GARNE HO KI? CLIENT SIDE MA NAGARI? USING THE OFFICE CATEGORY AND OFFICE COUNT, OC-1 OC-2
+3. ✅ OFFICE CREATION MA ID AUTO GENERATE IMPLEMENTED! Backend le category ko abbreviation + count use garera office ID generate garxa (e.g., DAO-1, WARD-1)
 4. office create garda location fetch garya xaina so 4 level of location select vairaxaina....
 5. in each office profile for the super admin, we should add a send credentials button so that we can send them the credentials even after office creation!!
 6. service independetly exist, ani offices can claim services, if they provide that service, officeadmins can see all the services, and also can request to create a new service to the superadmin!!

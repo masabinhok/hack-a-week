@@ -41,9 +41,8 @@ export class LocationAssignmentDto {
 
 // Create Office DTO
 export class CreateOfficeDto {
-  @IsString()
-  officeId: string;
-
+  // officeId is now auto-generated on backend based on category abbreviation + count
+  
   @IsString()
   categoryId: string;
 

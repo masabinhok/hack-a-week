@@ -420,16 +420,7 @@ export class AdminOfficesService {
    * Create a new office with auto-generated office admin credentials
    */
   async create(dto: CreateOfficeDto) {
-    // Check if officeId already exists
-    const existing = await this.prisma.office.findUnique({
-      where: { officeId: dto.officeId },
-    });
-
-    if (existing) {
-      throw new ConflictException(`Office with ID "${dto.officeId}" already exists`);
-    }
-
-    // Verify category exists
+    // Verify category exists and get it for abbreviation
     const category = await this.prisma.officeCategory.findUnique({
       where: { id: dto.categoryId },
     });
@@ -438,10 +429,13 @@ export class AdminOfficesService {
       throw new BadRequestException(`Category with ID "${dto.categoryId}" not found`);
     }
 
+    // Generate unique office ID based on category abbreviation and count
+    const generatedOfficeId = await this.generateOfficeId(category.abbreviation);
+
     const { location, ...officeData } = dto;
 
     // Generate office admin credentials
-    const generatedUsername = this.generateOfficeAdminUsername(dto.officeId);
+    const generatedUsername = this.generateOfficeAdminUsername(generatedOfficeId);
     const generatedPassword = this.generateSecurePassword();
     const hashedPassword = await bcrypt.hash(generatedPassword, 10);
 
@@ -461,6 +455,7 @@ export class AdminOfficesService {
       // Create the office with the office admin linked
       const newOffice = await tx.office.create({
         data: {
+          officeId: generatedOfficeId,
           ...officeData,
           photoUrls: officeData.photoUrls || [],
           facilities: officeData.facilities || [],
@@ -543,6 +538,26 @@ export class AdminOfficesService {
       officeAdminCredentials: result.officeAdminCredentials,
       emailSent,
     };
+  }
+
+  /**
+   * Generate a unique office ID based on category abbreviation and count
+   * Format: {ABBREVIATION}-{COUNT}
+   * Example: DAO-1, DAO-2, WARD-1, WARD-2
+   */
+  private async generateOfficeId(abbreviation: string): Promise<string> {
+    // Count existing offices with this abbreviation
+    const count = await this.prisma.office.count({
+      where: {
+        officeId: {
+          startsWith: `${abbreviation}-`,
+        },
+      },
+    });
+
+    // Generate new ID with incremented count
+    const nextNumber = count + 1;
+    return `${abbreviation}-${nextNumber}`;
   }
 
   /**
@@ -632,16 +647,7 @@ private generateOfficeAdminUsername(officeId: string): string {
       throw new NotFoundException(`Office with ID ${id} not found`);
     }
 
-    // Check if new officeId conflicts with another office
-    if (dto.officeId && dto.officeId !== existing.officeId) {
-      const conflicting = await this.prisma.office.findUnique({
-        where: { officeId: dto.officeId },
-      });
-
-      if (conflicting) {
-        throw new ConflictException(`Office with ID "${dto.officeId}" already exists`);
-      }
-    }
+    // Note: officeId cannot be changed after creation as it's auto-generated
 
     // Verify category if being updated
     if (dto.categoryId) {

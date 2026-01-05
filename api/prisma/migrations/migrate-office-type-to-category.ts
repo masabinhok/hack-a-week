@@ -15,61 +15,75 @@
 import { PrismaClient } from '../../src/generated/prisma/client';
 
 // Map of old OfficeType values to descriptions
-const OFFICE_TYPE_CONFIG: Record<string, { description: string; slug: string }> = {
+const OFFICE_TYPE_CONFIG: Record<string, { description: string; slug: string; abbreviation: string }> = {
   DISTRICT_ADMINISTRATION_OFFICE: { 
     slug: 'district-administration-office',
+    abbreviation: 'DAO',
     description: 'District Administration Office (DAO) - Citizenship, recommendations, certificates' 
   },
   LAND_REVENUE_OFFICE: { 
     slug: 'land-revenue-office',
+    abbreviation: 'LRO',
     description: 'Land Revenue Office (Malpot) - Land registration, ownership transfer' 
   },
   DISTRICT_EDUCATION_OFFICE: { 
     slug: 'district-education-office',
+    abbreviation: 'DEO',
     description: 'District Education Office - SEE/SLC verification, certificate attestation' 
   },
   TRANSPORT_MANAGEMENT_OFFICE: { 
     slug: 'transport-management-office',
+    abbreviation: 'TMO',
     description: 'Transport Management Office - Vehicle registration, blue book, license' 
   },
   DRIVING_LICENSE_OFFICE: { 
     slug: 'driving-license-office',
+    abbreviation: 'DLO',
     description: 'Driving License Office - License tests and renewals' 
   },
   MUNICIPALITY_OFFICE: { 
     slug: 'municipality-office',
+    abbreviation: 'MUN',
     description: 'Municipality Office (Nagarpalika) - Local services, business tax' 
   },
   RURAL_MUNICIPALITY_OFFICE: { 
     slug: 'rural-municipality-office',
+    abbreviation: 'RMO',
     description: 'Rural Municipality Office (Gaupalika) - Rural local services' 
   },
   WARD_OFFICE: { 
     slug: 'ward-office',
+    abbreviation: 'WARD',
     description: 'Ward Office - Birth/death registration, business registration, recommendations' 
   },
   PASSPORT_OFFICE: { 
     slug: 'passport-office',
+    abbreviation: 'PPO',
     description: 'Passport Office - Passport applications and renewals' 
   },
   IMMIGRATION_OFFICE: { 
     slug: 'immigration-office',
+    abbreviation: 'IMM',
     description: 'Immigration Office - Visa, travel documents' 
   },
   OFFICE_OF_COMPANY_REGISTRAR: { 
     slug: 'office-of-company-registrar',
+    abbreviation: 'OCR',
     description: 'Office of Company Registrar (OCR) - Company registration (e-OCR/CAMIS)' 
   },
   COTTAGE_SMALL_INDUSTRY_OFFICE: { 
     slug: 'cottage-small-industry-office',
+    abbreviation: 'DCSI',
     description: 'Cottage & Small Industry Office (DCSI) - Cottage/small industry registration' 
   },
   INLAND_REVENUE_OFFICE: { 
     slug: 'inland-revenue-office',
+    abbreviation: 'IRO',
     description: 'Inland Revenue Office (IRD) - PAN/VAT registration, tax filing' 
   },
   LABOUR_OFFICE: { 
     slug: 'labour-office',
+    abbreviation: 'LBR',
     description: 'Labour Office - Foreign employment, work permits, labor disputes' 
   },
 };
@@ -107,11 +121,13 @@ async function migrate() {
         where: { name },
         update: { 
           slug: config.slug,
+          abbreviation: config.abbreviation,
           description: config.description,
         },
         create: {
           name,
           slug: config.slug,
+          abbreviation: config.abbreviation,
           description: config.description,
         },
       });
