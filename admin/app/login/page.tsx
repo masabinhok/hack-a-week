@@ -48,7 +48,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left Side - Premium Branding */}
+      {/* Left Side -  Branding */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-nepal-blue-900 via-nepal-blue-800 to-nepal-crimson-900 p-12 flex-col justify-between relative overflow-hidden">
         {/* Decorative Elements */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
@@ -77,7 +77,7 @@ export default function LoginPage() {
               Welcome Back to
               <br />
               <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-                Premium Dashboard
+                 Dashboard
               </span>
             </h2>
             <p className="text-lg text-blue-100 leading-relaxed">

@@ -11,7 +11,7 @@ const merriweather = Merriweather({
 })
 
 export const metadata: Metadata = {
-  title: "Setu Admin - Premium Government Services Dashboard",
+  title: "Setu Admin - Government Services Dashboard",
   description: "Advanced administration panel for managing Nepal government services, offices, and categories",
   keywords: ['Setu', 'Nepal', 'Government', 'Admin', 'Dashboard', 'Services'],
 };

@@ -1,6 +1,6 @@
 # Setu - Nepal Government Services Guide - Frontend
 
-A premium, production-ready Next.js 15+ frontend application for navigating Nepal government services.
+A , production-ready Next.js 15+ frontend application for navigating Nepal government services.
 
 ## 🚀 Tech Stack
 

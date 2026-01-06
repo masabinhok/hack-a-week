@@ -93,10 +93,10 @@ export default function AdminSidebar() {
 
   return (
     <aside className="flex flex-col h-full w-64 bg-gradient-to-b from-[#0F172A] via-[#1E293B] to-[#0F172A] text-white border-r border-gray-800/50 shadow-2xl">
-      {/* Logo/Header - Premium Design */}
+      {/* Logo/Header -  Design */}
       <div className="flex items-center h-20 px-6 border-b border-gray-800/50 bg-gradient-to-r from-nepal-blue-900/20 to-transparent">
         <div className="flex items-center gap-3 group cursor-pointer">
-          {/* Premium Logo with Gradient */}
+          {/*  Logo with Gradient */}
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-to-br from-nepal-blue-500 to-nepal-crimson-600 rounded-xl blur-sm opacity-75 group-hover:opacity-100 transition-opacity"></div>
             <div className="relative w-10 h-10 bg-gradient-to-br from-nepal-blue-600 to-nepal-blue-800 rounded-xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform">
@@ -114,7 +114,7 @@ export default function AdminSidebar() {
         </div>
       </div>
 
-      {/* Navigation - Premium Design */}
+      {/* Navigation -  Design */}
       <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
         {navigation.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -206,7 +206,7 @@ export default function AdminSidebar() {
         </div>
       )}
 
-      {/* User Section - Premium Design */}
+      {/* User Section -  Design */}
       <div className="p-3 border-t border-gray-800/50 bg-gradient-to-r from-gray-900/50 to-transparent">
         {/* User Info */}
         {user && (

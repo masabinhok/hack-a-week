@@ -112,7 +112,7 @@ function AdminDashboard() {
       />
 
       <div className="p-8 space-y-8">
-        {/* Premium Stats Grid */}
+        {/*  Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {statCards.map((stat, index) => (
             <Link key={stat.title} href={stat.href}>
@@ -285,7 +285,7 @@ function AdminDashboard() {
                 <div className="space-y-3">
                   <div className="text-sm text-gray-600">
                     <p className="font-semibold text-gray-900 mb-1">Version 2.0.1</p>
-                    <p>Enhanced dashboard with premium UI components</p>
+                    <p>Enhanced dashboard with UI components</p>
                     <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
                   </div>
                 </div>
@@ -294,7 +294,7 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Premium Branding Footer */}
+        {/*  Branding Footer */}
         <Card className="bg-white rounded-xl shadow-xl border-0 overflow-hidden">
           <div className="bg-gradient-to-r from-nepal-blue-900 via-nepal-blue-800 to-nepal-crimson-900 p-8 text-white">
             <div className="flex items-center justify-between">
