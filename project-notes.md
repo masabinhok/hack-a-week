@@ -42,7 +42,7 @@ officeSpecificChange OfficeSpecificChange
 3. ✅ OFFICE CREATION MA ID AUTO GENERATE IMPLEMENTED! Backend le category ko abbreviation + count use garera office ID generate garxa (e.g., DAO-1, WARD-1)
 4. ✅ office create/edit garda location fetch fixed! All 4-level cascading dropdowns properly load existing data and fetch dependent locations. Profile page pani fixed!
 5. ✅in each office profile for the super admin, we should add a send credentials button so that we can send them the credentials even after office creation maybe with a new password!!
-6. service independetly exist, ani offices can claim services, if they provide that service, officeadmins can see all the services, and also can request to create a new service to the superadmin!!
+6.✅service independetly exist, ani offices can claim services, if they provide that service, officeadmins can see all the services, and also can request to create a new service to the superadmin!!
 
 
 
@@ -55,7 +55,10 @@ officeSpecificChange OfficeSpecificChange
 1. superAdmin -> monitors officeAdmin, create global services, create offices
 2. officeAdmin -> update/ own office, crud own service -> request for review -> see list of global service and claim the ones they provide!, 
 
-
+<!-- services -->'
+1. officeAdmin le ni afule claim gareko service, wa garna lageko service ko full details herna paunu paryooo
+2. superadmin le verify garna ko lagi entire service detail herna paunu paryoo, 
+ -->
 
 
 

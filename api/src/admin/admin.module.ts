@@ -5,13 +5,17 @@ import { AdminController } from './admin.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 import { AdminServicesModule } from './services/admin-services.module';
 import { AdminOfficesModule } from './offices/admin-offices.module';
+import { OfficeServicesModule } from './office-services/office-services.module';
+import { ServiceRequestsModule } from './service-requests/service-requests.module';
 
 @Module({
   imports: [
     PrismaModule,
     JwtModule.register({}), // Configuration is done via ConfigService in the service
+    ServiceRequestsModule, // Must be before AdminServicesModule to avoid route conflicts
     AdminServicesModule,
     AdminOfficesModule,
+    OfficeServicesModule,
   ],
   controllers: [AdminController],
   providers: [AdminService],

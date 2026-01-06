@@ -479,6 +479,57 @@ export async function searchOffices(
   return result.offices;
 }
 
+/**
+ * Office service (claimed) type
+ */
+interface OfficeClaimedService {
+  id: string;
+  serviceId: string;
+  name: string;
+  slug: string;
+  description?: string;
+  priority?: string;
+  isOnlineEnabled: boolean;
+  categories: { id: string; name: string; slug: string }[];
+  customFees?: Record<string, any>;
+  customRequirements?: string[];
+  notes?: string;
+  claimedAt: string;
+}
+
+interface OfficeServicesResponse {
+  services: OfficeClaimedService[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  office: {
+    id: string;
+    officeId: string;
+    name: string;
+    nameNepali?: string;
+  };
+}
+
+/**
+ * Get services claimed/offered by an office
+ */
+export async function getOfficeServices(
+  officeId: string,
+  page: number = 1,
+  limit: number = 20
+): Promise<OfficeServicesResponse> {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+  });
+
+  return fetchAPI<OfficeServicesResponse>(`/offices/${officeId}/services?${params}`, {
+    revalidate: CACHE_TIMES.OFFICES,
+    tags: ["office-services", `office-${officeId}-services`],
+  });
+}
+
 // ==================== Search API Functions ====================
 
 /**

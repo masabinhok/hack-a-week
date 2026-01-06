@@ -27,9 +27,10 @@ import { slugify, generateServiceId, cn } from '@/lib/utils';
 interface ServiceFormProps {
   service?: ServiceDetail;
   parentId?: string;
+  isServiceRequest?: boolean;
 }
 
-export default function ServiceForm({ service, parentId }: ServiceFormProps) {
+export default function ServiceForm({ service, parentId, isServiceRequest = false }: ServiceFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -230,12 +231,23 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
     setLoading(true);
 
     try {
-      if (service) {
+      if (isServiceRequest) {
+        // Convert full service data to service request
+        await api.createServiceRequest({
+          serviceName: formData.name,
+          serviceDescription: formData.description || undefined,
+          categoryId: formData.categoryIds?.[0] || undefined,
+          priority: (formData.priority as 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT') || 'MEDIUM',
+          justification: `Comprehensive service request with ${formData.steps?.length || 0} steps defined.`,
+        });
+        router.push('/service-requests');
+      } else if (service) {
         await api.updateService(service.id, formData);
+        router.push('/services');
       } else {
         await api.createService(formData);
+        router.push('/services');
       }
-      router.push('/services');
     } catch (error: any) {
       alert(error.message || 'Failed to save service');
     } finally {
@@ -958,7 +970,7 @@ export default function ServiceForm({ service, parentId }: ServiceFormProps) {
         </Button>
         <div className="flex gap-3">
           <Button type="submit" isLoading={loading}>
-            {service ? 'Update Service' : 'Create Service'}
+            {isServiceRequest ? 'Submit Service Request' : service ? 'Update Service' : 'Create Service'}
           </Button>
         </div>
       </div>

@@ -14,13 +14,13 @@ export class LocationCodeUtil {
     provinceId: number,
     districtId: number,
     municipalityId: number,
-    wardId: number
+    wardId: number,
   ): string {
     const p = provinceId.toString();
     const d = districtId.toString().padStart(2, '0');
     const m = municipalityId.toString().padStart(3, '0');
     const w = wardId.toString().padStart(4, '0');
-    
+
     return `${p}-${d}-${m}-${w}`;
   }
 
@@ -53,7 +53,7 @@ export class LocationCodeUtil {
    */
   static isValid(locationCode: string): boolean {
     if (!locationCode) return false;
-    
+
     const pattern = /^\d{1}-\d{2}-\d{3}-\d{4}$/;
     return pattern.test(locationCode);
   }
@@ -88,7 +88,12 @@ export class LocationCodeUtil {
     }
 
     // Full location
-    return LocationCodeUtil.encode(provinceId, districtId, municipalityId, wardId);
+    return LocationCodeUtil.encode(
+      provinceId,
+      districtId,
+      municipalityId,
+      wardId,
+    );
   }
 
   /**
@@ -104,21 +109,21 @@ export class LocationCodeUtil {
   static isSameProvince(code1: string, code2: string): boolean {
     const loc1 = this.decode(code1);
     const loc2 = this.decode(code2);
-    
+
     return loc1?.provinceId === loc2?.provinceId;
   }
 
   static isSameDistrict(code1: string, code2: string): boolean {
     const loc1 = this.decode(code1);
     const loc2 = this.decode(code2);
-    
+
     return loc1?.districtId === loc2?.districtId;
   }
 
   static isSameMunicipality(code1: string, code2: string): boolean {
     const loc1 = this.decode(code1);
     const loc2 = this.decode(code2);
-    
+
     return loc1?.municipalityId === loc2?.municipalityId;
   }
 

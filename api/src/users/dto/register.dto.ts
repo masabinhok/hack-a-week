@@ -40,8 +40,7 @@ export class SendOtpDto {
 export class VerifyOtpDto {
   @IsString()
   @Matches(/^(\+977)?9[78]\d{8}$/, {
-    message:
-      'Phone number must be a valid Nepali mobile number',
+    message: 'Phone number must be a valid Nepali mobile number',
   })
   phoneNumber: string;
 

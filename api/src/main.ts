@@ -16,11 +16,11 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
   });
-  
+
   app.setGlobalPrefix('api/v1');
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
-  
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -28,7 +28,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  
+
   await app.listen(process.env.PORT ?? 8080);
 }
 bootstrap();

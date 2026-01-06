@@ -6,7 +6,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getOfficeById } from "@/lib/api";
+import { getOfficeById, getOfficeServices } from "@/lib/api";
 import { BreadcrumbTrail, OfficeCategoryBadge } from "@/components/shared";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ import {
   ExternalLink,
   Navigation,
   Copy,
+  FileText,
 } from "lucide-react";
 
 interface PageProps {
@@ -53,8 +54,12 @@ export default async function OfficeDetailPage({ params }: PageProps) {
   const { id } = await params;
 
   let office = null;
+  let officeServices = null;
   try {
-    office = await getOfficeById(id);
+    [office, officeServices] = await Promise.all([
+      getOfficeById(id),
+      getOfficeServices(id).catch(() => null),
+    ]);
   } catch {
     // Handle error
   }
@@ -366,16 +371,16 @@ export default async function OfficeDetailPage({ params }: PageProps) {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* Services Available */}
-            {/* {office.services && office.services.length > 0 && (
+            {officeServices && officeServices.services && officeServices.services.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <FileText className="w-5 h-5" />
-                    Services Available
+                    Services Available ({officeServices.total})
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  {office.services.slice(0, 10).map((service) => (
+                  {officeServices.services.slice(0, 10).map((service) => (
                     <Link
                       key={service.id}
                       href={`/services/${service.slug}`}
@@ -384,16 +389,21 @@ export default async function OfficeDetailPage({ params }: PageProps) {
                       <p className="text-sm font-medium text-foreground">
                         {service.name}
                       </p>
+                      {service.description && (
+                        <p className="text-xs text-foreground-muted mt-1 line-clamp-2">
+                          {service.description}
+                        </p>
+                      )}
                     </Link>
                   ))}
-                  {office.services.length > 10 && (
+                  {officeServices.total > 10 && (
                     <p className="text-sm text-foreground-muted text-center py-2">
-                      +{office.services.length - 10} more services
+                      +{officeServices.total - 10} more services
                     </p>
                   )}
                 </CardContent>
               </Card>
-            )} */}
+            )}
 
             {/* Quick Actions */}
             <Card className="bg-linear-to-br from-nepal-crimson-50 to-nepal-crimson-100 border-nepal-crimson-200">

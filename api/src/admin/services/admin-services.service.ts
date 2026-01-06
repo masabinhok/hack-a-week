@@ -1,6 +1,14 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
-import { CreateServiceDto, UpdateServiceDto, CreateServiceStepDto } from '../dto/create-service.dto';
+import {
+  CreateServiceDto,
+  UpdateServiceDto,
+  CreateServiceStepDto,
+} from '../dto/create-service.dto';
 // Using raw Prisma types for service input
 type PrismaServiceCreateInput = any;
 type PrismaServiceUpdateInput = any;
@@ -23,7 +31,7 @@ export class AdminServicesService {
     const skip = (page - 1) * limit;
 
     const where: any = {};
-    
+
     if (search) {
       where.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -153,13 +161,17 @@ export class AdminServicesService {
 
     // Workaround for Prisma adapter-pg bug with string arrays
     if (service.serviceSteps.length > 0) {
-      const stepIds = service.serviceSteps.map(s => s.id);
-      const officeCategoryIdsResult = await this.prisma.$queryRaw<{ id: string; officeCategoryIds: string[] }[]>`
+      const stepIds = service.serviceSteps.map((s) => s.id);
+      const officeCategoryIdsResult = await this.prisma.$queryRaw<
+        { id: string; officeCategoryIds: string[] }[]
+      >`
         SELECT id, "officeCategoryIds" as "officeCategoryIds" FROM "ServiceStep" WHERE id = ANY(${stepIds})
       `;
-      const officeCategoryIdsMap = new Map(officeCategoryIdsResult.map(r => [r.id, r.officeCategoryIds || []]));
-      
-      service.serviceSteps = service.serviceSteps.map(step => ({
+      const officeCategoryIdsMap = new Map(
+        officeCategoryIdsResult.map((r) => [r.id, r.officeCategoryIds || []]),
+      );
+
+      service.serviceSteps = service.serviceSteps.map((step) => ({
         ...step,
         officeCategoryIds: officeCategoryIdsMap.get(step.id) || [],
       })) as any;
@@ -189,7 +201,7 @@ export class AdminServicesService {
 
     if (existing) {
       throw new ConflictException(
-        `Service with serviceId "${dto.serviceId}" or slug "${dto.slug}" already exists`
+        `Service with serviceId "${dto.serviceId}" or slug "${dto.slug}" already exists`,
       );
     }
 
@@ -213,7 +225,9 @@ export class AdminServicesService {
         where: { id: dto.parentId },
       });
       if (!parent) {
-        throw new NotFoundException(`Parent service with ID ${dto.parentId} not found`);
+        throw new NotFoundException(
+          `Parent service with ID ${dto.parentId} not found`,
+        );
       }
       createData.parent = { connect: { id: dto.parentId } };
       createData.level = parent.level + 1;
@@ -315,7 +329,9 @@ export class AdminServicesService {
         },
       });
       if (slugExists) {
-        throw new ConflictException(`Slug "${dto.slug}" already exists for this parent`);
+        throw new ConflictException(
+          `Slug "${dto.slug}" already exists for this parent`,
+        );
       }
     }
 
@@ -341,7 +357,9 @@ export class AdminServicesService {
           where: { id: dto.parentId },
         });
         if (!parent) {
-          throw new NotFoundException(`Parent service with ID ${dto.parentId} not found`);
+          throw new NotFoundException(
+            `Parent service with ID ${dto.parentId} not found`,
+          );
         }
         updateData.parent = { connect: { id: dto.parentId } };
         updateData.level = parent.level + 1;
@@ -477,7 +495,7 @@ export class AdminServicesService {
     // Check if service has children
     if (service._count.children > 0) {
       throw new ConflictException(
-        `Cannot delete service with ${service._count.children} child services. Delete children first.`
+        `Cannot delete service with ${service._count.children} child services. Delete children first.`,
       );
     }
 
@@ -509,16 +527,17 @@ export class AdminServicesService {
    * Get service stats for dashboard
    */
   async getStats() {
-    const [totalServices, rootServices, leafServices, totalSteps] = await Promise.all([
-      this.prisma.service.count(),
-      this.prisma.service.count({ where: { parentId: null } }),
-      this.prisma.service.count({
-        where: {
-          children: { none: {} },
-        },
-      }),
-      this.prisma.serviceStep.count(),
-    ]);
+    const [totalServices, rootServices, leafServices, totalSteps] =
+      await Promise.all([
+        this.prisma.service.count(),
+        this.prisma.service.count({ where: { parentId: null } }),
+        this.prisma.service.count({
+          where: {
+            children: { none: {} },
+          },
+        }),
+        this.prisma.serviceStep.count(),
+      ]);
 
     return {
       totalServices,
@@ -538,71 +557,83 @@ export class AdminServicesService {
       requiresAppointment: step.requiresAppointment || false,
       isOnline: step.isOnline || false,
       onlineFormUrl: step.onlineFormUrl,
-      documentsRequired: step.documentsRequired ? {
-        create: step.documentsRequired.map((doc) => ({
-          docId: doc.docId,
-          name: doc.name,
-          nameNepali: doc.nameNepali,
-          type: doc.type as any,
-          quantity: doc.quantity,
-          format: doc.format,
-          isMandatory: doc.isMandatory ?? true,
-          notes: doc.notes,
-          relatedService: doc.relatedService,
-          alternativeDocuments: doc.alternativeDocuments || [],
-        })),
-      } : undefined,
-      totalFees: step.totalFees ? {
-        create: step.totalFees.map((fee) => ({
-          feeId: fee.feeId,
-          feeTitle: fee.feeTitle,
-          feeTitleNepali: fee.feeTitleNepali,
-          feeAmount: fee.feeAmount,
-          currency: fee.currency as any || 'NPR',
-          feeType: fee.feeType as any,
-          isRefundable: fee.isRefundable || false,
-          applicableCondition: fee.applicableCondition,
-          notes: fee.notes,
-        })),
-      } : undefined,
-      timeRequired: step.timeRequired ? {
-        create: {
-          minimumTime: step.timeRequired.minimumTime,
-          maximumTime: step.timeRequired.maximumTime,
-          averageTime: step.timeRequired.averageTime,
-          remarks: step.timeRequired.remarks,
-          expeditedAvailable: step.timeRequired.expeditedAvailable || false,
-          workingDaysOnly: step.timeRequired.workingDaysOnly ?? true,
-        },
-      } : undefined,
-      workingHours: step.workingHours ? {
-        create: step.workingHours.map((wh) => ({
-          day: wh.day as any,
-          openClose: wh.openClose,
-        })),
-      } : undefined,
-      responsibleAuthorities: step.responsibleAuthorities ? {
-        create: step.responsibleAuthorities.map((auth) => ({
-          position: auth.position,
-          positionNepali: auth.positionNepali,
-          department: auth.department,
-          contactNumber: auth.contactNumber,
-          email: auth.email,
-          complaintProcess: auth.complaintProcess,
-          isResp: true,
-        })),
-      } : undefined,
-      complaintAuthorities: step.complaintAuthorities ? {
-        create: step.complaintAuthorities.map((auth) => ({
-          position: auth.position,
-          positionNepali: auth.positionNepali,
-          department: auth.department,
-          contactNumber: auth.contactNumber,
-          email: auth.email,
-          complaintProcess: auth.complaintProcess,
-          isResp: false,
-        })),
-      } : undefined,
+      documentsRequired: step.documentsRequired
+        ? {
+            create: step.documentsRequired.map((doc) => ({
+              docId: doc.docId,
+              name: doc.name,
+              nameNepali: doc.nameNepali,
+              type: doc.type as any,
+              quantity: doc.quantity,
+              format: doc.format,
+              isMandatory: doc.isMandatory ?? true,
+              notes: doc.notes,
+              relatedService: doc.relatedService,
+              alternativeDocuments: doc.alternativeDocuments || [],
+            })),
+          }
+        : undefined,
+      totalFees: step.totalFees
+        ? {
+            create: step.totalFees.map((fee) => ({
+              feeId: fee.feeId,
+              feeTitle: fee.feeTitle,
+              feeTitleNepali: fee.feeTitleNepali,
+              feeAmount: fee.feeAmount,
+              currency: (fee.currency as any) || 'NPR',
+              feeType: fee.feeType as any,
+              isRefundable: fee.isRefundable || false,
+              applicableCondition: fee.applicableCondition,
+              notes: fee.notes,
+            })),
+          }
+        : undefined,
+      timeRequired: step.timeRequired
+        ? {
+            create: {
+              minimumTime: step.timeRequired.minimumTime,
+              maximumTime: step.timeRequired.maximumTime,
+              averageTime: step.timeRequired.averageTime,
+              remarks: step.timeRequired.remarks,
+              expeditedAvailable: step.timeRequired.expeditedAvailable || false,
+              workingDaysOnly: step.timeRequired.workingDaysOnly ?? true,
+            },
+          }
+        : undefined,
+      workingHours: step.workingHours
+        ? {
+            create: step.workingHours.map((wh) => ({
+              day: wh.day as any,
+              openClose: wh.openClose,
+            })),
+          }
+        : undefined,
+      responsibleAuthorities: step.responsibleAuthorities
+        ? {
+            create: step.responsibleAuthorities.map((auth) => ({
+              position: auth.position,
+              positionNepali: auth.positionNepali,
+              department: auth.department,
+              contactNumber: auth.contactNumber,
+              email: auth.email,
+              complaintProcess: auth.complaintProcess,
+              isResp: true,
+            })),
+          }
+        : undefined,
+      complaintAuthorities: step.complaintAuthorities
+        ? {
+            create: step.complaintAuthorities.map((auth) => ({
+              position: auth.position,
+              positionNepali: auth.positionNepali,
+              department: auth.department,
+              contactNumber: auth.contactNumber,
+              email: auth.email,
+              complaintProcess: auth.complaintProcess,
+              isResp: false,
+            })),
+          }
+        : undefined,
     };
   }
 

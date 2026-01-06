@@ -22,7 +22,7 @@ export class ServicesController {
    * GET /services/tree
    */
   @Get('tree')
-  async getServiceTree(){
+  async getServiceTree() {
     return this.servicesService.getServiceTree();
   }
 

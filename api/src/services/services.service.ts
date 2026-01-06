@@ -12,7 +12,7 @@ export class ServicesService {
    */
   async findAllRootServices() {
     const services = await this.prisma.service.findMany({
-      where: { 
+      where: {
         parentId: null,
         level: 0,
       },
@@ -62,11 +62,11 @@ export class ServicesService {
     };
   }
 
-/**
- * Get full service tree with nested children
- * Includes all relations: categories, steps, documents, fees, etc.
- */
-  async getServiceTree(){
+  /**
+   * Get full service tree with nested children
+   * Includes all relations: categories, steps, documents, fees, etc.
+   */
+  async getServiceTree() {
     const childInclude = {
       categories: {
         include: {
@@ -123,10 +123,9 @@ export class ServicesService {
         },
       },
     });
-    
+
     return serviceTree;
   }
-
 
   /**
    * Get service by slug with immediate children
@@ -263,14 +262,12 @@ export class ServicesService {
     // Only leaf services have guides
     if (service._count.children > 0) {
       throw new ServiceNotFoundException(
-        `${slug} (parent service - navigate to leaf service)`
+        `${slug} (parent service - navigate to leaf service)`,
       );
     }
 
     if (service.serviceSteps.length === 0) {
-      throw new ServiceNotFoundException(
-        `${slug} (no guide available yet)`
-      );
+      throw new ServiceNotFoundException(`${slug} (no guide available yet)`);
     }
 
     // Get breadcrumb
@@ -280,35 +277,40 @@ export class ServicesService {
 
     // Workaround for Prisma adapter-pg bug with string arrays
     // Fetch officeCategoryIds separately using raw SQL
-    const stepIds = service.serviceSteps.map(s => s.id);
-    const officeCategoryIdsResult = await this.prisma.$queryRaw<{ id: string; officeCategoryIds: string[] }[]>`
+    const stepIds = service.serviceSteps.map((s) => s.id);
+    const officeCategoryIdsResult = await this.prisma.$queryRaw<
+      { id: string; officeCategoryIds: string[] }[]
+    >`
       SELECT id, "officeCategoryIds"::text[] as "officeCategoryIds" FROM "ServiceStep" WHERE id = ANY(${stepIds})
     `;
-    
+
     // ...existing code...
-    
-    const officeCategoryIdsMap = new Map(officeCategoryIdsResult.map(r => [r.id, r.officeCategoryIds || []]));
-    
+
+    const officeCategoryIdsMap = new Map(
+      officeCategoryIdsResult.map((r) => [r.id, r.officeCategoryIds || []]),
+    );
+
     // ...existing code...
 
     // Fetch all unique category IDs and get their details for display
-    const allCategoryIds = [...new Set(
-      Array.from(officeCategoryIdsMap.values()).flat()
-    )];
-    
+    const allCategoryIds = [
+      ...new Set(Array.from(officeCategoryIdsMap.values()).flat()),
+    ];
+
     // ...existing code...
-    
-    const categories = allCategoryIds.length > 0
-      ? await this.prisma.officeCategory.findMany({
-          where: { id: { in: allCategoryIds } },
-          select: { id: true, name: true, slug: true, description: true }
-        })
-      : [];
-    
+
+    const categories =
+      allCategoryIds.length > 0
+        ? await this.prisma.officeCategory.findMany({
+            where: { id: { in: allCategoryIds } },
+            select: { id: true, name: true, slug: true, description: true },
+          })
+        : [];
+
     // ...existing code...
-    
-    const categoryDetailsMap = new Map(categories.map(c => [c.id, c]));
-    
+
+    const categoryDetailsMap = new Map(categories.map((c) => [c.id, c]));
+
     // ...existing code...
 
     const result = {
@@ -326,11 +328,11 @@ export class ServicesService {
       steps: service.serviceSteps.map((step) => {
         const stepCategoryIds = officeCategoryIdsMap.get(step.id) || [];
         const stepCategories = stepCategoryIds
-          .map(id => categoryDetailsMap.get(id))
+          .map((id) => categoryDetailsMap.get(id))
           .filter(Boolean);
-        
+
         // ...existing code...
-        
+
         return {
           id: step.id,
           stepId: step.id,
@@ -407,9 +409,9 @@ export class ServicesService {
         : null,
       metadata: service.metadata,
     };
-    
+
     // ...existing code...
-    
+
     return result;
   }
 
@@ -435,7 +437,7 @@ export class ServicesService {
    * Helper: Build breadcrumb trail by traversing parent chain
    */
   private async getBreadcrumb(
-    serviceId: string
+    serviceId: string,
   ): Promise<{ name: string; slug: string }[]> {
     const breadcrumb: { name: string; slug: string }[] = [];
     let currentId: string | null = serviceId;

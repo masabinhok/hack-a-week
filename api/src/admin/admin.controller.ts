@@ -19,7 +19,6 @@ import { COOKIE_CONFIG } from '../common/constants/cookie.config';
 import type { Response } from 'express';
 import { AuthGuard } from '../common/guards/auth.guard';
 
-
 @UseGuards(AuthGuard)
 @Controller('admin')
 export class AdminController {

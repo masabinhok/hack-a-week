@@ -26,29 +26,35 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     const errorResponse = this.buildErrorResponse(exception, request);
-    
+
     // Log error with appropriate level
     if (errorResponse.statusCode >= 500) {
       this.logger.error(
         `${request.method} ${request.url}`,
-        exception instanceof Error ? exception.stack : exception
+        exception instanceof Error ? exception.stack : exception,
       );
     } else {
       this.logger.warn(
-        `${request.method} ${request.url} - ${errorResponse.message}`
+        `${request.method} ${request.url} - ${errorResponse.message}`,
       );
     }
 
     response.status(errorResponse.statusCode).json(errorResponse);
   }
 
-  private buildErrorResponse(exception: unknown, request: Request): ErrorResponse {
+  private buildErrorResponse(
+    exception: unknown,
+    request: Request,
+  ): ErrorResponse {
     const timestamp = new Date().toISOString();
     const path = request.url;
 
     // Handle AppException (our custom exceptions)
     if (exception instanceof AppException) {
-      const response = exception.getResponse() as Omit<ErrorResponse, 'timestamp' | 'path'>;
+      const response = exception.getResponse() as Omit<
+        ErrorResponse,
+        'timestamp' | 'path'
+      >;
       return {
         ...response,
         timestamp,
@@ -60,9 +66,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       // Handle validation errors from class-validator
-      if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
+      if (
+        typeof exceptionResponse === 'object' &&
+        'message' in exceptionResponse
+      ) {
         const messages = Array.isArray(exceptionResponse.message)
           ? exceptionResponse.message
           : [exceptionResponse.message];
@@ -70,7 +79,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         return {
           success: false,
           message: messages[0] || 'Validation failed',
-          messageNepali: 'प्रमाणीकरण असफल भयो। कृपया आफ्नो इनपुट जाँच गर्नुहोस्।',
+          messageNepali:
+            'प्रमाणीकरण असफल भयो। कृपया आफ्नो इनपुट जाँच गर्नुहोस्।',
           errorCode: ErrorCode.VALIDATION_ERROR,
           statusCode: status,
           timestamp,
@@ -87,7 +97,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
       return {
         success: false,
-        message: typeof exceptionResponse === 'string' ? exceptionResponse : errorMessage.en,
+        message:
+          typeof exceptionResponse === 'string'
+            ? exceptionResponse
+            : errorMessage.en,
         messageNepali: errorMessage.ne,
         errorCode,
         statusCode: status,
@@ -104,7 +117,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // Handle unknown errors
     this.logger.error('Unhandled exception:', exception);
     const errorMessage = getErrorMessage(ErrorCode.INTERNAL_SERVER_ERROR);
-    
+
     return {
       success: false,
       message: errorMessage.en,
@@ -146,7 +159,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
   private handlePrismaError(
     exception: any,
     timestamp: string,
-    path: string
+    path: string,
   ): ErrorResponse {
     const code = exception.code;
     const errorMessage = getErrorMessage(ErrorCode.DATABASE_ERROR);
